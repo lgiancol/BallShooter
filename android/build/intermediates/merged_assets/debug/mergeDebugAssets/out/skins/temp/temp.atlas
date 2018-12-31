@@ -1,0 +1,26 @@
+temp.png
+size: 364, 90
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+apple
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+face-weird
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+title
+  rotate: false
+  xy: 64, 0
+  size: 300, 90
+  orig: 300, 90
+  offset: 0, 0
+  index: -1
