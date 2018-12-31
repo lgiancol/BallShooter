@@ -16,12 +16,13 @@ public class Level {
     private ArrayList<Ball> balls;
 
     private int cols = 8;
-    private int rows = 1;
+    private int rows = 3;
     private float width, height;
 
     private float newBallSpawn = 0.1f; // Number of milliseconds before a new ball spawns
     private float currentTime = 0;
-    private int maxBalls = 25;
+    private int maxBalls = 10;
+    private boolean reset = true;
 
     private Vector2 currentTouch;
     private Vector2 pivot;
@@ -30,12 +31,18 @@ public class Level {
         this.width = width;
         this.height = height;
 
-        currentTouch = new Vector2(width / 2, 20);
+        currentTouch = new Vector2(width / 2, height);
         pivot = new Vector2(width / 2, 10);
 
-//        initBlocks();
+        resetLevel();
+
         balls = new ArrayList<Ball>();
         balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngle(pivot, currentTouch)));
+    }
+
+    private void resetLevel() {
+        reset = true;
+        initBlocks();
     }
 
     private void initBlocks() {
@@ -43,29 +50,18 @@ public class Level {
 
         float blockWidth = (width / cols);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
-
-        PolygonShape polyShape = new PolygonShape();
-        polyShape.setAsBox(blockWidth / 2, blockWidth / 2);
-
-        FixtureDef fixDef = new FixtureDef();
-        fixDef.shape = polyShape;
-        fixDef.density = 1;
-
         for(int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 float x = c * blockWidth;
-                float y = height - (r * blockWidth);
+                float y = height - ((rows - r - 1) * blockWidth) - blockWidth;
 
-//                blocks.add(new Block(body, blockWidth));
+                blocks.add(new Block(x, y, blockWidth, c));
             }
         }
-
-        polyShape.dispose();
     }
 
     public void draw(ShapeRenderer renderer, SpriteBatch batch, BitmapFont font) {
+        reset = true;
 
         if(shouldMakeNewBall()) {
             balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngle(pivot, currentTouch)));
@@ -76,21 +72,9 @@ public class Level {
             currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
         }
 
-        // There was a touch on the screen
-        if(currentTouch != null) {
+        renderLine(pivot, currentTouch, renderer);
 
-            renderer.setColor(Color.YELLOW);
-            renderPoint(pivot, renderer);
-
-            renderer.setColor(Color.GREEN);
-            renderLine(pivot, currentTouch, renderer);
-
-            renderer.setColor(Color.BROWN);
-            renderPoint(currentTouch, renderer);
-
-            font.draw(batch, "Angle: " + calculateAngle(pivot, currentTouch), 20, 200);
-        }
-
+        // Update and draw all the balls
         for(int i = balls.size() - 1; i >= 0; i--) {
             Ball b = balls.get(i);
 
@@ -100,14 +84,29 @@ public class Level {
                 balls.remove(b);
             } else {
                 b.draw(renderer);
+
+                b.checkCollisions(blocks, rows, cols);
             }
         }
 
-//        for(Block b : blocks) {
-//            b.update();
-//            b.draw(renderer);
-//        }
+        for(Block b : blocks) {
+            b.update();
+            if(b.isVisible) {
+                b.draw(renderer);
+                reset = false;
+            }
+        }
+
+        if(reset) resetLevel();
     }
+
+//    private Block getClosestBlock(Ball ball) {
+//        for(Block b : blocks) {
+//            if(b.isVisible) {
+//
+//            }
+//        }
+//    }
 
     private boolean shouldMakeNewBall() {
         currentTime += Gdx.graphics.getDeltaTime();
