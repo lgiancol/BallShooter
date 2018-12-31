@@ -1,6 +1,8 @@
 package com.lucasgiancola.Components;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -25,7 +27,7 @@ public class Block {
         this.value = value;
     }
 
-    public void draw(ShapeRenderer renderer) {
+    public void draw(ShapeRenderer renderer, SpriteBatch batch, BitmapFont font) {
         renderer.set(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.RED);
         renderer.rect(position.x, position.y, width, width);
@@ -34,7 +36,9 @@ public class Block {
         renderer.setColor(Color.BLACK);
         renderer.rect(position.x, position.y, width, width);
 
-        renderer.circle(position.x, position.y, 10);
+        font.setColor(Color.WHITE);
+        font.getData().setScale(30);
+        font.draw(batch, this.value + " <- Value", 100, 100);
     }
 
     public void update() {
@@ -61,7 +65,7 @@ public class Block {
         return width;
     }
 
-    public boolean hitTop(Ball b) {
+    public boolean didHitTop(Ball b) {
         return isVisible &&
                 b.getBottom() >= this.position.y + (this.width / 2) && // Bottom of ball >= Middle of block
                 b.getBottom() <= this.position.y + this.width && // Bottom of ball <= top of block
@@ -69,7 +73,7 @@ public class Block {
                 b.getRight() >= this.position.x; // Right of ball >= left of block
     }
 
-    public boolean hitBottom(Ball b) {
+    public boolean didHitBottom(Ball b) {
         return isVisible &&
                 b.getTop() <= this.position.y + (this.width / 2) && // Bottom of ball <= Middle of block
                 b.getTop() >= this.position.y && // Top of ball >= bottom of block
@@ -77,7 +81,7 @@ public class Block {
                 b.getRight() >= this.position.x; // Right of ball >= left of block
     }
 
-    public boolean hitLeft(Ball b) {
+    public boolean didHitLeft(Ball b) {
         return isVisible &&
                 b.getRight() >= this.position.x &&
                 b.getRight() <= this.position.x + this.width &&
@@ -85,11 +89,17 @@ public class Block {
                 b.getBottom() <= this.position.y + this.width;
     }
 
-    public boolean hitRight(Ball b) {
+    public boolean didHitRight(Ball b) {
         return isVisible &&
                 b.getLeft() >= this.position.y + (this.width / 2) && // Bottom of ball >= Middle of block
                 b.getLeft() <= this.position.y + this.width && // Bottom of ball <= top of block
                 b.getTop() >= this.position.y &&
                 b.getBottom() <= this.position.y + this.width;
+    }
+
+    public boolean hit() {
+        this.value--;
+
+        return this.value == 0;
     }
 }

@@ -68,38 +68,30 @@ public class Ball {
             Block b = blocks.get(i);
 
             if(b.isVisible) {
-                if(b.hitBottom(this)) {
-                    System.out.println("[" + count + "]Hit Bottom");
-
+                if(b.didHitBottom(this)) {
                     this.position.y = b.getY() - Ball.radius;
                     this.velocity.y *= -1;
 
-                    blocks.remove(b);
+                    if(b.hit()) blocks.remove(b);
                 }
 
-                else if(b.hitTop(this)) {
-                    System.out.println("[" + count + "]Hit Top");
-
+                else if(b.didHitTop(this)) {
                     this.position.y = (b.getY() + b.getWidth()) + Ball.radius;
                     this.velocity.y *= -1;
 
-                    blocks.remove(b);
+                    if(b.hit()) blocks.remove(b);
                 }
-                else if(b.hitLeft(this)) {
-                    System.out.println("[" + count + "]Hit Left");
-
+                else if(b.didHitLeft(this)) {
                     this.position.x = b.getX() - Ball.radius;
                     this.velocity.x *= -1;
 
-                    blocks.remove(b);
+                    if(b.hit()) blocks.remove(b);
                 }
-                else if(b.hitRight(this)) {
-                    System.out.println("[" + count + "]Hit Right");
-
+                else if(b.didHitRight(this)) {
                     this.position.x = (b.getX() + b.getWidth()) + Ball.radius;
                     this.velocity.x *= -1;
 
-                    blocks.remove(b);
+                    if(b.hit()) blocks.remove(b);
                 }
 
                 count++;

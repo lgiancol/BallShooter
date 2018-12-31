@@ -20,7 +20,6 @@ public class Game extends com.badlogic.gdx.Game {
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.getData().setScale(3);
 
 		this.setScreen(new GameScreen(this));
 	}

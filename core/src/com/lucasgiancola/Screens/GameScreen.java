@@ -68,11 +68,6 @@ public class GameScreen implements Screen {
 
         level.draw(renderer, game.batch, game.font);
 
-//        debugRect.draw(this.game.batch);
-        renderer.set(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.BLUE);
-        renderer.rect(1, 1, camera.viewportWidth - 2, camera.viewportHeight - 2);
-
         this.game.batch.end();
         renderer.end();
 

@@ -55,12 +55,13 @@ public class Level {
                 float x = c * blockWidth;
                 float y = height - ((rows - r - 1) * blockWidth) - blockWidth;
 
-                blocks.add(new Block(x, y, blockWidth, c));
+                blocks.add(new Block(x, y, blockWidth, 10));
             }
         }
     }
 
     public void draw(ShapeRenderer renderer, SpriteBatch batch, BitmapFont font) {
+        System.out.println("Balls: " + balls.size());
         reset = true;
 
         if(shouldMakeNewBall()) {
@@ -71,6 +72,8 @@ public class Level {
         if(Gdx.input.isTouched()) {
             currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
         }
+
+        renderBackground(renderer);
 
         renderLine(pivot, currentTouch, renderer);
 
@@ -92,7 +95,7 @@ public class Level {
         for(Block b : blocks) {
             b.update();
             if(b.isVisible) {
-                b.draw(renderer);
+                b.draw(renderer, batch, font);
                 reset = false;
             }
         }
@@ -100,21 +103,14 @@ public class Level {
         if(reset) resetLevel();
     }
 
-//    private Block getClosestBlock(Ball ball) {
-//        for(Block b : blocks) {
-//            if(b.isVisible) {
-//
-//            }
-//        }
-//    }
-
     private boolean shouldMakeNewBall() {
         currentTime += Gdx.graphics.getDeltaTime();
 
         if(currentTime >= newBallSpawn) {
             currentTime = 0;
 
-            return balls.size() < maxBalls;
+//            return balls.size() < maxBalls;
+            return true;
         }
 
         return false;
@@ -134,5 +130,11 @@ public class Level {
         renderer.set(ShapeRenderer.ShapeType.Line);
         renderer.setColor(Color.GREEN);
         renderer.line(point1, point2);
+    }
+
+    private void renderBackground(ShapeRenderer renderer) {
+        renderer.set(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.BLACK);
+        renderer.rect(0, 0, width, height);
     }
 }
