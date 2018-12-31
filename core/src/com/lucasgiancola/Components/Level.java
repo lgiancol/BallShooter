@@ -55,13 +55,12 @@ public class Level {
                 float x = c * blockWidth;
                 float y = height - ((rows - r - 1) * blockWidth) - blockWidth;
 
-                blocks.add(new Block(x, y, blockWidth, 10));
+                blocks.add(new Block(x, y, blockWidth, 6));
             }
         }
     }
 
     public void draw(ShapeRenderer renderer, SpriteBatch batch, BitmapFont font) {
-        System.out.println("Balls: " + balls.size());
         reset = true;
 
         if(shouldMakeNewBall()) {
@@ -70,6 +69,7 @@ public class Level {
 
         // Set the current touch location
         if(Gdx.input.isTouched()) {
+            System.out.println("Touched in Level");
             currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
         }
 

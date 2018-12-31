@@ -1,5 +1,6 @@
 package com.lucasgiancola.Screens;
 
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.lucasgiancola.Input;
 
 public class GameScreen implements Screen {
     final Game game;
@@ -48,15 +50,20 @@ public class GameScreen implements Screen {
         renderer.setAutoShapeType(true);
 
         level = new Level(camera.viewportWidth, camera.viewportHeight);
+
+        Game.input.setCam(camera);
+        Game.input.setVp(viewport);
+        Gdx.input.setInputProcessor(Game.input);
     }
 
     @Override
     public void render(float delta) {
         camera.update();
         // Calculates the proper touch positions... I don't like doing it this way!
-        if(Gdx.input.isTouched()) {
-            Game.input.setViewportTouchCoords(camera, viewport);
-        }
+//        if(Gdx.input.isTouched()) {
+//            System.out.println("Touched in GameScreen");
+//            Game.input.setViewportTouchCoords(camera, viewport);
+//        }
 
         Gdx.gl.glClearColor(1.0f, 0, 1.0f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
