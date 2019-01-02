@@ -9,75 +9,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b933f390-2bc0-4382-b5df-70805ab93999" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/android/assets/data/casual.fnt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Models/GameModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Objects/Wall.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/AbstractScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileContent/annotation-processors.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileContent/annotation-processors.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileContent/fileContent.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileContent/fileContent.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.6/taskHistory/taskHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/badlogic.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/hs_err_pid26195.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/hs_err_pid26199.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/hs_err_pid26254.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/hs_err_pid26612.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/default.fnt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/font-small.fnt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/temp/temp.atlas" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/temp/temp.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/uiskin.atlas" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/uiskin.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/skins/uiskin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/assets/sun.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/build-info/debug/build-info.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/build-info/debug/build-info.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental-verifier/debug/com/lucasgiancola/Components/Level.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental-verifier/debug/com/lucasgiancola/Components/Level.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental-verifier/debug/com/lucasgiancola/Screens/GameScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental-verifier/debug/com/lucasgiancola/Screens/GameScreen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/BkgOwO57878zpGwBfAksISlf9VQ=" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/BkgOwO57878zpGwBfAksISlf9VQ=" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental/debug-mergeJniLibs/zip-cache/BkgOwO57878zpGwBfAksISlf9VQ=" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental/debug-mergeJniLibs/zip-cache/BkgOwO57878zpGwBfAksISlf9VQ=" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental/ir_slices/debug/package_slice_6/dex-renamer-state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental/ir_slices/debug/package_slice_6/dex-renamer-state.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/incremental/ir_slices/debug/package_slice_9/dex-renamer-state.txt" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/incremental/ir_slices/debug/package_slice_9/dex-renamer-state.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/processed_res/debug/processDebugResources/out/resources-debug.ap_" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/processed_res/debug/processDebugResources/out/resources-debug.ap_" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/split-apk/debug/slices/slice_6.apk" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/split-apk/debug/slices/slice_6.apk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/split-apk/debug/slices/slice_9.apk" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/split-apk/debug/slices/slice_9.apk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/dexBuilder/debug/66/com/lucasgiancola/Components/Level.dex" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/dexBuilder/debug/66/com/lucasgiancola/Components/Level.dex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/dexBuilder/debug/69/com/lucasgiancola/Screens/GameScreen.dex" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/dexBuilder/debug/69/com/lucasgiancola/Screens/GameScreen.dex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/dexMerger/debug/6/classes.dex" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/dexMerger/debug/6/classes.dex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/dexMerger/debug/9/classes.dex" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/dexMerger/debug/9/classes.dex" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/extractJars/debug/0/com/lucasgiancola/Components/Level.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/extractJars/debug/0/com/lucasgiancola/Components/Level.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/extractJars/debug/0/com/lucasgiancola/Screens/GameScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/extractJars/debug/0/com/lucasgiancola/Screens/GameScreen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/instantRun/debug/0/com/lucasgiancola/Components/Level.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/instantRun/debug/0/com/lucasgiancola/Components/Level.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build/intermediates/transforms/instantRun/debug/0/com/lucasgiancola/Screens/GameScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/android/build/intermediates/transforms/instantRun/debug/0/com/lucasgiancola/Screens/GameScreen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Actors/Sun.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Actors/Sun.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Components/Ball.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Components/Block.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Components/Level.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Game.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Managers/Assets.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Managers/Assets.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Screens/GameScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Screens/GameScreen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Screens/MainMenuScreen.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/com/lucasgiancola/Screens/MainMenuScreen.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/kotlin/core10jar-classes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/kotlin/core10jar-classes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/libs/core-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/libs/core-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Actors/Sun.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Actors/Sun.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Components/Ball.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Objects/Ball.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Components/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Objects/Block.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Components/Level.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Objects/Level.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/BallShooter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Managers/Assets.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Managers/Assets.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/GameScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/GameScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/MainMenuScreen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/desktop/build/classes/java/main/com/lucasgiancola/desktop/DesktopLauncher.class" beforeDir="false" afterPath="$PROJECT_DIR$/desktop/build/classes/java/main/com/lucasgiancola/desktop/DesktopLauncher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/desktop/src/com/lucasgiancola/desktop/DesktopLauncher.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop/src/com/lucasgiancola/desktop/DesktopLauncher.java" afterDir="false" />
-    </list>
+    <list default="true" id="b933f390-2bc0-4382-b5df-70805ab93999" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,8 +33,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/GameScreen.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="83" column="34" selection-start-line="83" selection-start-column="34" selection-end-line="83" selection-end-column="34" />
+            <state relative-caret-position="1427">
+              <caret line="104" column="42" lean-forward="true" selection-start-line="104" selection-start-column="42" selection-end-line="104" selection-end-column="42" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -334,7 +266,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546456300617" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546456694611" />
     <property name="device.picker.selection" value="4132324843553098" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
@@ -435,7 +367,7 @@
       <window_info id="UI Designer" order="8" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32891566" />
-      <window_info active="true" anchor="bottom" auto_hide="true" id="Run" order="2" visible="true" weight="0.26746988" />
+      <window_info anchor="bottom" auto_hide="true" id="Run" order="2" weight="0.26746988" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -956,8 +888,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/src/com/lucasgiancola/Screens/GameScreen.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="83" column="34" selection-start-line="83" selection-start-column="34" selection-end-line="83" selection-end-column="34" />
+        <state relative-caret-position="1427">
+          <caret line="104" column="42" lean-forward="true" selection-start-line="104" selection-start-column="42" selection-end-line="104" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
