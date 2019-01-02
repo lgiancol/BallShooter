@@ -1,23 +1,28 @@
 package com.lucasgiancola.Objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lucasgiancola.Constants;
-import com.lucasgiancola.Managers.Assets;
 
-public class Block extends Image {
+public class Block extends Actor {
     private Body body;
-    private int value = 0;
+    private int maxValue = 0;
+    private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
     private boolean done = false;
+    private ShapeRenderer sr;
 
-    public Block(World world) {
-        super(Assets.getInstance().getDrawable("block"));
+    private Vector3 color = new Vector3(1, 0, 0);
+
+    public Block(World world, float length) {
         setName("Block");
+        setSize(length, length);
         setOrigin(getWidth() / 2, getHeight() / 2);
 
         BodyDef bodyDef = new BodyDef();
@@ -37,24 +42,30 @@ public class Block extends Image {
 
         this.body.createFixture(shapeDef);
         block.dispose();
+
+        sr = new ShapeRenderer();
     }
 
     public boolean shouldDestroy() {
         return this.done;
     }
 
-    public int getValue() {
-        return this.value;
+    public int getCurrentValue() {
+        return this.currentValue;
     }
+    public void setCurrentValue(int value) { this.currentValue = value; }
 
-    public void setValue(int value) {
-        this.value = value;
+    public int getMaxValue() { return this.maxValue; }
+    public void setMaxValue(int value) {
+        this.maxValue = this.currentValue = value;
     }
 
     public void hit(Ball ball) {
-        setValue(getValue() - ball.getHitValue());
+        setCurrentValue(getCurrentValue() - ball.getHitValue());
+        color.x = (float) getCurrentValue() / (float) getMaxValue();
+        color.y = 1f - (float) getCurrentValue() / (float) getMaxValue();
 
-        done = getValue() == 0;
+        done = getCurrentValue() <= 0;
     }
 
     public float getRotationSpeed() {
@@ -71,7 +82,7 @@ public class Block extends Image {
         float scaledY = Constants.pixelsToBox(y);
 
         this.body.setTransform(new Vector2(scaledX, scaledY), this.angle + this.body.getAngle() * MathUtils.degreesToRadians); // Position and rotation of physics body
-        super.setPosition(x-getWidth()/2, y-getHeight()/2); // Position of Image
+        super.setPosition(x - getWidth() / 2, y - getHeight() / 2); // Position of Image
         super.setRotation(this.body.getAngle());
     }
 
@@ -85,6 +96,16 @@ public class Block extends Image {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         this.update();
+
+        batch.end();
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setProjectionMatrix(batch.getProjectionMatrix());
+        sr.setColor(color.x, color.y, color.z, 1);
+
+        sr.rect(getX(), getY(), getWidth(), getHeight());
+
+        sr.end();
+        batch.begin();
 
         super.draw(batch, parentAlpha);
     }

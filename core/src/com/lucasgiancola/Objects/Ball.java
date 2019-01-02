@@ -68,6 +68,7 @@ public class Ball extends Image {
     }
 
     public void tempFlick() {
+        System.out.print("Angle: " + this.shootAngle);
         float fx = (float) (this.moveSpeed * Math.cos(shootAngle * MathUtils.degreesToRadians));
         float fy = (float) (this.moveSpeed * Math.sin(shootAngle * MathUtils.degreesToRadians));
         this.body.applyForceToCenter(fx, fy, true);

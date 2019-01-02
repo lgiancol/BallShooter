@@ -27,12 +27,6 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         this.shapeRenderer = new ShapeRenderer();
         this.gameModel = new GameModel();
         this.blocksToRemove = new ArrayList<Block>();
-
-//        level = new Level(camera.viewportWidth, camera.viewportHeight);
-
-//        BallShooter.input.setCam(camera);
-//        BallShooter.input.setVp(viewport);
-//        Gdx.input.setInputProcessor(BallShooter.input);
     }
 
     @Override
@@ -51,21 +45,26 @@ public class GameScreen extends AbstractScreen implements ContactListener {
 
         this.initWalls();
 
-        for(int i = 0; i < 5; i++) {
-            Block block = new Block(this.world);
-            block.setPosition(i * block.getWidth() + 400, 300);
-            block.setValue(10);
+        int cols = 8;
+        float blockWidth = 400 / 8;
+
+        for(int i = 0; i < cols; i++) {
+            Block block = new Block(this.world, blockWidth);
+            block.setPosition(i * block.getWidth() + 301 + (blockWidth / 2), 300);
+            block.setMaxValue(10);
 //            block.setRotationSpeed(2);
 
             this.stage.addActor(block);
         }
         Ball b = new Ball(this.world);
-        b.setPosition(400, 300);
-        b.setShootAngle(45);
-        this.stage.addActor(b);
+        b.setPosition(320, 200);
+        b.setShootAngle(100);
         b.tempFlick();
+
+        this.stage.addActor(b);
     }
 
+    // Will initialize all the walls for the game
     private void initWalls() {
         Wall wall = new Wall(this.world, 400, 2);
         wall.setPosition(500, 500);
