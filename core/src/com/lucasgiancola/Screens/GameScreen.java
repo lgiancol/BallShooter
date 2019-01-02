@@ -19,6 +19,9 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     private World world;
     private float dtAccumulator = 0f;
 
+    private int cols = 8;
+    private int rows = 0;
+
     private ArrayList<Block> blocksToRemove;
     private ArrayList<Ball> ballsToRemove;
 
@@ -76,32 +79,36 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         this.stage.addActor(wall);
     }
 
-    private float initBlocks() {
-        int cols = 8;
-        float blockWidth = BallShooter.WIDTH / cols;
-        Ball.setRadius((blockWidth / 2) / 3);
+    private void initBlocks() {
+        Block.blockWidth = (BallShooter.WIDTH - 8) / cols;
+        Ball.setRadius((Block.blockWidth / 2) / 3);
 
+        for(int i = 0; i < rows; i++) {
+            insertNewRow(i);
+        }
+    }
+
+    private void insertNewRow(int currentRow) {
         for(int i = 0; i < cols; i++) {
-            Block block = new Block(this.world, blockWidth);
-            block.setPosition(i * block.getWidth() + (blockWidth / 2), BallShooter.HEIGHT - (blockWidth / 2));
+            Block block = new Block(this.world, Block.blockWidth);
+            block.setPosition(i * block.getWidth() + (Block.blockWidth / 2) + 2, BallShooter.HEIGHT - (Block.blockWidth / 2) + (currentRow * Block.blockWidth));
             block.setValue(10);
 
             this.stage.addActor(block);
         }
-
-        return blockWidth;
     }
 
     private void createNewBall() {
         Ball b = new Ball(this.world);
         b.setPosition((BallShooter.WIDTH / 2) - Ball.getRadius(), Ball.getRadius() *  2);
-        b.setShootAngle(94);
+        b.setShootAngle(76);
         b.launch();
 
         this.stage.addActor(b);
     }
 
     private void updateGame(float delta) {
+        System.out.println(this.world.getBodyCount());
 
         gameModel.update(delta);
 
@@ -111,24 +118,35 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         if(gameModel.instantiateNewBall()) {
             createNewBall();
 
-            gameModel.resetCurrentTime();
+            gameModel.resetNewBallCounter();
+        }
+
+        if(gameModel.instantiateNewRow()) {
+            this.insertNewRow(this.rows);
+            this.rows++;
+
+            gameModel.resetNewRowCounter();
         }
     }
 
     private void removeDestroyedBlocks() {
-        for(Block b : this.blocksToRemove) {
-            this.world.destroyBody(b.getBody());
+        for(int i = this.blocksToRemove.size() - 1; i >= 0; i--) {
+            Block b = this.blocksToRemove.get(i);
             b.remove();
+            this.world.destroyBody(b.getBody());
+
+            this.blocksToRemove.remove(b);
         }
-        this.blocksToRemove.removeAll(this.blocksToRemove);
     }
 
     private void removeDestroyedBalls() {
-        for(Ball b : this.ballsToRemove) {
-            this.world.destroyBody(b.getBody());
+        for(int i = this.ballsToRemove.size() - 1; i >= 0; i--) {
+            Ball b = this.ballsToRemove.get(i);
             b.remove();
+            this.world.destroyBody(b.getBody());
+
+            this.ballsToRemove.remove(b);
         }
-        this.ballsToRemove.removeAll(this.ballsToRemove);
     }
 
     @Override
@@ -219,6 +237,12 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         // If it's a ball hitting a wall
         if(wall != null && wall.isDestroyer() && ball != null) {
             ballsToRemove.add(ball);
+
+            return;
+        }
+
+        if(wall != null && wall.isDestroyer() && block != null) {
+            blocksToRemove.add(block);
         }
     }
 

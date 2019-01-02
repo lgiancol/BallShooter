@@ -28,7 +28,7 @@ public class Ball extends Actor {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         this.body = world.createBody(bodyDef);
         this.body.setUserData(this);
-        this.body.setBullet(true);
+//        this.body.setBullet(true);
 
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(Constants.pixelsToBox(Ball.radius));
@@ -71,7 +71,7 @@ public class Ball extends Actor {
         sr.end();
         batch.begin();
 
-        super.draw(batch, parentAlpha);
+//        super.draw(batch, parentAlpha);
     }
 
     public Body getBody() {
@@ -115,6 +115,10 @@ public class Ball extends Actor {
 
     public void setShootAngle(float angle) {
         this.shootAngle = angle;
+    }
+
+    public void dispose() {
+        sr.dispose();
     }
 
 }

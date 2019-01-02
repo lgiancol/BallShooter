@@ -19,7 +19,7 @@ public class Wall extends Actor {
         setOrigin(getWidth() / 2, getHeight() / 2);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         this.body = world.createBody(bodyDef);
         this.body.setUserData(this);
 
@@ -77,7 +77,7 @@ public class Wall extends Actor {
         sr.end();
         batch.begin();
 
-        super.draw(batch, parentAlpha);
+//        super.draw(batch, parentAlpha);
 
     }
 

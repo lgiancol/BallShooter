@@ -15,9 +15,11 @@ public class Block extends Actor {
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
-//    private
+    private float moveSpeed = 1f;
     private boolean done = false;
     private ShapeRenderer sr;
+
+    public static float blockWidth = 0;
 
     private Vector3 color = new Vector3(1, 0, 0);
 
@@ -47,6 +49,14 @@ public class Block extends Actor {
         block.dispose();
 
         sr = new ShapeRenderer();
+
+        move();
+    }
+
+    private void move() {
+        float fx = (float) (this.moveSpeed * Math.cos(270 * MathUtils.degreesToRadians));
+        float fy = (float) (this.moveSpeed * Math.sin(270 * MathUtils.degreesToRadians));
+        this.body.setLinearVelocity(fx, fy);
     }
 
     public boolean shouldDestroy() {
@@ -110,11 +120,14 @@ public class Block extends Actor {
         sr.end();
         batch.begin();
 
-        super.draw(batch, parentAlpha);
+//        super.draw(batch, parentAlpha);
     }
 
     public Body getBody() {
         return this.body;
     }
 
+    public void dispose() {
+        sr.dispose();
+    }
 }
