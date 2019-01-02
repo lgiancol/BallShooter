@@ -1,16 +1,11 @@
 package com.lucasgiancola.Screens;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.lucasgiancola.Actors.Sun;
-import com.lucasgiancola.Game;
+import com.lucasgiancola.BallShooter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,24 +13,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.lucasgiancola.Managers.Assets;
 
 public class MainMenuScreen implements Screen {
-    final Game game;
+    final BallShooter ballShooter;
     private Stage stage;
     private Viewport viewport;
     private OrthographicCamera camera;
     private TextureAtlas atlas;
 
-    public MainMenuScreen(Game game) {
-        this.game = game;
-        atlas = Assets.assetManager.get("skins/temp/temp.atlas", TextureAtlas.class);
-
-        camera = new OrthographicCamera();
-        viewport = new ScreenViewport(camera);
-        viewport.apply();
-
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
-
-        stage = new Stage(viewport, game.batch);
+    public MainMenuScreen(BallShooter game) {
+        this.ballShooter = game;
 
         Table menuTable = new Table();
         menuTable.setSize(stage.getWidth(), stage.getHeight());
@@ -64,7 +49,7 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isTouched()) {
-            this.game.setScreen(new GameScreen(this.game));
+            this.ballShooter.setScreen(new GameScreen(this.ballShooter));
             this.dispose();
         }
 

@@ -7,7 +7,7 @@
     format="10"
     ir-eligibility="COMPATIBLE"
     plugin-version="3.2.0"
-    timestamp="1546273753440"
+    timestamp="1546274956797"
     token="-7896398944748181685"
     verifier="COLD_SWAP_REQUESTED" >
 
@@ -19,13 +19,13 @@
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="11" />
+        duration="7" />
     <task
         name="verifier"
-        duration="3" />
+        duration="7" />
 
     <artifact
-        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
+        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_6.apk"
         type="SPLIT" />
 
     <build
@@ -74,20 +74,20 @@
     </build>
     <build
         build-mode="COLD"
-        ir-eligibility="COMPATIBLE"
-        timestamp="1546272754233"
+        ir-eligibility="METHOD_ADDED"
+        timestamp="1546274264675"
         verifier="COLD_SWAP_REQUESTED" >
         <artifact
-            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_6.apk"
+            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
             type="SPLIT" />
     </build>
     <build
         build-mode="COLD"
         ir-eligibility="COMPATIBLE"
-        timestamp="1546273753440"
+        timestamp="1546274956797"
         verifier="COLD_SWAP_REQUESTED" >
         <artifact
-            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
+            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_6.apk"
             type="SPLIT" />
     </build>
 

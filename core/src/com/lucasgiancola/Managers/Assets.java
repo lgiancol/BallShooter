@@ -1,29 +1,34 @@
 package com.lucasgiancola.Managers;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Assets {
-    public static AssetManager assetManager = new AssetManager();
-    public static final AssetDescriptor<TextureAtlas> uiAtlas =
-            new AssetDescriptor<TextureAtlas>("skins/uiskin.atlas", TextureAtlas.class);
-    public static final AssetDescriptor<Skin> uiSkin =
-            new AssetDescriptor<Skin>("skins/uiskin.atlas", Skin.class,
-                    new SkinLoader.SkinParameter("skins/uiskin.atlas"));
+    private static final Assets instance = new Assets();
+    public TextureAtlas gameAtlas;
+    private BitmapFont gameFont;
 
-    public static final AssetDescriptor<TextureAtlas> spriteAtlas =
-            new AssetDescriptor<TextureAtlas>("skins/temp/temp.atlas", TextureAtlas.class);
+    public static Assets getInstance() { return instance; }
 
-    public static void load() {
-        assetManager.load(uiAtlas);
-//        assetManager.load(uiSkin);
-        assetManager.load(spriteAtlas);
+    public void load() {
+        gameFont = new BitmapFont(
+                Gdx.files.internal("data/casual.fnt"),
+                Gdx.files.internal("data/casual.png"), false);
+        this.gameAtlas = new TextureAtlas(Gdx.files.internal("data/game.atlas"));
     }
 
-    public static void dispose() {
-        assetManager.dispose();
+    public BitmapFont getGameFont() { return this.gameFont; }
+
+    public Drawable getDrawable(final String name) {
+        TextureAtlas.AtlasRegion tmp = Assets.getInstance().gameAtlas.findRegion(name);
+        return (new TextureRegionDrawable(tmp));
+    }
+
+    public void dispose() {
+        this.gameFont.dispose();
+        this.gameAtlas.dispose();
     }
 }

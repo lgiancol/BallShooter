@@ -1,4 +1,4 @@
-package com.lucasgiancola.Components;
+package com.lucasgiancola.Objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.lucasgiancola.Game;
 
 import java.util.ArrayList;
 
@@ -37,7 +35,7 @@ public class Level {
         resetLevel();
 
         balls = new ArrayList<Ball>();
-        balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngle(pivot, currentTouch)));
+//        balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngleToDegree(pivot, currentTouch)));
     }
 
     private void resetLevel() {
@@ -55,7 +53,7 @@ public class Level {
                 float x = c * blockWidth;
                 float y = height - ((rows - r - 1) * blockWidth) - blockWidth;
 
-                blocks.add(new Block(x, y, blockWidth, 6));
+//                blocks.add(new Block(x, y, blockWidth, 6));
             }
         }
     }
@@ -64,41 +62,40 @@ public class Level {
         reset = true;
 
         if(shouldMakeNewBall()) {
-            balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngle(pivot, currentTouch)));
+//            balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngleToDegree(pivot, currentTouch)));
         }
 
         // Set the current touch location
         if(Gdx.input.isTouched()) {
-            System.out.println("Touched in Level");
-            currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
+//            currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
         }
 
         renderBackground(renderer);
 
-        renderLine(pivot, currentTouch, renderer);
+        renderHelpLine(renderer);
 
         // Update and draw all the balls
         for(int i = balls.size() - 1; i >= 0; i--) {
             Ball b = balls.get(i);
 
-            b.update(width, height);
+//            b.update(width, height);
 
-            if(b.shouldDestroy) {
-                balls.remove(b);
-            } else {
-                b.draw(renderer);
-
-                b.checkCollisions(blocks, rows, cols);
-            }
+//            if(b.shouldDestroy) {
+//                balls.remove(b);
+//            } else {
+//                b.draw(renderer);
+//
+//                b.checkCollisions(blocks, rows, cols);
+//            }
         }
 
-        for(Block b : blocks) {
-            b.update();
-            if(b.isVisible) {
-                b.draw(renderer, batch, font);
-                reset = false;
-            }
-        }
+//        for(Block b : blocks) {
+//            b.update();
+//            if(b.isVisible) {
+//                b.draw(renderer, batch, font);
+//                reset = false;
+//            }
+//        }
 
         if(reset) resetLevel();
     }
@@ -116,13 +113,17 @@ public class Level {
         return false;
     }
 
-    private double calculateAngle(Vector2 start, Vector2 end) {
+    private double calculateAngleToDegree(Vector2 start, Vector2 end) {
         return Math.atan2(end.y - start.y, end.x - start.x) * 180.0 / Math.PI;
+    }
+
+    private double calculateAngleToRadians(Vector2 start, Vector2 end) {
+        return Math.atan2(end.y - start.y, end.x - start.x);
     }
 
     private void renderPoint(Vector2 point, ShapeRenderer renderer) {
         renderer.set(ShapeRenderer.ShapeType.Line);
-//        renderer.setColor(Color.GREEN);
+        renderer.setColor(Color.GREEN);
         renderer.circle(point.x, point.y, 50f);
     }
 
@@ -130,6 +131,24 @@ public class Level {
         renderer.set(ShapeRenderer.ShapeType.Line);
         renderer.setColor(Color.GREEN);
         renderer.line(point1, point2);
+    }
+
+    private void renderLineScale(Vector2 start, Vector2 length, ShapeRenderer renderer) {
+        renderer.set(ShapeRenderer.ShapeType.Line);
+        renderer.setColor(Color.GREEN);
+        renderer.line(start.x, start.y, start.x + length.x, start.y + length.y);
+    }
+
+    private void renderHelpLine(ShapeRenderer renderer) {
+        double angle = calculateAngleToRadians(pivot, currentTouch);
+        double hypo = (width / 2) / Math.cos(angle);
+
+        Vector2 segment = new Vector2(width / 2, (float) hypo);
+//        segment.setAngle((float) angle);
+
+        renderLineScale(pivot, segment, renderer);
+        renderPoint(pivot.add(segment), renderer);
+//        renderLine(pivot, segment, renderer);
     }
 
     private void renderBackground(ShapeRenderer renderer) {

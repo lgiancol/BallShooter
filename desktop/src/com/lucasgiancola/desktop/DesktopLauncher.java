@@ -2,7 +2,7 @@ package com.lucasgiancola.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.lucasgiancola.Game;
+import com.lucasgiancola.BallShooter;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		config.title = "Drop";
 		config.width = 1920;
 		config.height = 780;
-		new LwjglApplication(new Game(), config);
+		new LwjglApplication(new BallShooter(), config);
 	}
 }

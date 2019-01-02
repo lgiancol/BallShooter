@@ -18,7 +18,6 @@ public class Sun extends Image {
     private Vector3 acceleration = new Vector3(0, 0, 0);
 
     public Sun() {
-        super(Assets.assetManager.get("skins/temp/temp.atlas", TextureAtlas.class).createSprite("face-weird"));
 
         x = this.getWidth() / 2;
         y = this.getHeight() / 2;

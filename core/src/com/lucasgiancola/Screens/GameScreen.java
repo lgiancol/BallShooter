@@ -1,111 +1,177 @@
 package com.lucasgiancola.Screens;
 
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.lucasgiancola.Actors.Rectangle;
-import com.lucasgiancola.Components.Ball;
-import com.lucasgiancola.Components.Block;
-import com.lucasgiancola.Components.Level;
-import com.lucasgiancola.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.lucasgiancola.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Objects.Ball;
+import com.lucasgiancola.Objects.Block;
+import com.lucasgiancola.Objects.Level;
+import com.lucasgiancola.Models.GameModel;
+import com.lucasgiancola.Objects.Wall;
 
-public class GameScreen implements Screen {
-    final Game game;
-    private OrthographicCamera camera;
-    private Viewport viewport;
+import java.util.ArrayList;
 
-    private float width = 1080, height = 1080;
-    private Rectangle debugRect;
-
+public class GameScreen extends AbstractScreen implements ContactListener {
     private Level level;
-    private ShapeRenderer renderer;
+    private ShapeRenderer shapeRenderer;
+    private GameModel gameModel;
+    private World world;
+    private float dtAccumulator = 0f;
 
-    public GameScreen(Game game) {
-        this.game = game;
+    private ArrayList<Block> blocksToRemove;
 
-        camera = new OrthographicCamera();
+    public GameScreen(BallShooter ballShooter) {
+        super(ballShooter);
 
-        // Create a 9x16 aspect ratio
-        width = Gdx.graphics.getWidth();
-        height = width * 16 / 9;
+        this.shapeRenderer = new ShapeRenderer();
+        this.gameModel = new GameModel();
+        this.blocksToRemove = new ArrayList<Block>();
 
-        viewport = new FitViewport(width, height, camera);
-        viewport.apply();
+//        level = new Level(camera.viewportWidth, camera.viewportHeight);
 
-        camera.position.set(0, 0, 0);
-        camera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
-
-        debugRect = new Rectangle(0, 0, camera.viewportWidth, camera.viewportHeight, 10);
-        debugRect.setDebug(true);
-        debugRect.setColour(null);
-
-        renderer = new ShapeRenderer();
-        renderer.setAutoShapeType(true);
-
-        level = new Level(camera.viewportWidth, camera.viewportHeight);
-
-        Game.input.setCam(camera);
-        Game.input.setVp(viewport);
-        Gdx.input.setInputProcessor(Game.input);
-    }
-
-    @Override
-    public void render(float delta) {
-        camera.update();
-        // Calculates the proper touch positions... I don't like doing it this way!
-//        if(Gdx.input.isTouched()) {
-//            System.out.println("Touched in GameScreen");
-//            Game.input.setViewportTouchCoords(camera, viewport);
-//        }
-
-        Gdx.gl.glClearColor(1.0f, 0, 1.0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        this.game.batch.setProjectionMatrix(camera.combined);
-        renderer.setProjectionMatrix(camera.combined);
-        renderer.begin();
-        this.game.batch.begin();
-
-        level.draw(renderer, game.batch, game.font);
-
-        this.game.batch.end();
-        renderer.end();
-
+//        BallShooter.input.setCam(camera);
+//        BallShooter.input.setVp(viewport);
+//        Gdx.input.setInputProcessor(BallShooter.input);
     }
 
     @Override
     public void show() {
+        super.show();
+
+        this.world = new World(new Vector2(0, 0), true);
+        this.world.setContactListener(this);
+        World.setVelocityThreshold(0f);
+
+        // Setup everything to do with the board/level
+        createLevel();
+    }
+
+    private void createLevel() {
+
+        this.initWalls();
+
+        for(int i = 0; i < 5; i++) {
+            Block block = new Block(this.world);
+            block.setPosition(i * block.getWidth() + 400, 300);
+            block.setValue(10);
+//            block.setRotationSpeed(2);
+
+            this.stage.addActor(block);
+        }
+        Ball b = new Ball(this.world);
+        b.setPosition(400, 300);
+        b.setShootAngle(45);
+        this.stage.addActor(b);
+        b.tempFlick();
+    }
+
+    private void initWalls() {
+        Wall wall = new Wall(this.world, 400, 2);
+        wall.setPosition(500, 500);
+        this.stage.addActor(wall);
+
+        wall = new Wall(this.world, 400, 2);
+        wall.setPosition(500, 100);
+        this.stage.addActor(wall);
+
+        wall = new Wall(this.world, 2, 400);
+        wall.setPosition(300, 300);
+        this.stage.addActor(wall);
+
+        wall = new Wall(this.world, 2, 400);
+        wall.setPosition(700, 300);
+        this.stage.addActor(wall);
+    }
+
+    private void updateGame(float delta) {
+
+        this.removeDestroyedBlocks();
+    }
+
+    private void removeDestroyedBlocks() {
+        for(Block b : this.blocksToRemove) {
+            this.world.destroyBody(b.getBody());
+            b.remove();
+        }
+        this.blocksToRemove.removeAll(this.blocksToRemove);
+    }
+
+    @Override
+    public void render(float delta) {
+
+        // Call box2d with a fixed timestep
+        final int VELOCITY_ITERATIONS = 6;
+        final int POSITION_ITERATIONS = 2;
+        final float FIXED_TIMESTEP = 1.0f / 60.0f;
+        this.dtAccumulator += delta;
+
+        while (this.dtAccumulator > FIXED_TIMESTEP) {
+            this.dtAccumulator -= FIXED_TIMESTEP;
+            if ( this.gameModel.isPlaying() ) {
+                this.world.step(FIXED_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+                updateGame(FIXED_TIMESTEP);
+            }
+        }
+
+        super.render(delta);
 
     }
 
     @Override
-    public void hide() {
+    public void beginContact(Contact contact) {
+        Fixture f1 = contact.getFixtureA();
+        Fixture f2 = contact.getFixtureB();
+
+        if(f1 != null && f2 != null) {
+            Block blockObj = null;
+            Ball ballObj = null;
+            Object obj = f1.getBody().getUserData();
+
+            // First object is a block, second is a ball
+            if (obj != null && obj instanceof Block) {
+                blockObj = (Block) obj;
+
+                obj = f2.getBody().getUserData();
+                if (obj != null && obj instanceof Ball) {
+                    ballObj = (Ball) obj;
+                }
+
+            }
+            // Second object is a block, first is a ball
+            else {
+                obj = f2.getBody().getUserData();
+
+                if (obj != null && obj instanceof Block) {
+                    blockObj = (Block) obj;
+
+                    obj = f1.getBody().getUserData();
+                    if (obj != null && obj instanceof Ball) {
+                        ballObj = (Ball) obj;
+
+                        blockObj.hit(ballObj);
+                    }
+                }
+            }
+
+            // If ball hit block, do damage and add it to the remove list if necessary
+            if(blockObj != null && ballObj != null) {
+                blockObj.hit(ballObj);
+
+                if(blockObj.shouldDestroy()) {
+                    blocksToRemove.add(blockObj);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
 
     }
 
     @Override
-    public void pause() {
-
-    }
-
+    public void preSolve(Contact contact, Manifold mf) {}
     @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void dispose() {
-    }
+    public void postSolve(Contact contact, ContactImpulse impulse) {}
 }
