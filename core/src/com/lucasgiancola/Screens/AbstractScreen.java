@@ -13,10 +13,9 @@ public class AbstractScreen implements Screen {
     protected final Stage stage;
     protected final BallShooter ballShooter;
 
-
     public AbstractScreen(BallShooter ballShooter) {
         this.ballShooter = ballShooter;
-        this.stage = new Stage(new FitViewport(BallShooter.TGT_WIDTH, BallShooter.TGT_HEIGHT)) {
+        this.stage = new Stage(new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT)) {
             @Override
             public boolean keyDown(int keyCode) {
                 if(keyCode == Input.Keys.BACK || keyCode == Input.Keys.ESCAPE) {
@@ -56,7 +55,9 @@ public class AbstractScreen implements Screen {
     }
 
     @Override
-    public void resize(int w, int h) {}
+    public void resize(int w, int h) {
+        stage.getViewport().update(w, h);
+    }
 
     @Override
     public void hide() {}

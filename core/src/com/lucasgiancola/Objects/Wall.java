@@ -10,9 +10,8 @@ import com.lucasgiancola.Constants;
 
 public class Wall extends Actor {
     private Body body;
-    private int value = 0;
-    private float angle = 0;
     private ShapeRenderer sr;
+    private boolean isDestroyer = false;
 
     public Wall(World world, int width, int height) {
         setName("Wall");
@@ -33,6 +32,8 @@ public class Wall extends Actor {
         shapeDef.density = 0f;
         shapeDef.restitution = 0f;
         shapeDef.isSensor = false;
+        shapeDef.filter.categoryBits = Constants.CATEGORY_WALL;
+        shapeDef.filter.maskBits = Constants.MASK_WALL;
 
         this.body.createFixture(shapeDef);
         block.dispose();
@@ -40,18 +41,12 @@ public class Wall extends Actor {
         sr = new ShapeRenderer();
     }
 
-    public int getValue() {
-        return this.value;
+    public void setDestroyer() {
+        this.isDestroyer = true;
     }
 
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    public void hit(Ball ball) {
-        setValue(getValue() - ball.getHitValue());
-
-        System.out.println("Block Value: " + getValue());
+    public boolean isDestroyer() {
+        return this.isDestroyer;
     }
 
     @Override
@@ -59,7 +54,7 @@ public class Wall extends Actor {
         float scaledX = Constants.pixelsToBox(x);
         float scaledY = Constants.pixelsToBox(y);
 
-        this.body.setTransform(new Vector2(scaledX, scaledY), this.angle + this.body.getAngle() * MathUtils.degreesToRadians); // Position and rotation of physics body
+        this.body.setTransform(new Vector2(scaledX, scaledY), this.body.getAngle() * MathUtils.degreesToRadians); // Position and rotation of physics body
         super.setPosition(x-getWidth()/2, y-getHeight()/2); // Position of Image
     }
 

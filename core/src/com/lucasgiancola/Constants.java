@@ -1,6 +1,14 @@
 package com.lucasgiancola;
 
 public class Constants {
+    public static final short CATEGORY_BALL = 0x001;
+    public static final short CATEGORY_BLOCK = 0x002;
+    public static final short CATEGORY_WALL = 0x004;
+
+    public static final short MASK_BALL = Constants.CATEGORY_BLOCK | Constants.CATEGORY_WALL;
+    public static final short MASK_BLOCK = Constants.CATEGORY_BALL;
+    public static final short MASK_WALL = -1;
+
     public static final float PIXELS_PER_METER = 100;
 
     public static float pixelsToBox(float pix) {

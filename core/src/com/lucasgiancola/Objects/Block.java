@@ -15,6 +15,7 @@ public class Block extends Actor {
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
+//    private
     private boolean done = false;
     private ShapeRenderer sr;
 
@@ -39,6 +40,8 @@ public class Block extends Actor {
         shapeDef.density = 0f;
         shapeDef.restitution = 0f;
         shapeDef.isSensor = false;
+        shapeDef.filter.categoryBits = Constants.CATEGORY_BLOCK;
+        shapeDef.filter.maskBits = Constants.MASK_BLOCK;
 
         this.body.createFixture(shapeDef);
         block.dispose();
@@ -55,15 +58,15 @@ public class Block extends Actor {
     }
     public void setCurrentValue(int value) { this.currentValue = value; }
 
-    public int getMaxValue() { return this.maxValue; }
-    public void setMaxValue(int value) {
+    public int getValue() { return this.maxValue; }
+    public void setValue(int value) {
         this.maxValue = this.currentValue = value;
     }
 
     public void hit(Ball ball) {
         setCurrentValue(getCurrentValue() - ball.getHitValue());
-        color.x = (float) getCurrentValue() / (float) getMaxValue();
-        color.y = 1f - (float) getCurrentValue() / (float) getMaxValue();
+        color.x = (float) getCurrentValue() / (float) getValue();
+        color.y = 1f - (float) getCurrentValue() / (float) getValue();
 
         done = getCurrentValue() <= 0;
     }

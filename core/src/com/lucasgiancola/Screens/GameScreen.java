@@ -20,6 +20,7 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     private float dtAccumulator = 0f;
 
     private ArrayList<Block> blocksToRemove;
+    private ArrayList<Ball> ballsToRemove;
 
     public GameScreen(BallShooter ballShooter) {
         super(ballShooter);
@@ -27,6 +28,7 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         this.shapeRenderer = new ShapeRenderer();
         this.gameModel = new GameModel();
         this.blocksToRemove = new ArrayList<Block>();
+        this.ballsToRemove = new ArrayList<Ball>();
     }
 
     @Override
@@ -45,47 +47,72 @@ public class GameScreen extends AbstractScreen implements ContactListener {
 
         this.initWalls();
 
-        int cols = 8;
-        float blockWidth = 400 / 8;
+        this.initBlocks();
 
-        for(int i = 0; i < cols; i++) {
-            Block block = new Block(this.world, blockWidth);
-            block.setPosition(i * block.getWidth() + 301 + (blockWidth / 2), 300);
-            block.setMaxValue(10);
-//            block.setRotationSpeed(2);
-
-            this.stage.addActor(block);
-        }
-        Ball b = new Ball(this.world);
-        b.setPosition(320, 200);
-        b.setShootAngle(100);
-        b.tempFlick();
-
-        this.stage.addActor(b);
+        this.createNewBall();
     }
 
     // Will initialize all the walls for the game
     private void initWalls() {
-        Wall wall = new Wall(this.world, 400, 2);
-        wall.setPosition(500, 500);
+        // Top
+        Wall wall = new Wall(this.world, (int) BallShooter.WIDTH, 1);
+        wall.setPosition(BallShooter.WIDTH / 2, BallShooter.HEIGHT);
         this.stage.addActor(wall);
 
-        wall = new Wall(this.world, 400, 2);
-        wall.setPosition(500, 100);
+        // Bottom
+        wall = new Wall(this.world, (int) BallShooter.WIDTH, 1);
+        wall.setPosition(BallShooter.WIDTH / 2, 0);
+        wall.setDestroyer();
         this.stage.addActor(wall);
 
-        wall = new Wall(this.world, 2, 400);
-        wall.setPosition(300, 300);
+        // Left
+        wall = new Wall(this.world, 1, (int) BallShooter.HEIGHT);
+        wall.setPosition(0, BallShooter.HEIGHT / 2);
         this.stage.addActor(wall);
 
-        wall = new Wall(this.world, 2, 400);
-        wall.setPosition(700, 300);
+        // Right
+        wall = new Wall(this.world, 1, (int) BallShooter.HEIGHT);
+        wall.setPosition(BallShooter.WIDTH, BallShooter.HEIGHT / 2);
         this.stage.addActor(wall);
+    }
+
+    private float initBlocks() {
+        int cols = 8;
+        float blockWidth = BallShooter.WIDTH / cols;
+        Ball.setRadius((blockWidth / 2) / 3);
+
+        for(int i = 0; i < cols; i++) {
+            Block block = new Block(this.world, blockWidth);
+            block.setPosition(i * block.getWidth() + (blockWidth / 2), BallShooter.HEIGHT - (blockWidth / 2));
+            block.setValue(10);
+
+            this.stage.addActor(block);
+        }
+
+        return blockWidth;
+    }
+
+    private void createNewBall() {
+        Ball b = new Ball(this.world);
+        b.setPosition((BallShooter.WIDTH / 2) - Ball.getRadius(), Ball.getRadius() *  2);
+        b.setShootAngle(94);
+        b.launch();
+
+        this.stage.addActor(b);
     }
 
     private void updateGame(float delta) {
 
+        gameModel.update(delta);
+
         this.removeDestroyedBlocks();
+        this.removeDestroyedBalls();
+
+        if(gameModel.instantiateNewBall()) {
+            createNewBall();
+
+            gameModel.resetCurrentTime();
+        }
     }
 
     private void removeDestroyedBlocks() {
@@ -94,6 +121,14 @@ public class GameScreen extends AbstractScreen implements ContactListener {
             b.remove();
         }
         this.blocksToRemove.removeAll(this.blocksToRemove);
+    }
+
+    private void removeDestroyedBalls() {
+        for(Ball b : this.ballsToRemove) {
+            this.world.destroyBody(b.getBody());
+            b.remove();
+        }
+        this.ballsToRemove.removeAll(this.ballsToRemove);
     }
 
     @Override
@@ -117,50 +152,73 @@ public class GameScreen extends AbstractScreen implements ContactListener {
 
     }
 
+    private Block getBlockFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
+        }
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    private Wall getWallFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Wall) {
+            return (Wall) temp.getBody().getUserData();
+        }
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Wall) {
+            return (Wall) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    private Ball getBallFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
     @Override
     public void beginContact(Contact contact) {
-        Fixture f1 = contact.getFixtureA();
-        Fixture f2 = contact.getFixtureB();
 
-        if(f1 != null && f2 != null) {
-            Block blockObj = null;
-            Ball ballObj = null;
-            Object obj = f1.getBody().getUserData();
+        Ball ball = getBallFromContact(contact);
+        Block block = getBlockFromContact(contact);
 
-            // First object is a block, second is a ball
-            if (obj != null && obj instanceof Block) {
-                blockObj = (Block) obj;
+        // If it's a ball hitting a block
+        if(block != null && ball != null) {
+            block.hit(ball);
 
-                obj = f2.getBody().getUserData();
-                if (obj != null && obj instanceof Ball) {
-                    ballObj = (Ball) obj;
-                }
-
-            }
-            // Second object is a block, first is a ball
-            else {
-                obj = f2.getBody().getUserData();
-
-                if (obj != null && obj instanceof Block) {
-                    blockObj = (Block) obj;
-
-                    obj = f1.getBody().getUserData();
-                    if (obj != null && obj instanceof Ball) {
-                        ballObj = (Ball) obj;
-
-                        blockObj.hit(ballObj);
-                    }
-                }
+            if(block.shouldDestroy()) {
+                blocksToRemove.add(block);
             }
 
-            // If ball hit block, do damage and add it to the remove list if necessary
-            if(blockObj != null && ballObj != null) {
-                blockObj.hit(ballObj);
+            return;
+        }
 
-                if(blockObj.shouldDestroy()) {
-                    blocksToRemove.add(blockObj);
-                }
-            }
+        Wall wall = getWallFromContact(contact);
+
+        // If it's a ball hitting a wall
+        if(wall != null && wall.isDestroyer() && ball != null) {
+            ballsToRemove.add(ball);
         }
     }
 
