@@ -6,24 +6,22 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lucasgiancola.Constants;
 
-public class Block extends Actor {
-    private Body body;
+public class Block extends BaseObject {
     private int maxValue = 0;
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
     private float moveSpeed = 1.5f;
     private boolean done = false;
-    private ShapeRenderer sr;
 
     public static float blockWidth = 0;
 
     private Vector3 color = new Vector3(1, 0, 0);
 
     public Block(World world, float length) {
+        super();
         setName("Block");
         setSize(length, length);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -48,10 +46,17 @@ public class Block extends Actor {
         this.body.createFixture(shapeDef);
         block.dispose();
 
-        sr = new ShapeRenderer();
-
         move();
     }
+
+    public int getCurrentValue() { return this.currentValue; }
+    public void setCurrentValue(int value) { this.currentValue = value; }
+
+    public int getValue() { return this.maxValue; }
+    public void setValue(int value) { this.maxValue = this.currentValue = value; }
+
+    public float getRotationSpeed() { return this.rotationSpeed; }
+    public void setRotationSpeed(float speed) { this.rotationSpeed = speed; }
 
     private void move() {
         float fx = (float) (this.moveSpeed * Math.cos(270 * MathUtils.degreesToRadians));
@@ -63,30 +68,12 @@ public class Block extends Actor {
         return this.done;
     }
 
-    public int getCurrentValue() {
-        return this.currentValue;
-    }
-    public void setCurrentValue(int value) { this.currentValue = value; }
-
-    public int getValue() { return this.maxValue; }
-    public void setValue(int value) {
-        this.maxValue = this.currentValue = value;
-    }
-
     public void hit(Ball ball) {
         setCurrentValue(getCurrentValue() - ball.getHitValue());
         color.x = (float) getCurrentValue() / (float) getValue();
         color.y = 1f - (float) getCurrentValue() / (float) getValue();
 
         done = getCurrentValue() <= 0;
-    }
-
-    public float getRotationSpeed() {
-        return this.rotationSpeed;
-    }
-
-    public void setRotationSpeed(float speed) {
-        this.rotationSpeed = speed;
     }
 
     @Override
@@ -99,7 +86,7 @@ public class Block extends Actor {
         super.setRotation(this.body.getAngle());
     }
 
-    private void update() {
+    public void update() {
         this.angle += this.rotationSpeed;
         setPosition(
                 Constants.boxToPixels(body.getPosition().x),
@@ -119,15 +106,5 @@ public class Block extends Actor {
 
         sr.end();
         batch.begin();
-
-//        super.draw(batch, parentAlpha);
-    }
-
-    public Body getBody() {
-        return this.body;
-    }
-
-    public void dispose() {
-        sr.dispose();
     }
 }
