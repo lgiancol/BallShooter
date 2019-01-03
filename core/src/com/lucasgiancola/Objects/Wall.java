@@ -12,7 +12,6 @@ import com.lucasgiancola.Constants;
 public class Wall extends Actor {
     private Body body;
     private ShapeRenderer sr;
-    private boolean isDestroyer = false;
 
     public Wall(World world, int width, int height) {
         setName("Wall");
@@ -42,14 +41,6 @@ public class Wall extends Actor {
         sr = new ShapeRenderer();
     }
 
-    public void setDestroyer() {
-        this.isDestroyer = true;
-    }
-
-    public boolean isDestroyer() {
-        return this.isDestroyer;
-    }
-
     @Override
     public void setPosition(float x, float y) {
         float scaledX = Constants.pixelsToBox(x);
@@ -71,7 +62,7 @@ public class Wall extends Actor {
         this.update();
         batch.end();
 
-        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
         sr.setColor(Color.WHITE);
 
@@ -79,8 +70,6 @@ public class Wall extends Actor {
 
         sr.end();
         batch.begin();
-
-//        super.draw(batch, parentAlpha);
 
     }
 

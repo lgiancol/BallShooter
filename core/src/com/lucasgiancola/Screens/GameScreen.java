@@ -1,9 +1,7 @@
 package com.lucasgiancola.Screens;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.*;
 import com.lucasgiancola.Models.GameModel;
@@ -11,7 +9,6 @@ import com.lucasgiancola.Models.GameModel;
 import java.util.ArrayList;
 
 public class GameScreen extends AbstractScreen implements ContactListener {
-    private ShapeRenderer shapeRenderer;
     private GameModel gameModel;
     private World world;
     private float dtAccumulator = 0f;
@@ -22,14 +19,9 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     private ArrayList<Block> blocksToRemove;
     private ArrayList<Ball> ballsToRemove;
 
-    private Ball ballCollide;
-    private Block blockCollide;
-    private Destroyer destroyerCollide;
-
     public GameScreen(BallShooter ballShooter) {
         super(ballShooter);
 
-        this.shapeRenderer = new ShapeRenderer();
         this.gameModel = new GameModel();
         this.blocksToRemove = new ArrayList<Block>();
         this.ballsToRemove = new ArrayList<Ball>();
@@ -64,11 +56,11 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         wall.setName("Top");
         this.stage.addActor(wall);
 
-        // Bottom
-//        wall = new Wall(this.world, (int) BallShooter.WIDTH, 2);
-//        wall.setPosition(BallShooter.WIDTH / 2, 0);
-//        wall.setName("bottom");
-//        this.stage.addActor(wall);
+        // The "wall" at the bottom that will destroy the blocks
+        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 20);
+        blockBreaker.setPosition(BallShooter.WIDTH / 2, -10);
+        blockBreaker.setName("bottom");
+        this.stage.addActor(blockBreaker);
 
         // Left
         wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT);
@@ -83,11 +75,6 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         this.stage.addActor(wall);
 
 
-        // The "wall" at the bottom that will destroy the blocks
-        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 20);
-        blockBreaker.setPosition(BallShooter.WIDTH / 2, -10);
-        blockBreaker.setName("bottom");
-        this.stage.addActor(blockBreaker);
     }
 
     private void initBlocks() {

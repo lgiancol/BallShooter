@@ -12,7 +12,6 @@ import com.lucasgiancola.Constants;
 public class Destroyer extends Actor {
     private Body body;
     private ShapeRenderer sr;
-    private boolean isDestroyer = false;
 
     public Destroyer(World world, int width, int height) {
         setName("Destroyer");
@@ -40,14 +39,6 @@ public class Destroyer extends Actor {
         block.dispose();
 
         sr = new ShapeRenderer();
-    }
-
-    public void setDestroyer() {
-        this.isDestroyer = true;
-    }
-
-    public boolean isDestroyer() {
-        return this.isDestroyer;
     }
 
     @Override
@@ -79,8 +70,6 @@ public class Destroyer extends Actor {
 
         sr.end();
         batch.begin();
-
-//        super.draw(batch, parentAlpha);
 
     }
 
