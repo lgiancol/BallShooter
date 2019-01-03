@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 
 public class Block extends BaseObject {
@@ -15,6 +16,7 @@ public class Block extends BaseObject {
     private float rotationSpeed = 0;
     private float moveSpeed = 1.5f;
     private boolean done = false;
+    private float textOffset = 5;
 
     public static float blockWidth = 0;
 
@@ -50,7 +52,11 @@ public class Block extends BaseObject {
     }
 
     public int getCurrentValue() { return this.currentValue; }
-    public void setCurrentValue(int value) { this.currentValue = value; }
+    public void setCurrentValue(int value) {
+        this.currentValue = value;
+
+        this.textOffset = 5 * String.valueOf(this.currentValue).length();
+    }
 
     public int getValue() { return this.maxValue; }
     public void setValue(int value) { this.maxValue = this.currentValue = value; }
@@ -103,8 +109,14 @@ public class Block extends BaseObject {
         sr.setColor(color.x, color.y, color.z, 1);
 
         sr.rect(getX(), getY(), getWidth(), getHeight());
-
         sr.end();
         batch.begin();
+
+        BallShooter.font.draw(
+                batch,
+                "" + this.getCurrentValue(),
+                getX() + (getWidth() / 2) - textOffset,
+                getY() + (getHeight() / 2) + (BallShooter.font.getLineHeight() / 2));
+
     }
 }
