@@ -9,18 +9,18 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lucasgiancola.Constants;
 
-public class Wall extends Actor {
+public class Destroyer extends Actor {
     private Body body;
     private ShapeRenderer sr;
     private boolean isDestroyer = false;
 
-    public Wall(World world, int width, int height) {
-        setName("Wall");
+    public Destroyer(World world, int width, int height) {
+        setName("Destroyer");
         setSize(width, height);
         setOrigin(getWidth() / 2, getHeight() / 2);
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         this.body = world.createBody(bodyDef);
         this.body.setUserData(this);
 
@@ -32,9 +32,9 @@ public class Wall extends Actor {
         shapeDef.friction = 0f;
         shapeDef.density = 0f;
         shapeDef.restitution = 0f;
-        shapeDef.isSensor = false;
-        shapeDef.filter.categoryBits = Constants.CATEGORY_WALL;
-        shapeDef.filter.maskBits = Constants.MASK_WALL;
+        shapeDef.isSensor = true;
+        shapeDef.filter.categoryBits = Constants.CATEGORY_DESTROYER;
+        shapeDef.filter.maskBits = Constants.MASK_DESTROYER;
 
         this.body.createFixture(shapeDef);
         block.dispose();
@@ -73,7 +73,7 @@ public class Wall extends Actor {
 
         sr.begin(ShapeRenderer.ShapeType.Line);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(Color.WHITE);
+        sr.setColor(Color.GREEN);
 
         sr.rect(getX(), getY(), getWidth(), getHeight());
 

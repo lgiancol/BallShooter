@@ -5,7 +5,7 @@ public class GameModel {
 
     // When to create a new ball
     private float newBallCounter = 0f;
-    private float deltaTimeNewBall = 0.1f;
+    private float deltaTimeNewBall = 0.05f;
 
     // When to add a new row of blocks
     private float newRowCounter = 0f;

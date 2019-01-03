@@ -15,7 +15,7 @@ public class Block extends Actor {
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
-    private float moveSpeed = 1f;
+    private float moveSpeed = 1.5f;
     private boolean done = false;
     private ShapeRenderer sr;
 
@@ -38,7 +38,7 @@ public class Block extends Actor {
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = block;
-        shapeDef.friction = 0f;
+        shapeDef.friction = 1f;
         shapeDef.density = 0f;
         shapeDef.restitution = 0f;
         shapeDef.isSensor = false;
