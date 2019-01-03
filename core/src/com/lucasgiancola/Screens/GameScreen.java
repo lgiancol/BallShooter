@@ -22,6 +22,10 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     private ArrayList<Block> blocksToRemove;
     private ArrayList<Ball> ballsToRemove;
 
+    private Ball ballCollide;
+    private Block blockCollide;
+    private Destroyer destroyerCollide;
+
     public GameScreen(BallShooter ballShooter) {
         super(ballShooter);
 
@@ -106,12 +110,12 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     }
 
     private void createNewBall() {
-        Ball b = new Ball(this.world);
-        b.setPosition((BallShooter.WIDTH / 2) - Ball.getRadius(), Ball.getRadius() *  2);
-        b.setShootAngle(76);
-        b.launch();
-
-        this.stage.addActor(b);
+//        Ball b = new Ball(this.world);
+//        b.setPosition((BallShooter.WIDTH / 2) + (Ball.getRadius() / 2), Ball.getRadius() *  2);
+//        b.setShootAngle(90);
+//        b.launch();
+//
+//        this.stage.addActor(b);
     }
 
     private void removeDestroyedBlocks() {
@@ -125,12 +129,17 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     }
 
     private void removeDestroyedBalls() {
+        boolean create = !this.ballsToRemove.isEmpty();
         for(int i = this.ballsToRemove.size() - 1; i >= 0; i--) {
             Ball b = this.ballsToRemove.get(i);
             b.remove();
             this.world.destroyBody(b.getBody());
 
             this.ballsToRemove.remove(b);
+        }
+
+        if(create) {
+            createNewBall();
         }
     }
 
@@ -140,11 +149,11 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         this.removeDestroyedBlocks();
         this.removeDestroyedBalls();
 
-        if(gameModel.instantiateNewBall()) {
-            createNewBall();
-
-            gameModel.resetNewBallCounter();
-        }
+//        if(gameModel.instantiateNewBall()) {
+//            createNewBall();
+//
+//            gameModel.resetNewBallCounter();
+//        }
 
         if(gameModel.instantiateNewRow()) {
             this.insertNewRow(this.rows);
@@ -190,21 +199,6 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         return null;
     }
 
-    private Wall getWallFromContact(Contact c) {
-        Fixture temp = c.getFixtureA();
-
-        if(temp != null && temp.getBody().getUserData() instanceof Wall) {
-            return (Wall) temp.getBody().getUserData();
-        }
-
-        temp = c.getFixtureB();
-        if(temp != null && temp.getBody().getUserData() instanceof Wall) {
-            return (Wall) temp.getBody().getUserData();
-        }
-
-        return null;
-    }
-
     private Ball getBallFromContact(Contact c) {
         Fixture temp = c.getFixtureA();
 
@@ -226,6 +220,7 @@ public class GameScreen extends AbstractScreen implements ContactListener {
         if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
             return (Destroyer) temp.getBody().getUserData();
         }
+
 
         temp = c.getFixtureB();
         if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
@@ -274,6 +269,7 @@ public class GameScreen extends AbstractScreen implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
+
     }
 
     @Override
