@@ -5,12 +5,14 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Models.GameModel;
 
 import java.util.ArrayList;
 
 public class Level implements ContactListener {
     private int maxColums = 8;
     private int currentRow = -1;
+    private boolean shouldRestart = false;
 
     // Render variables
     private Stage stage;
@@ -111,6 +113,11 @@ public class Level implements ContactListener {
 
     // Will place all necessary objects into the game world
     public void createNewLevel() {
+        // Remove all all objects that need to be destroyed
+        this.objectsToDestroy.removeAll(this.objectsToDestroy);
+        this.shouldRestart = false;
+        this.currentRow = -1;
+
         // Sets the base Block width and Ball radius for this level
         Block.blockWidth = (BallShooter.WIDTH - 20) / this.maxColums;
         Ball.setRadius((Block.blockWidth / 2) / 3);
@@ -156,8 +163,27 @@ public class Level implements ContactListener {
         this.world.step(timestep, velIts, posIits);
     }
 
-    public void update() {
+    public void update(GameModel gameModel) {
+        if(this.shouldRestart) {
+            this.restartLevel();
+            gameModel.resetNewRowCounter();
+            gameModel.resetNewRowCounter();
+
+            return;
+        }
         destroyBodies();
+
+        if(gameModel.instantiateNewBall()) {
+            this.instantiateBall();
+
+            gameModel.resetNewBallCounter();
+        }
+
+        if(gameModel.instantiateNewRow()) {
+            this.insertNewRow();
+
+            gameModel.resetNewRowCounter();
+        }
     }
 
     // Will destroy any bodies that need to be destroyed
@@ -249,9 +275,10 @@ public class Level implements ContactListener {
 
         // Block hitting wall
         if(destroyer != null && block != null) {
-            if(!this.objectsToDestroy.contains(block)) {
-                this.objectsToDestroy.add(block);
-            }
+            this.shouldRestart = true;
+//            if(!this.objectsToDestroy.contains(block)) {
+//                this.objectsToDestroy.add(block);
+//            }
         }
     }
     @Override

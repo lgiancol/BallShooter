@@ -1,6 +1,5 @@
 package com.lucasgiancola.Screens;
 
-import com.badlogic.gdx.physics.box2d.*;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.*;
 import com.lucasgiancola.Models.GameModel;
@@ -28,19 +27,7 @@ public class GameScreen extends AbstractScreen {
     private void updateGame(float delta) {
         gameModel.update(delta);
 
-        level.update();
-
-        if(gameModel.instantiateNewBall()) {
-            level.instantiateBall();
-
-            gameModel.resetNewBallCounter();
-        }
-
-        if(gameModel.instantiateNewRow()) {
-            level.insertNewRow();
-
-            gameModel.resetNewRowCounter();
-        }
+        level.update(gameModel);
     }
 
     @Override
