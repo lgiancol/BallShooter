@@ -1,159 +1,293 @@
 package com.lucasgiancola.Objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
+import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Models.GameModel;
 
 import java.util.ArrayList;
 
-public class Level {
-    private ArrayList<Block> blocks;
-    private ArrayList<Ball> balls;
+public class Level implements ContactListener {
+    private int maxColums = 8;
+    private int currentRow = -1;
+    private boolean shouldRestart = false;
 
-    private int cols = 8;
-    private int rows = 3;
-    private float width, height;
+    // Render variables
+    private Stage stage;
 
-    private float newBallSpawn = 0.1f; // Number of milliseconds before a new ball spawns
-    private float currentTime = 0;
-    private int maxBalls = 10;
-    private boolean reset = true;
+    // Physics variables
+    private World world = null;
+    private ArrayList<BaseObject> objectsToDestroy;
 
-    private Vector2 currentTouch;
-    private Vector2 pivot;
+    // Debug variables
+    public boolean createBalls = true;
+    public boolean createBlocks = true;
 
-    public Level(float width, float height) {
-        this.width = width;
-        this.height = height;
-
-        currentTouch = new Vector2(width / 2, height);
-        pivot = new Vector2(width / 2, 10);
-
-        resetLevel();
-
-        balls = new ArrayList<Ball>();
-//        balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngleToDegree(pivot, currentTouch)));
+    public Level(Stage stage) {
+        objectsToDestroy = new ArrayList<BaseObject>();
+        this.stage = stage;
     }
 
-    private void resetLevel() {
-        reset = true;
+    public Level(String toLoad, Stage stage) {
+        this.stage = stage;
+    }
+
+    // Will be called only when gameScreen.show() is called
+    public void initLevel() {
+        initWorld();
+        insertWalls();
+        restartLevel();
+    }
+
+    // Will create a new world for the objects to live in
+    private void initWorld() {
+        Vector2 gravity = new Vector2(0 ,0); // No gravity
+        world = new World(gravity, true);
+        World.setVelocityThreshold(0f);
+        world.setContactListener(this);
+    }
+
+    // Will create the walls of the game which won't be remade when a level is restarted
+    private void insertWalls() {
+        // Top
+        Wall wall = new Wall(this.world, (int) BallShooter.WIDTH, 2);
+        wall.setPosition(BallShooter.WIDTH / 2, BallShooter.HEIGHT);
+        wall.setName("Top");
+        this.stage.addActor(wall);
+
+        // The "wall" at the bottom that will destroy the blocks
+        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 20);
+        blockBreaker.setPosition(BallShooter.WIDTH / 2, -10);
+        blockBreaker.setName("bottom");
+        this.stage.addActor(blockBreaker);
+
+        // Left
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT);
+        wall.setPosition(0, BallShooter.HEIGHT / 2);
+        wall.setName("Left");
+        this.stage.addActor(wall);
+
+        // Right
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT);
+        wall.setPosition(BallShooter.WIDTH, BallShooter.HEIGHT / 2);
+        wall.setName("right");
+        this.stage.addActor(wall);
+    }
+
+    // Will reset all the elements inside the world
+    public void restartLevel() {
+        resetWorld();
+        createNewLevel();
+    }
+
+    // Will remove all the blocks and balls from the world, but will keep the walls and destroyer
+    private void resetWorld() {
+        if(this.world == null) {
+            initWorld();
+            return;
+        }
+
+        // Get all bodies into a variable
+        Array<Body> bodies = new Array<Body>();
+        this.world.getBodies(bodies);
+
+        // Remove all the bodies
+        for(Body b: bodies) {
+            // If userData is a BaseObject and it is not a Wall or a Destroyer
+            destroyBody(b, false);
+        }
+    }
+
+    // Will properly destroy a body
+    private void destroyBody(Body toDestroy, boolean force) {
+        Object userData = toDestroy.getUserData();
+
+        // If body is BaseObject and we are force destroying it, or it is a Wall or Destroyer
+        if(userData instanceof BaseObject && (force || !(userData instanceof Wall || userData instanceof Destroyer))) {
+            ((BaseObject) userData).dispose();
+            this.world.destroyBody(toDestroy);
+        }
+    }
+
+    // Will place all necessary objects into the game world
+    public void createNewLevel() {
+        // Remove all all objects that need to be destroyed
+        this.objectsToDestroy.removeAll(this.objectsToDestroy);
+        this.shouldRestart = false;
+        this.currentRow = -1;
+
+        // Sets the base Block width and Ball radius for this level
+        Block.blockWidth = (BallShooter.WIDTH - 20) / this.maxColums;
+        Ball.setRadius((Block.blockWidth / 2) / 3);
+
         initBlocks();
     }
 
     private void initBlocks() {
-        blocks = new ArrayList<Block>();
+        int startingRows = 2;
 
-        float blockWidth = (width / cols);
+        for(int i = 0; i < startingRows; i++) {
+            insertNewRow();
+        }
+    }
 
-        for(int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                float x = c * blockWidth;
-                float y = height - ((rows - r - 1) * blockWidth) - blockWidth;
+    // Creates a new row of blocks based on the current row we are working on
+    public void insertNewRow() {
+        this.currentRow++;
+        for(int i = 0; i < this.maxColums; i++) {
+            Block block = new Block(this.world, Block.blockWidth);
+            block.setPosition(
+                    i * block.getWidth() + (Block.blockWidth / 2) + 10,
+                    BallShooter.HEIGHT - (Block.blockWidth / 2) + (currentRow * Block.blockWidth) - 1
+            );
+            block.setValue(10);
 
-//                blocks.add(new Block(x, y, blockWidth, 6));
+            this.stage.addActor(block);
+        }
+    }
+
+    // Will create a new ball and place it into the world
+    public void instantiateBall() {
+        Ball b = new Ball(this.world);
+        b.setPosition((BallShooter.WIDTH / 2) + (Ball.getRadius() / 2), Ball.getRadius() *  2);
+        b.setShootAngle(90);
+        b.launch();
+
+        this.stage.addActor(b);
+    }
+
+    // UPDATE AND RENDER FOR THE LEVEL
+    public void step(final float timestep, final int velIts, final int posIits) {
+        this.world.step(timestep, velIts, posIits);
+    }
+
+    public void update(GameModel gameModel) {
+        if(this.shouldRestart) {
+            this.restartLevel();
+            gameModel.resetNewRowCounter();
+            gameModel.resetNewRowCounter();
+
+            return;
+        }
+        destroyBodies();
+
+        if(gameModel.instantiateNewBall()) {
+            this.instantiateBall();
+
+            gameModel.resetNewBallCounter();
+        }
+
+        if(gameModel.instantiateNewRow()) {
+            this.insertNewRow();
+
+            gameModel.resetNewRowCounter();
+        }
+    }
+
+    // Will destroy any bodies that need to be destroyed
+    private void destroyBodies() {
+        if(!this.objectsToDestroy.isEmpty()) {
+            for(int i = this.objectsToDestroy.size() - 1; i >= 0; i--) {
+                BaseObject obj = this.objectsToDestroy.get(i);
+                destroyBody(obj.getBody(), true);
             }
         }
+
+        this.objectsToDestroy.removeAll(this.objectsToDestroy);
     }
 
-    public void draw(ShapeRenderer renderer, SpriteBatch batch, BitmapFont font) {
-        reset = true;
+    // CONTACT LISTENER FOR THE WORLD
+    private Block getBlockFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
 
-        if(shouldMakeNewBall()) {
-//            balls.add(new Ball(width / 2, Ball.radius, (float) calculateAngleToDegree(pivot, currentTouch)));
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
         }
 
-        // Set the current touch location
-        if(Gdx.input.isTouched()) {
-//            currentTouch = new Vector2(Game.input.viewportTouchCoords.x, Game.input.viewportTouchCoords.y);
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
         }
 
-        renderBackground(renderer);
+        return null;
+    }
 
-        renderHelpLine(renderer);
+    private Ball getBallFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
 
-        // Update and draw all the balls
-        for(int i = balls.size() - 1; i >= 0; i--) {
-            Ball b = balls.get(i);
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
 
-//            b.update(width, height);
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
 
-//            if(b.shouldDestroy) {
-//                balls.remove(b);
-//            } else {
-//                b.draw(renderer);
-//
-//                b.checkCollisions(blocks, rows, cols);
+        return null;
+    }
+
+    private Destroyer getDestroyerFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
+            return (Destroyer) temp.getBody().getUserData();
+        }
+
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
+            return (Destroyer) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Ball ball = getBallFromContact(contact);
+        Block block = getBlockFromContact(contact);
+
+        // If it's a ball hitting a block
+        if(block != null && ball != null) {
+            block.hit(ball);
+
+            if(block.shouldDestroy()) {
+                if(!this.objectsToDestroy.contains(block)) {
+                    this.objectsToDestroy.add(block);
+                }
+            }
+
+            return;
+        }
+
+        Destroyer destroyer = getDestroyerFromContact(contact);
+
+        if(destroyer != null && ball != null) {
+            if(!this.objectsToDestroy.contains(ball)) {
+                this.objectsToDestroy.add(ball);
+            }
+
+            return;
+        }
+
+        // Block hitting wall
+        if(destroyer != null && block != null) {
+            this.shouldRestart = true;
+//            if(!this.objectsToDestroy.contains(block)) {
+//                this.objectsToDestroy.add(block);
 //            }
         }
+    }
+    @Override
+    public void endContact(Contact contact) {
 
-//        for(Block b : blocks) {
-//            b.update();
-//            if(b.isVisible) {
-//                b.draw(renderer, batch, font);
-//                reset = false;
-//            }
-//        }
-
-        if(reset) resetLevel();
     }
 
-    private boolean shouldMakeNewBall() {
-        currentTime += Gdx.graphics.getDeltaTime();
-
-        if(currentTime >= newBallSpawn) {
-            currentTime = 0;
-
-//            return balls.size() < maxBalls;
-            return true;
-        }
-
-        return false;
-    }
-
-    private double calculateAngleToDegree(Vector2 start, Vector2 end) {
-        return Math.atan2(end.y - start.y, end.x - start.x) * 180.0 / Math.PI;
-    }
-
-    private double calculateAngleToRadians(Vector2 start, Vector2 end) {
-        return Math.atan2(end.y - start.y, end.x - start.x);
-    }
-
-    private void renderPoint(Vector2 point, ShapeRenderer renderer) {
-        renderer.set(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.GREEN);
-        renderer.circle(point.x, point.y, 50f);
-    }
-
-    private void renderLine(Vector2 point1, Vector2 point2, ShapeRenderer renderer) {
-        renderer.set(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.GREEN);
-        renderer.line(point1, point2);
-    }
-
-    private void renderLineScale(Vector2 start, Vector2 length, ShapeRenderer renderer) {
-        renderer.set(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.GREEN);
-        renderer.line(start.x, start.y, start.x + length.x, start.y + length.y);
-    }
-
-    private void renderHelpLine(ShapeRenderer renderer) {
-        double angle = calculateAngleToRadians(pivot, currentTouch);
-        double hypo = (width / 2) / Math.cos(angle);
-
-        Vector2 segment = new Vector2(width / 2, (float) hypo);
-//        segment.setAngle((float) angle);
-
-        renderLineScale(pivot, segment, renderer);
-        renderPoint(pivot.add(segment), renderer);
-//        renderLine(pivot, segment, renderer);
-    }
-
-    private void renderBackground(ShapeRenderer renderer) {
-        renderer.set(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BLACK);
-        renderer.rect(0, 0, width, height);
-    }
+    @Override
+    public void preSolve(Contact contact, Manifold mf) {}
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {}
 }

@@ -6,14 +6,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lucasgiancola.Constants;
 
-public class Wall extends Actor {
-    private Body body;
-    private ShapeRenderer sr;
+public class Wall extends BaseObject {
 
     public Wall(World world, int width, int height) {
+        super();
         setName("Wall");
         setSize(width, height);
         setOrigin(getWidth() / 2, getHeight() / 2);
@@ -37,8 +35,6 @@ public class Wall extends Actor {
 
         this.body.createFixture(shapeDef);
         block.dispose();
-
-        sr = new ShapeRenderer();
     }
 
     @Override
@@ -51,7 +47,7 @@ public class Wall extends Actor {
 
     }
 
-    private void update() {
+    public void update() {
         setPosition(
                 Constants.boxToPixels(body.getPosition().x),
                 Constants.boxToPixels(body.getPosition().y));
@@ -62,7 +58,7 @@ public class Wall extends Actor {
         this.update();
         batch.end();
 
-        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.begin(ShapeRenderer.ShapeType.Line);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
         sr.setColor(Color.WHITE);
 
