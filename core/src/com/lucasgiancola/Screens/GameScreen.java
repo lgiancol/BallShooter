@@ -14,7 +14,8 @@ public class GameScreen extends AbstractScreen {
         super(ballShooter);
 
         this.gameModel = new GameModel();
-        this.level = new Level(this.stage);
+        this.gameModel.setStage(this.stage);
+        this.level = new Level(this.stage, this.gameModel);
     }
 
     @Override
@@ -27,7 +28,7 @@ public class GameScreen extends AbstractScreen {
     private void updateGame(float delta) {
         gameModel.update(delta);
 
-        level.update(gameModel);
+        level.update();
     }
 
     @Override

@@ -13,6 +13,7 @@ public class Level implements ContactListener {
     private int maxColums = 8;
     private int currentRow = -1;
     private boolean shouldRestart = false;
+    private GameModel gameModel;
 
     // Render variables
     private Stage stage;
@@ -24,10 +25,15 @@ public class Level implements ContactListener {
     // Debug variables
     public boolean createBalls = true;
     public boolean createBlocks = true;
+    public AngleHelper helper = null;
 
-    public Level(Stage stage) {
+    public Level(Stage stage, GameModel gameModel) {
         objectsToDestroy = new ArrayList<BaseObject>();
         this.stage = stage;
+        this.gameModel = gameModel;
+
+        helper = new AngleHelper(new Vector2(BallShooter.WIDTH / 2, 0));
+        stage.addActor(helper);
     }
 
     public Level(String toLoad, Stage stage) {
@@ -47,30 +53,34 @@ public class Level implements ContactListener {
         world = new World(gravity, true);
         World.setVelocityThreshold(0f);
         world.setContactListener(this);
+
+        // Sets the base Block width and Ball radius for this level
+        Block.blockWidth = (BallShooter.WIDTH - 20) / this.maxColums;
+        Ball.setRadius((Block.blockWidth / 2) / 3);
     }
 
     // Will create the walls of the game which won't be remade when a level is restarted
     private void insertWalls() {
         // Top
-        Wall wall = new Wall(this.world, (int) BallShooter.WIDTH, 2);
+        Wall wall = new Wall(this.world, (int) BallShooter.WIDTH * 2, 2);
         wall.setPosition(BallShooter.WIDTH / 2, BallShooter.HEIGHT);
         wall.setName("Top");
         this.stage.addActor(wall);
 
         // The "wall" at the bottom that will destroy the blocks
-        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 20);
-        blockBreaker.setPosition(BallShooter.WIDTH / 2, -10);
+        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH * 2, 20);
+        blockBreaker.setPosition(BallShooter.WIDTH / 2, -((Ball.getRadius() * 2) * 3));
         blockBreaker.setName("bottom");
         this.stage.addActor(blockBreaker);
 
         // Left
-        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT);
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT * 2);
         wall.setPosition(0, BallShooter.HEIGHT / 2);
         wall.setName("Left");
         this.stage.addActor(wall);
 
         // Right
-        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT);
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT * 2);
         wall.setPosition(BallShooter.WIDTH, BallShooter.HEIGHT / 2);
         wall.setName("right");
         this.stage.addActor(wall);
@@ -118,10 +128,6 @@ public class Level implements ContactListener {
         this.shouldRestart = false;
         this.currentRow = -1;
 
-        // Sets the base Block width and Ball radius for this level
-        Block.blockWidth = (BallShooter.WIDTH - 20) / this.maxColums;
-        Ball.setRadius((Block.blockWidth / 2) / 3);
-
         initBlocks();
     }
 
@@ -151,8 +157,8 @@ public class Level implements ContactListener {
     // Will create a new ball and place it into the world
     public void instantiateBall() {
         Ball b = new Ball(this.world);
-        b.setPosition((BallShooter.WIDTH / 2) + (Ball.getRadius() / 2), Ball.getRadius() *  2);
-        b.setShootAngle(90);
+        b.setPosition((BallShooter.WIDTH / 2), 0);
+        b.setShootAngle(gameModel.getTouchAngle());
         b.launch();
 
         this.stage.addActor(b);
@@ -163,7 +169,7 @@ public class Level implements ContactListener {
         this.world.step(timestep, velIts, posIits);
     }
 
-    public void update(GameModel gameModel) {
+    public void update() {
         if(this.shouldRestart) {
             this.restartLevel();
             gameModel.resetNewRowCounter();
@@ -171,6 +177,8 @@ public class Level implements ContactListener {
 
             return;
         }
+        this.helper.setAngle(gameModel.getTouchAngle());
+
         destroyBodies();
 
         if(gameModel.instantiateNewBall()) {
