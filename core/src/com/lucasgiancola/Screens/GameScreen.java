@@ -84,8 +84,8 @@ public class GameScreen extends AbstractScreen implements ContactListener {
 
 
         // The "wall" at the bottom that will destroy the blocks
-        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 2);
-        blockBreaker.setPosition(BallShooter.WIDTH / 2, 0);
+        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH, 20);
+        blockBreaker.setPosition(BallShooter.WIDTH / 2, -10);
         blockBreaker.setName("bottom");
         this.stage.addActor(blockBreaker);
     }
@@ -110,12 +110,12 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     }
 
     private void createNewBall() {
-//        Ball b = new Ball(this.world);
-//        b.setPosition((BallShooter.WIDTH / 2) + (Ball.getRadius() / 2), Ball.getRadius() *  2);
-//        b.setShootAngle(90);
-//        b.launch();
-//
-//        this.stage.addActor(b);
+        Ball b = new Ball(this.world);
+        b.setPosition((BallShooter.WIDTH / 2) + (Ball.getRadius() / 2), Ball.getRadius() *  2);
+        b.setShootAngle(90);
+        b.launch();
+
+        this.stage.addActor(b);
     }
 
     private void removeDestroyedBlocks() {
@@ -167,8 +167,8 @@ public class GameScreen extends AbstractScreen implements ContactListener {
     public void render(float delta) {
 
         // Call box2d with a fixed timestep
-        final int VELOCITY_ITERATIONS = 6;
-        final int POSITION_ITERATIONS = 2;
+        final int VELOCITY_ITERATIONS = 15;
+        final int POSITION_ITERATIONS = 3;
         final float FIXED_TIMESTEP = 1.0f / 60.0f;
         this.dtAccumulator += delta;
 
