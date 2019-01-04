@@ -1,6 +1,7 @@
 package com.lucasgiancola.Objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -16,7 +17,7 @@ public class Block extends BaseObject {
     private float rotationSpeed = 0;
     private float moveSpeed = 1.5f;
     private boolean done = false;
-    private float textOffset = 5;
+    private GlyphLayout textLayout;
 
     public static float blockWidth = 0;
 
@@ -27,6 +28,7 @@ public class Block extends BaseObject {
         setName("Block");
         setSize(length, length);
         setOrigin(getWidth() / 2, getHeight() / 2);
+        textLayout = new GlyphLayout(BallShooter.font, "" + this.getCurrentValue());
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -55,7 +57,7 @@ public class Block extends BaseObject {
     public void setCurrentValue(int value) {
         this.currentValue = value;
 
-        this.textOffset = 5 * String.valueOf(this.currentValue).length();
+        textLayout = new GlyphLayout(BallShooter.font, "" + this.getCurrentValue());
     }
 
     public int getValue() { return this.maxValue; }
@@ -115,8 +117,8 @@ public class Block extends BaseObject {
         BallShooter.font.draw(
                 batch,
                 "" + this.getCurrentValue(),
-                getX() + (getWidth() / 2) - textOffset,
-                getY() + (getHeight() / 2) + (BallShooter.font.getLineHeight() / 2));
+                getX() + ((getWidth() - textLayout.width) / 2),
+                getY() + ((getHeight() + textLayout.height) / 2));
 
     }
 }
