@@ -33,6 +33,9 @@ public class AngleHelper extends Actor {
     }
 
     public void setAngle(float angle) {
+        if(angle < 15) angle = 10;
+        else if(angle > 165) angle = 170;
+
         this.angle = angle;
 
         float fx = (float) (3000 * Math.cos(this.angle * MathUtils.degreesToRadians));

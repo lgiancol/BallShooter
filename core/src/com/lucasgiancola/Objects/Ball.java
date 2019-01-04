@@ -60,6 +60,9 @@ public class Ball extends BaseObject {
         return shootAngle;
     }
     public void setShootAngle(float angle) {
+        if(angle < 15) angle = 10;
+        else if(angle > 165) angle = 170;
+
         this.shootAngle = angle;
     }
 
