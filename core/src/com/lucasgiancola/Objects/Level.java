@@ -1,5 +1,6 @@
 package com.lucasgiancola.Objects;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class Level implements ContactListener {
     private int maxColums = 8;
-    private int currentRow = -1;
+    private int currentRow = 0;
     private boolean shouldRestart = false;
     private GameModel gameModel;
 
@@ -108,6 +109,8 @@ public class Level implements ContactListener {
             // If userData is a BaseObject and it is not a Wall or a Destroyer
             destroyBody(b, false);
         }
+
+        this.gameModel.restart();
     }
 
     // Will properly destroy a body
@@ -116,6 +119,11 @@ public class Level implements ContactListener {
 
         // If body is BaseObject and we are force destroying it, or it is a Wall or Destroyer
         if(userData instanceof BaseObject && (force || !(userData instanceof Wall || userData instanceof Destroyer))) {
+
+            if(userData instanceof BlockPowerUp) {
+                this.gameModel.addPowerUp(((BlockPowerUp) userData).getPowerUp());
+            }
+
             ((BaseObject) userData).dispose();
             this.world.destroyBody(toDestroy);
         }
@@ -142,15 +150,31 @@ public class Level implements ContactListener {
     // Creates a new row of blocks based on the current row we are working on
     public void insertNewRow() {
         this.currentRow++;
-        for(int i = 0; i < this.maxColums; i++) {
-            Block block = new Block(this.world, Block.blockWidth);
-            block.setPosition(
-                    i * block.getWidth() + (Block.blockWidth / 2) + 10,
-                    BallShooter.HEIGHT - (Block.blockWidth / 2) + (currentRow * Block.blockWidth) - 1
-            );
-            block.setValue(10);
 
-            this.stage.addActor(block);
+        int minValue = ((currentRow - 1) * 3) + 1;
+        int maxValue = minValue + 10;
+
+        for(int i = 0; i < this.maxColums; i++) {
+            // 40% chance of a block spawning in that column
+            if(MathUtils.randomBoolean(0.4f)) {
+                Block block;
+
+                if (MathUtils.randomBoolean(0.2f)) {
+                    block = new BlockSpeedIncreaser(this.world, Block.blockWidth);
+                } else if (MathUtils.randomBoolean(0.2f)) {
+                    block = new BlockSuperBall(this.world, Block.blockWidth);
+                } else {
+                    block = new Block(this.world, Block.blockWidth);
+                }
+
+                block.setPosition(
+                        i * block.getWidth() + (Block.blockWidth / 2) + 10,
+                        BallShooter.HEIGHT - (Block.blockWidth / 2) + (currentRow * Block.blockWidth) - 1
+                );
+                block.setValue(MathUtils.random(minValue, maxValue));
+
+                this.stage.addActor(block);
+            }
         }
     }
 
@@ -158,6 +182,7 @@ public class Level implements ContactListener {
     public void instantiateBall() {
         Ball b = new Ball(this.world);
         b.setPosition((BallShooter.WIDTH / 2), 0);
+        b.setHitValue(this.gameModel.getBallPower());
         b.setShootAngle(gameModel.getTouchAngle());
         b.launch();
 

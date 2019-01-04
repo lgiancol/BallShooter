@@ -15,13 +15,13 @@ public class Block extends BaseObject {
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
-    private float moveSpeed = 1.5f;
+    private float moveSpeed = 0.6f;
     private boolean done = false;
     private GlyphLayout textLayout;
 
     public static float blockWidth = 0;
 
-    private Vector3 color = new Vector3(1, 0, 0);
+    protected Vector3 blockColour = new Vector3(1, 0, 0);
 
     public Block(World world, float length) {
         super();
@@ -78,8 +78,8 @@ public class Block extends BaseObject {
 
     public void hit(Ball ball) {
         setCurrentValue(getCurrentValue() - ball.getHitValue());
-        color.x = (float) getCurrentValue() / (float) getValue();
-        color.y = 1f - (float) getCurrentValue() / (float) getValue();
+        blockColour.x = (float) getCurrentValue() / (float) getValue();
+        blockColour.y = 1f - (float) getCurrentValue() / (float) getValue();
 
         done = getCurrentValue() <= 0;
     }
@@ -108,7 +108,7 @@ public class Block extends BaseObject {
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(color.x, color.y, color.z, 1);
+        sr.setColor(blockColour.x, blockColour.y, blockColour.z, 1);
 
         sr.rect(getX(), getY(), getWidth(), getHeight());
         sr.end();
