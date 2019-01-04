@@ -1,5 +1,6 @@
 package com.lucasgiancola.Objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,11 +18,9 @@ public class Block extends BaseObject {
     private float rotationSpeed = 0;
     private float moveSpeed = 0.6f;
     private boolean done = false;
-    private GlyphLayout textLayout;
+    protected GlyphLayout textLayout;
 
     public static float blockWidth = 0;
-
-    protected Vector3 blockColour = new Vector3(1, 0, 0);
 
     public Block(World world, float length) {
         super();
@@ -29,6 +28,7 @@ public class Block extends BaseObject {
         setSize(length, length);
         setOrigin(getWidth() / 2, getHeight() / 2);
         textLayout = new GlyphLayout(BallShooter.font, "" + this.getCurrentValue());
+        setColor(Color.RED);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -57,7 +57,7 @@ public class Block extends BaseObject {
     public void setCurrentValue(int value) {
         this.currentValue = value;
 
-        textLayout = new GlyphLayout(BallShooter.font, "" + this.getCurrentValue());
+        textLayout = new GlyphLayout(BallShooter.font, "" + this.currentValue);
     }
 
     public int getValue() { return this.maxValue; }
@@ -78,8 +78,8 @@ public class Block extends BaseObject {
 
     public void hit(Ball ball) {
         setCurrentValue(getCurrentValue() - ball.getHitValue());
-        blockColour.x = (float) getCurrentValue() / (float) getValue();
-        blockColour.y = 1f - (float) getCurrentValue() / (float) getValue();
+//        blockColour.x = (float) getCurrentValue() / (float) getValue();
+//        blockColour.y = 1f - (float) getCurrentValue() / (float) getValue();
 
         done = getCurrentValue() <= 0;
     }
@@ -108,7 +108,7 @@ public class Block extends BaseObject {
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(blockColour.x, blockColour.y, blockColour.z, 1);
+        sr.setColor(getColor());
 
         sr.rect(getX(), getY(), getWidth(), getHeight());
         sr.end();

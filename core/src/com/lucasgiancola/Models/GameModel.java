@@ -64,7 +64,6 @@ public class GameModel {
     }
 
     private void updatePowerUps(float delta) {
-        System.out.println("Power Ups: " + this.powerUps.size() + " | Speed: " + this.currentDeltaTimeNewBall);
         for(int i = this.powerUps.size() - 1; i >= 0; i--) {
             PowerUp p = this.powerUps.get(i);
             p.update(delta);

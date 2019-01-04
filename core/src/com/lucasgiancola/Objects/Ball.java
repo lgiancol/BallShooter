@@ -19,6 +19,7 @@ public class Ball extends BaseObject {
         setName("Ball");
         setRadius(radius);
         setOrigin(getWidth() / 2, getHeight() / 2);
+        setColor(Color.WHITE);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -97,7 +98,7 @@ public class Ball extends BaseObject {
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(Color.WHITE);
+        sr.setColor(getColor());
 
         sr.circle(getX(), getY(), Ball.getRadius());
 
