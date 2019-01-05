@@ -20,6 +20,7 @@ public abstract class BaseObject extends Actor {
     }
     public void dispose() {
         this.sr.dispose();
+        this.body.setUserData(null);
 
         this.remove();
     }
