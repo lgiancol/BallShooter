@@ -1,8 +1,9 @@
 package com.lucasgiancola.Screens;
 
 import com.lucasgiancola.BallShooter;
-import com.lucasgiancola.Objects.*;
 import com.lucasgiancola.Models.GameModel;
+import com.lucasgiancola.Objects.Levels.Level;
+import com.lucasgiancola.Objects.Levels.SpeedRun;
 
 public class GameScreen extends AbstractScreen {
     private GameModel gameModel;
@@ -15,20 +16,20 @@ public class GameScreen extends AbstractScreen {
 
         this.gameModel = new GameModel();
         this.gameModel.setStage(this.stage);
-        this.level = new Level(this.stage, this.gameModel);
+        this.level = new SpeedRun(this.stage, this.gameModel);
     }
 
     @Override
     public void show() {
         super.show();
 
-        level.initLevel();
+        level.init();
     }
 
     private void updateGame(float delta) {
         gameModel.update(delta);
 
-        level.update();
+        level.update(delta);
     }
 
     @Override

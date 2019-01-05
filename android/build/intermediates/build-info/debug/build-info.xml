@@ -6,28 +6,31 @@
     density="xxhdpi"
     format="10"
     plugin-version="3.2.0"
-    timestamp="1546553735979"
+    timestamp="1546583260037"
     token="-7896398944748181685"
     verifier="FULL_BUILD_REQUESTED" >
 
     <task
         name="javac"
-        duration="249" />
+        duration="93" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="150" />
+        duration="113" />
     <task
         name="verifier"
-        duration="104" />
+        duration="41" />
 
     <artifact
-        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
+        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_7.apk"
         type="SPLIT" />
     <artifact
         location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_8.apk"
+        type="SPLIT" />
+    <artifact
+        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
         type="SPLIT" />
     <artifact
         location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/instant-run-apk/debug/android-debug.apk"
@@ -48,9 +51,6 @@
         location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_0.apk"
         type="SPLIT" />
     <artifact
-        location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_7.apk"
-        type="SPLIT" />
-    <artifact
         location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_5.apk"
         type="SPLIT" />
     <artifact
@@ -65,13 +65,16 @@
 
     <build
         build-mode="FULL"
-        timestamp="1546553735979"
+        timestamp="1546583260037"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
-            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
+            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
             location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_8.apk"
+            type="SPLIT" />
+        <artifact
+            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_9.apk"
             type="SPLIT" />
         <artifact
             location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/instant-run-apk/debug/android-debug.apk"
@@ -90,9 +93,6 @@
             type="SPLIT" />
         <artifact
             location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_0.apk"
-            type="SPLIT" />
-        <artifact
-            location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_7.apk"
             type="SPLIT" />
         <artifact
             location="/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/split-apk/debug/slices/slice_5.apk"
