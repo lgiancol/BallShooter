@@ -48,6 +48,9 @@ public class SpeedRun extends Level {
         stage.addActor(helper);
     }
 
+    /*
+        Makes sure all variables that control state of the level are reset
+     */
     protected void restartLevel() {
         this.isOver = false;
         this.currentRow = 0;
@@ -62,7 +65,11 @@ public class SpeedRun extends Level {
             insertRow();
         }
     }
+    // CREATING/MANAGING PHYSICS OBJECTS IN THE WORLD
 
+    /*
+        Will insert at least 1 block in a new row
+     */
     private void insertRow() {
         this.currentRow++;
         float chance = 0.5f;
@@ -70,18 +77,7 @@ public class SpeedRun extends Level {
 
         for(int col = 0; col < this.maxCols; col++) {
             if(MathUtils.randomBoolean(chance)) {
-                // Calculate the position of the new block based on the old top block (if there is one)
-                float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
-                float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
-
-                if(this.topBlock != null) {
-                    y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
-                }
-
-                // Create the new Block
-                toInsert = BlockFactory.createRandomBlock(this.world);
-                toInsert.setLocation(this.currentRow, col);
-                toInsert.setPosition(x, y);
+                toInsert = this.createBlock(this.currentRow, col);
 
                 this.stage.addActor(toInsert);
             }
@@ -89,20 +85,34 @@ public class SpeedRun extends Level {
 
         if(toInsert == null) {
             int col = MathUtils.random(0, this.maxCols);
-            // Calculate the position of the new block based on the old block (if there is one)
-            float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
-            float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
-
-            if(this.topBlock != null) {
-                y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
-            }
-
-            toInsert = BlockFactory.createRandomBlock(this.world);
-            toInsert.setLocation(this.currentRow, col);
-            toInsert.setPosition(x, y);
+            toInsert = this.createBlock(this.currentRow, col);
         }
 
         this.topBlock = toInsert;
+    }
+
+    private boolean shouldCreateRow() {
+        return this.topBlock == null || this.topBlock.getY() <= BallShooter.HEIGHT + (this.startingRows * Block.blockOffset) + (this.startingRows + Block.blockWidth);
+    }
+
+    /*
+        Will create a block at the current row, col location or above the previously placed block
+     */
+    public Block createBlock(int row, int col) {
+        Block block;
+        float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+        float y = BallShooter.HEIGHT + (row * Block.blockWidth) + (row * Block.blockOffset);
+
+        if(this.topBlock != null) {
+            y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+        }
+
+        // Create the new Block
+        block = BlockFactory.createRandomBlock(this.world);
+        block.setLocation(row, col);
+        block.setPosition(x, y);
+
+        return block;
     }
 
     // Will create a new ball and place it into the world
@@ -116,6 +126,7 @@ public class SpeedRun extends Level {
         this.stage.addActor(b);
     }
 
+    // PHYSICS BODIES SECTION
     protected void destroyBodies() {
         if(!this.objectsToDestroy.isEmpty()) {
             for(int i = this.objectsToDestroy.size() - 1; i >= 0; i--) {
@@ -135,12 +146,6 @@ public class SpeedRun extends Level {
         this.applyPowerUp(toDestroy.getUserData());
 
         super.destroyBody(toDestroy, force);
-    }
-
-    private void applyPowerUp(Object userData) {
-        if(userData instanceof BlockPowerUp) {
-            this.addPowerUp(((BlockPowerUp) userData).getPowerUp());
-        }
     }
 
     // POWER UP SECTION
@@ -171,6 +176,12 @@ public class SpeedRun extends Level {
         }
 
         this.powerUps.remove(toRemove);
+    }
+
+    private void applyPowerUp(Object userData) {
+        if(userData instanceof BlockPowerUp) {
+            this.addPowerUp(((BlockPowerUp) userData).getPowerUp());
+        }
     }
 
     private void removeAllPowerUps() {
@@ -211,7 +222,7 @@ public class SpeedRun extends Level {
             this.newBallCounter = 0;
         }
 
-        if(this.topBlock.getY() <= BallShooter.HEIGHT + (this.startingRows * Block.blockOffset) + (this.startingRows + Block.blockWidth)) {
+        if(this.shouldCreateRow()) {
             this.insertRow();
         }
     }
