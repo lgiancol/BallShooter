@@ -133,65 +133,6 @@ public abstract class Level implements ContactListener {
         this.currentRow = 0;
     }
 
-    protected void placeInitialBlocks() {
-        int startingRows = 2;
-
-        for(int i = 0; i < startingRows; i++) {
-            this.topBlock = insertNewRow();
-        }
-    }
-
-    public Block insertNewRow() {
-        float chance = 0.6f;
-        this.currentRow++;
-        Block lastInRow = null;
-
-        for(int col = 0; col < this.maxCols; col++) {
-            if(MathUtils.randomBoolean(chance)) {
-                // Calculate the position of the new block based on the old top block (if there is one)
-                float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
-                float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
-
-                if(this.topBlock != null) {
-                    y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
-                }
-
-                // Create the new Block
-                lastInRow = BlockFactory.createRandomBlock(this.world);
-                lastInRow.setLocation(this.currentRow, col);
-                lastInRow.setPosition(x, y);
-
-                this.stage.addActor(lastInRow);
-
-//                this.placeBlock(lastInRow, this.currentRow, col);
-            }
-        }
-
-        if(lastInRow == null) {
-            int col = MathUtils.random(0, this.maxCols);
-            // Calculate the position of the new block based on the old block (if there is one)
-            float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
-            float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
-
-            if(this.topBlock != null) {
-                y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
-            }
-
-            lastInRow = BlockFactory.createRandomBlock(this.world);
-            lastInRow.setLocation(this.currentRow, col);
-            lastInRow.setPosition(x, y);
-//            this.placeBlock(lastInRow, this.currentRow, MathUtils.random(0, this.maxCols));
-        }
-
-        return lastInRow;
-    }
-
-    protected void placeBlock(Block toPlace, int row, int col) {
-        toPlace.setLocation(row, col);
-
-        this.stage.addActor(toPlace);
-    }
-
     /*
         Sets what happens when the level is over
      */

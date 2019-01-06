@@ -1,15 +1,18 @@
 package com.lucasgiancola.Objects.Levels;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
 import com.lucasgiancola.Objects.AngleHelper;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.BaseObject;
 import com.lucasgiancola.Objects.Blocks.Block;
+import com.lucasgiancola.Objects.Blocks.BlockFactory;
 import com.lucasgiancola.Objects.Blocks.BlockPowerUp;
 import com.lucasgiancola.Objects.PowerUps.PowerUp;
 import com.lucasgiancola.Objects.PowerUps.SpeedIncreaser;
@@ -54,9 +57,54 @@ public class SpeedRun extends Level {
 
         this.resetPhysicsWorld();
         this.clearDeadBodies();
-        this.placeInitialBlocks();
 
         this.removeAllPowerUps();
+
+        this.topBlock = insertNewRow();
+    }
+
+    private Block insertNewRow() {
+        float chance = 0.6f;
+        this.currentRow++;
+        Block lastInRow = null;
+
+        for(int col = 0; col < this.maxCols; col++) {
+            if(MathUtils.randomBoolean(chance)) {
+                // Calculate the position of the new block based on the old top block (if there is one)
+                float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+                float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
+
+                if(this.topBlock != null) {
+                    y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+                }
+
+                // Create the new Block
+                lastInRow = BlockFactory.createRandomBlock(this.world);
+                lastInRow.setLocation(this.currentRow, col);
+                lastInRow.setPosition(x, y);
+
+                this.stage.addActor(lastInRow);
+
+//                this.placeBlock(lastInRow, this.currentRow, col);
+            }
+        }
+
+        if(lastInRow == null) {
+            int col = MathUtils.random(0, this.maxCols);
+            // Calculate the position of the new block based on the old block (if there is one)
+            float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+            float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
+
+            if(this.topBlock != null) {
+                y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+            }
+
+            lastInRow = BlockFactory.createRandomBlock(this.world);
+            lastInRow.setLocation(this.currentRow, col);
+            lastInRow.setPosition(x, y);
+        }
+
+        return lastInRow;
     }
 
     // Will create a new ball and place it into the world
