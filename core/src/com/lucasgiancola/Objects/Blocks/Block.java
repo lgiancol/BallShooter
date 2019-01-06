@@ -21,7 +21,11 @@ public class Block extends BaseObject {
     private boolean done = false;
     protected GlyphLayout textLayout;
 
+    protected int row;
+    protected int col;
+
     public static float blockWidth = 0;
+    public static float blockOffset = 20;
 
     public Block(World world, float length) {
         super();
@@ -83,6 +87,21 @@ public class Block extends BaseObject {
 //        blockColour.y = 1f - (float) getCurrentValue() / (float) getValue();
 
         done = getCurrentValue() <= 0;
+    }
+
+    public void setLocation(int row, int col) {
+        this.row = row;
+        this.col = col;
+
+        int minValue = ((this.row - 1) * 3) + 1;
+        int maxValue = minValue + 10;
+
+        this.setValue(MathUtils.random(minValue, maxValue));
+
+        float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+        float y = BallShooter.HEIGHT + (row * Block.blockWidth) + (row * Block.blockOffset);
+
+        this.setPosition(x, y);
     }
 
     @Override

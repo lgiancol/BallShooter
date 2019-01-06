@@ -9,10 +9,7 @@ import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Models.GameModel;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.BaseObject;
-import com.lucasgiancola.Objects.Blocks.Block;
-import com.lucasgiancola.Objects.Blocks.BlockPowerUp;
-import com.lucasgiancola.Objects.Blocks.BlockSpeedIncreaser;
-import com.lucasgiancola.Objects.Blocks.BlockSuperBall;
+import com.lucasgiancola.Objects.Blocks.*;
 import com.lucasgiancola.Objects.Triggers.Destroyer;
 import com.lucasgiancola.Objects.Wall;
 
@@ -62,7 +59,7 @@ public abstract class Level implements ContactListener {
         Will set the size of the blocks and the balls based on how many columns this level will have
      */
     private void setObjectSizes() {
-        Block.blockWidth = (BallShooter.WIDTH / this.maxCols) - 20;
+        Block.blockWidth = ((BallShooter.WIDTH - Block.blockOffset) / this.maxCols) - Block.blockOffset;
         Ball.setRadius((Block.blockWidth / 2) / 3);
     }
 
@@ -141,31 +138,18 @@ public abstract class Level implements ContactListener {
     public void insertNewRow() {
         this.currentRow++;
 
-        int minValue = ((currentRow - 1) * 3) + 1;
-        int maxValue = minValue + 10;
-
-        for(int i = 0; i < this.maxCols; i++) {
+        for(int col = 0; col < this.maxCols; col++) {
             // 40% chance of a block spawning in that column
             if(MathUtils.randomBoolean(0.4f)) {
-                Block block;
-
-                if (MathUtils.randomBoolean(0f)) {
-                    block = new BlockSpeedIncreaser(this.world, Block.blockWidth);
-                } else if (MathUtils.randomBoolean(0f)) {
-                    block = new BlockSuperBall(this.world, Block.blockWidth);
-                } else {
-                    block = new Block(this.world, Block.blockWidth);
-                }
-
-                block.setPosition(
-                        i * block.getWidth() + (Block.blockWidth / 2) + 10,
-                        BallShooter.HEIGHT + (currentRow * Block.blockWidth)
-                );
-                block.setValue(MathUtils.random(minValue, maxValue));
-
-                this.stage.addActor(block);
+                this.placeBlock(BlockFactory.createRandomBlock(this.world), this.currentRow, col);
             }
         }
+    }
+
+    protected void placeBlock(Block toPlace, int row, int col) {
+        toPlace.setLocation(row, col);
+
+        this.stage.addActor(toPlace);
     }
 
     /*
