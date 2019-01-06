@@ -33,8 +33,6 @@ public abstract class Level implements ContactListener {
     protected int currentRow = 0;
     protected float runningTime = 0;
 
-    protected Block topBlock = null;
-
     public static ShapeRenderer renderer = new ShapeRenderer();
 
     public Level(Stage stage, GameModel gameModel) {

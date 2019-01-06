@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
@@ -34,9 +33,8 @@ public class SpeedRun extends Level {
     private int ballPower = baseBallPower;
 
     // Row variables
-    private float newRowCounter = 0f;
-    private float baseNewRowDeltaTime = 1.5f;
-    private float newRowDeltaTime = baseNewRowDeltaTime;
+    private int startingRows = 2;
+    private Block topBlock = null;
 
     // Power-up variables
     private ArrayList<PowerUp> powerUps;
@@ -60,13 +58,15 @@ public class SpeedRun extends Level {
 
         this.removeAllPowerUps();
 
-        this.topBlock = insertNewRow();
+        for(int i = 0; i < this.startingRows; i++) {
+            insertRow();
+        }
     }
 
-    private Block insertNewRow() {
-        float chance = 0.6f;
+    private void insertRow() {
         this.currentRow++;
-        Block lastInRow = null;
+        float chance = 0.5f;
+        Block toInsert = null;
 
         for(int col = 0; col < this.maxCols; col++) {
             if(MathUtils.randomBoolean(chance)) {
@@ -79,17 +79,15 @@ public class SpeedRun extends Level {
                 }
 
                 // Create the new Block
-                lastInRow = BlockFactory.createRandomBlock(this.world);
-                lastInRow.setLocation(this.currentRow, col);
-                lastInRow.setPosition(x, y);
+                toInsert = BlockFactory.createRandomBlock(this.world);
+                toInsert.setLocation(this.currentRow, col);
+                toInsert.setPosition(x, y);
 
-                this.stage.addActor(lastInRow);
-
-//                this.placeBlock(lastInRow, this.currentRow, col);
+                this.stage.addActor(toInsert);
             }
         }
 
-        if(lastInRow == null) {
+        if(toInsert == null) {
             int col = MathUtils.random(0, this.maxCols);
             // Calculate the position of the new block based on the old block (if there is one)
             float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
@@ -99,12 +97,12 @@ public class SpeedRun extends Level {
                 y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
             }
 
-            lastInRow = BlockFactory.createRandomBlock(this.world);
-            lastInRow.setLocation(this.currentRow, col);
-            lastInRow.setPosition(x, y);
+            toInsert = BlockFactory.createRandomBlock(this.world);
+            toInsert.setLocation(this.currentRow, col);
+            toInsert.setPosition(x, y);
         }
 
-        return lastInRow;
+        this.topBlock = toInsert;
     }
 
     // Will create a new ball and place it into the world
@@ -181,7 +179,6 @@ public class SpeedRun extends Level {
         }
 
         this.newBallDeltaTime = this.baseNewBallDeltaTime;
-        this.newRowDeltaTime = this.baseNewRowDeltaTime;
     }
 
     /*
@@ -204,7 +201,6 @@ public class SpeedRun extends Level {
         super.update(delta);
 
         this.newBallCounter += delta;
-        this.newRowCounter += delta;
 
         this.updatePowerUps(delta);
 
@@ -215,10 +211,8 @@ public class SpeedRun extends Level {
             this.newBallCounter = 0;
         }
 
-        if(this.topBlock.getY() <= BallShooter.HEIGHT + (Block.blockOffset) + Block.blockWidth) {
-            this.topBlock = this.insertNewRow();
-
-            this.newRowCounter = 0;
+        if(this.topBlock.getY() <= BallShooter.HEIGHT + (this.startingRows * Block.blockOffset) + (this.startingRows + Block.blockWidth)) {
+            this.insertRow();
         }
     }
 }
