@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.BaseObject;
@@ -29,8 +30,10 @@ public abstract class Level implements ContactListener {
     private boolean isLoaded = false;
     protected int maxCols = 8;
     protected int maxRows = -1; // -1 means that there is not a set number of rows
-    private int currentRow = 0;
+    protected int currentRow = 0;
     protected float runningTime = 0;
+
+    protected Block topBlock = null;
 
     public static ShapeRenderer renderer = new ShapeRenderer();
 
@@ -134,19 +137,53 @@ public abstract class Level implements ContactListener {
         int startingRows = 2;
 
         for(int i = 0; i < startingRows; i++) {
-            insertNewRow();
+            this.topBlock = insertNewRow();
         }
     }
 
-    public void insertNewRow() {
+    public Block insertNewRow() {
+        float chance = 0.6f;
         this.currentRow++;
+        Block lastInRow = null;
 
         for(int col = 0; col < this.maxCols; col++) {
-            // 40% chance of a block spawning in that column
-            if(MathUtils.randomBoolean(0.4f)) {
-                this.placeBlock(BlockFactory.createRandomBlock(this.world), this.currentRow, col);
+            if(MathUtils.randomBoolean(chance)) {
+                // Calculate the position of the new block based on the old top block (if there is one)
+                float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+                float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
+
+                if(this.topBlock != null) {
+                    y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+                }
+
+                // Create the new Block
+                lastInRow = BlockFactory.createRandomBlock(this.world);
+                lastInRow.setLocation(this.currentRow, col);
+                lastInRow.setPosition(x, y);
+
+                this.stage.addActor(lastInRow);
+
+//                this.placeBlock(lastInRow, this.currentRow, col);
             }
         }
+
+        if(lastInRow == null) {
+            int col = MathUtils.random(0, this.maxCols);
+            // Calculate the position of the new block based on the old block (if there is one)
+            float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+            float y = BallShooter.HEIGHT + (this.currentRow * Block.blockWidth) + (this.currentRow * Block.blockOffset);
+
+            if(this.topBlock != null) {
+                y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+            }
+
+            lastInRow = BlockFactory.createRandomBlock(this.world);
+            lastInRow.setLocation(this.currentRow, col);
+            lastInRow.setPosition(x, y);
+//            this.placeBlock(lastInRow, this.currentRow, MathUtils.random(0, this.maxCols));
+        }
+
+        return lastInRow;
     }
 
     protected void placeBlock(Block toPlace, int row, int col) {

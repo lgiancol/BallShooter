@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.World;
 public class BlockFactory {
 
     public static Block createRandomBlock(World addTo) {
-        if (MathUtils.randomBoolean(0.4f)) {
+        if (MathUtils.randomBoolean(0.1f)) {
             return new BlockSpeedIncreaser(addTo, Block.blockWidth);
-        } else if (MathUtils.randomBoolean(0.4f)) {
+        } else if (MathUtils.randomBoolean(0.06f)) {
             return new BlockSuperBall(addTo, Block.blockWidth);
         } else {
             return new Block(addTo, Block.blockWidth);

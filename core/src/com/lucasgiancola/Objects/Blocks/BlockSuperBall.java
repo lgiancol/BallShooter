@@ -14,7 +14,7 @@ public class BlockSuperBall extends BlockPowerUp {
         super(world, length);
         setColor(Color.GREEN);
 
-        powerUp = new SuperBall(2, 7);
+        powerUp = new SuperBall(2, 3);
     }
 
     @Override

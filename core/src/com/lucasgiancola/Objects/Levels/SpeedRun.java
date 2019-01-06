@@ -49,6 +49,8 @@ public class SpeedRun extends Level {
 
     protected void restartLevel() {
         this.isOver = false;
+        this.currentRow = 0;
+        this.topBlock = null;
 
         this.resetPhysicsWorld();
         this.clearDeadBodies();
@@ -117,7 +119,7 @@ public class SpeedRun extends Level {
     private void removePowerUp(PowerUp toRemove) {
         if(toRemove instanceof SpeedIncreaser) {
             float newDeltaTime = this.newBallDeltaTime + ((SpeedIncreaser) toRemove).getSpeedIncrease();
-            this.newBallCounter = Math.min(newDeltaTime, this.baseNewBallDeltaTime);
+            this.newBallDeltaTime = Math.min(newDeltaTime, this.baseNewBallDeltaTime);
         } else if(toRemove instanceof SuperBall) {
             this.ballPower /= ((SuperBall) toRemove).getMultiplier();
         }
@@ -129,6 +131,9 @@ public class SpeedRun extends Level {
         for(int i = this.powerUps.size() - 1; i >= 0; i--) {
             removePowerUp(this.powerUps.get(i));
         }
+
+        this.newBallDeltaTime = this.baseNewBallDeltaTime;
+        this.newRowDeltaTime = this.baseNewRowDeltaTime;
     }
 
     /*
@@ -162,8 +167,8 @@ public class SpeedRun extends Level {
             this.newBallCounter = 0;
         }
 
-        if(this.newRowCounter >= this.newRowDeltaTime) {
-            this.insertNewRow();
+        if(this.topBlock.getY() <= BallShooter.HEIGHT + (Block.blockOffset) + Block.blockWidth) {
+            this.topBlock = this.insertNewRow();
 
             this.newRowCounter = 0;
         }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Align;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.Balls.Ball;
@@ -18,7 +19,7 @@ public class Block extends BaseObject {
     private int currentValue = 0;
     private float angle = 0;
     private float rotationSpeed = 0;
-    private float moveSpeed = 0.6f;
+    private float moveSpeed = 1f;
     private boolean done = false;
     protected GlyphLayout textLayout;
 
@@ -63,7 +64,9 @@ public class Block extends BaseObject {
     public void setCurrentValue(int value) {
         this.currentValue = value;
 
-        textLayout = new GlyphLayout(BallShooter.font, "" + this.currentValue);
+        String text = "" + this.currentValue;
+//        textLayout.setText(BallShooter.font, "" + this.currentValue);
+        textLayout.setText(BallShooter.font, "" + this.currentValue, 0, text.length(), Color.WHITE, Block.blockWidth, Align.center, false, null);
     }
 
     public int getValue() { return this.maxValue; }
@@ -99,10 +102,10 @@ public class Block extends BaseObject {
 
         this.setValue(MathUtils.random(minValue, maxValue));
 
-        float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
-        float y = BallShooter.HEIGHT + (row * Block.blockWidth) + (row * Block.blockOffset);
-
-        this.setPosition(x, y);
+//        float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);
+//        float y = BallShooter.HEIGHT + (row * Block.blockWidth) + (row * Block.blockOffset);
+//
+//        this.setPosition(x, y);
     }
 
     @Override

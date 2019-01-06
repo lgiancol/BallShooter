@@ -10,6 +10,6 @@ public class BlockSpeedIncreaser extends BlockPowerUp {
         super(world, length);
         setColor(Color.BLUE);
 
-        powerUp = new SpeedIncreaser(0.025f, 7);
+        powerUp = new SpeedIncreaser(0.025f, 4);
     }
 }
