@@ -16,6 +16,7 @@ import com.lucasgiancola.Objects.Blocks.BlockPowerUp;
 import com.lucasgiancola.Objects.PowerUps.PowerUp;
 import com.lucasgiancola.Objects.PowerUps.SpeedIncreaser;
 import com.lucasgiancola.Objects.PowerUps.SuperBall;
+import com.lucasgiancola.Objects.UI.Label;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,12 @@ public class SpeedRun extends Level {
         stage.addActor(helper);
     }
 
+    protected void setupGUI() {
+        Label timer = new Label("Time: " + this.runningTime);
+        timer.setPosition(50, BallShooter.HEIGHT - 200);
+        this.gui.addElement("timer", timer);
+    }
+
     /*
         Makes sure all variables that control state of the level are reset
      */
@@ -55,6 +62,7 @@ public class SpeedRun extends Level {
         this.isOver = false;
         this.currentRow = 0;
         this.topBlock = null;
+        this.runningTime = 0;
 
         this.resetPhysicsWorld();
         this.clearDeadBodies();
@@ -225,5 +233,8 @@ public class SpeedRun extends Level {
         if(this.shouldCreateRow()) {
             this.insertRow();
         }
+
+        // Temp
+        this.gui.updateLabel("timer", "Time: " + this.runningTime);
     }
 }

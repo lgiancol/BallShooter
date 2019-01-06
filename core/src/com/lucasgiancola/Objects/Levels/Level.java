@@ -1,17 +1,16 @@
 package com.lucasgiancola.Objects.Levels;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.lucasgiancola.BallShooter;
-import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.BaseObject;
 import com.lucasgiancola.Objects.Blocks.*;
+import com.lucasgiancola.Objects.UI.GUI;
 import com.lucasgiancola.Objects.Triggers.Destroyer;
 import com.lucasgiancola.Objects.Wall;
 
@@ -28,16 +27,17 @@ public abstract class Level implements ContactListener {
     // Level variables
     protected boolean isOver = false;
     private boolean isLoaded = false;
-    protected int maxCols = 8;
-    protected int maxRows = -1; // -1 means that there is not a set number of rows
+    protected int maxCols = 7;
     protected int currentRow = 0;
     protected float runningTime = 0;
+    protected GUI gui;
 
     public static ShapeRenderer renderer = new ShapeRenderer();
 
     public Level(Stage stage, GameModel gameModel) {
         this.stage = stage;
         this.gameModel = gameModel;
+        this.gui = new GUI(this.stage);
 
         objectsToDestroy = new ArrayList<BaseObject>();
 
@@ -56,6 +56,7 @@ public abstract class Level implements ContactListener {
     public void init() {
         this.setObjectSizes();
         this.setupWallBoundaries();
+        this.setupGUI();
         this.restartLevel();
     }
 
@@ -95,6 +96,8 @@ public abstract class Level implements ContactListener {
         wall.setName("right");
         this.stage.addActor(wall);
     }
+
+    protected abstract void setupGUI();
 
     /*
         Will reset the level and start from the beginning
