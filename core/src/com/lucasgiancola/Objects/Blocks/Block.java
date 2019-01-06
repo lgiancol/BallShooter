@@ -11,6 +11,7 @@ import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.BaseObject;
+import com.lucasgiancola.Objects.Levels.Level;
 
 public class Block extends BaseObject {
     private int maxValue = 0;
@@ -126,12 +127,12 @@ public class Block extends BaseObject {
         this.update();
 
         batch.end();
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(getColor());
+        Level.renderer.begin(ShapeRenderer.ShapeType.Filled);
+        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
+        Level.renderer.setColor(getColor());
 
-        sr.rect(getX(), getY(), getWidth(), getHeight());
-        sr.end();
+        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
+        Level.renderer.end();
         batch.begin();
 
         BallShooter.font.draw(

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.lucasgiancola.Constants;
+import com.lucasgiancola.Objects.Levels.Level;
 
 public class Wall extends BaseObject {
 
@@ -58,13 +59,13 @@ public class Wall extends BaseObject {
         this.update();
         batch.end();
 
-        sr.begin(ShapeRenderer.ShapeType.Line);
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(Color.WHITE);
+        Level.renderer.begin(ShapeRenderer.ShapeType.Line);
+        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
+        Level.renderer.setColor(Color.WHITE);
 
-        sr.rect(getX(), getY(), getWidth(), getHeight());
+        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
 
-        sr.end();
+        Level.renderer.end();
         batch.begin();
 
     }

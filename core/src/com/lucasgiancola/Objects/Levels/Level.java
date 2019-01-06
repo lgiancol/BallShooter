@@ -1,5 +1,6 @@
 package com.lucasgiancola.Objects.Levels;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -30,6 +31,8 @@ public abstract class Level implements ContactListener {
     protected int maxRows = -1; // -1 means that there is not a set number of rows
     private int currentRow = 0;
     protected float runningTime = 0;
+
+    public static ShapeRenderer renderer = new ShapeRenderer();
 
     public Level(Stage stage, GameModel gameModel) {
         this.stage = stage;

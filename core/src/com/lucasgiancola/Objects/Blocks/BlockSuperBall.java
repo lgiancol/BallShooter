@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Objects.Levels.Level;
 import com.lucasgiancola.Objects.PowerUps.SuperBall;
 
 public class BlockSuperBall extends BlockPowerUp {
@@ -21,23 +22,23 @@ public class BlockSuperBall extends BlockPowerUp {
         super.update();
 
         batch.end();
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(getColor());
+        Level.renderer.begin(ShapeRenderer.ShapeType.Filled);
+        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
+        Level.renderer.setColor(getColor());
 
-        sr.rect(getX(), getY(), getWidth(), getHeight());
+        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
 
         // Ball in middle
-        sr.setColor(Color.ORANGE);
-        sr.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
+        Level.renderer.setColor(Color.ORANGE);
+        Level.renderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
 
-        sr.end();
+        Level.renderer.end();
 
-        sr.begin(ShapeRenderer.ShapeType.Line);
-        sr.setColor(Color.BLACK);
-        sr.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
+        Level.renderer.begin(ShapeRenderer.ShapeType.Line);
+        Level.renderer.setColor(Color.BLACK);
+        Level.renderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
 
-        sr.end();
+        Level.renderer.end();
         batch.begin();
 
         BallShooter.font.draw(

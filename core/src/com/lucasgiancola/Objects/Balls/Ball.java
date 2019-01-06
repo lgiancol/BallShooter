@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.BaseObject;
+import com.lucasgiancola.Objects.Levels.Level;
 
 public class Ball extends BaseObject {
     private float shootAngle = 180f;
@@ -97,13 +98,13 @@ public class Ball extends BaseObject {
         this.update();
 
         batch.end();
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setProjectionMatrix(batch.getProjectionMatrix());
-        sr.setColor(getColor());
+        Level.renderer.begin(ShapeRenderer.ShapeType.Filled);
+        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
+        Level.renderer.setColor(getColor());
 
-        sr.circle(getX(), getY(), Ball.getRadius());
+        Level.renderer.circle(getX(), getY(), Ball.getRadius());
 
-        sr.end();
+        Level.renderer.end();
         batch.begin();
     }
 
