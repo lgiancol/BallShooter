@@ -1,4 +1,0 @@
-#Sun Jan 06 00:49:02 EST 2019
-base.0=/Users/giancola/Documents/dev/games/Learning/android/build/intermediates/transforms/dexMerger/debug/2
-path.0=classes.dex
-renamed.0=classes.dex

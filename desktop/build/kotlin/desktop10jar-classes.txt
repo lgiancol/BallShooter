@@ -1,1 +1,0 @@
-/Users/giancola/Documents/dev/games/Learning/desktop/build/classes/java/main/com/lucasgiancola/desktop/DesktopLauncher.class
