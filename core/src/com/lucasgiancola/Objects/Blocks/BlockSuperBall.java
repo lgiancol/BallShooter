@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lucasgiancola.BallShooter;
-import com.lucasgiancola.Objects.Levels.Level;
 import com.lucasgiancola.Objects.PowerUps.SuperBall;
 
 public class BlockSuperBall extends BlockPowerUp {
@@ -22,23 +21,23 @@ public class BlockSuperBall extends BlockPowerUp {
         super.update();
 
         batch.end();
-        Level.renderer.begin(ShapeRenderer.ShapeType.Filled);
-        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
-        Level.renderer.setColor(getColor());
+        BallShooter.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        BallShooter.shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        BallShooter.shapeRenderer.setColor(getColor());
 
-        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
+        BallShooter.shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
 
         // Ball in middle
-        Level.renderer.setColor(Color.ORANGE);
-        Level.renderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
+        BallShooter.shapeRenderer.setColor(Color.ORANGE);
+        BallShooter.shapeRenderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
 
-        Level.renderer.end();
+        BallShooter.shapeRenderer.end();
 
-        Level.renderer.begin(ShapeRenderer.ShapeType.Line);
-        Level.renderer.setColor(Color.BLACK);
-        Level.renderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
+        BallShooter.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        BallShooter.shapeRenderer.setColor(Color.BLACK);
+        BallShooter.shapeRenderer.circle(getX() + (getWidth() / 2), getY() + (getHeight() / 2), Math.max(textLayout.width, textLayout.height));
 
-        Level.renderer.end();
+        BallShooter.shapeRenderer.end();
         batch.begin();
 
         BallShooter.font.draw(

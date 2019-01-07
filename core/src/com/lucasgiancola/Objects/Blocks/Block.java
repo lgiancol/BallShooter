@@ -130,12 +130,12 @@ public class Block extends BaseObject {
         this.update();
 
         batch.end();
-        Level.renderer.begin(ShapeRenderer.ShapeType.Filled);
-        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
-        Level.renderer.setColor(getColor());
+        BallShooter.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        BallShooter.shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        BallShooter.shapeRenderer.setColor(getColor());
 
-        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
-        Level.renderer.end();
+        BallShooter.shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
+        BallShooter.shapeRenderer.end();
         batch.begin();
 
         BallShooter.font.draw(

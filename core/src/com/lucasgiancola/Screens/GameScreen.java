@@ -2,8 +2,8 @@ package com.lucasgiancola.Screens;
 
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Models.GameModel;
-import com.lucasgiancola.Objects.Levels.Level;
 import com.lucasgiancola.Objects.Levels.SpeedRun;
+import com.lucasgiancola.Objects.Levels.Level;
 
 public class GameScreen extends AbstractScreen {
     private GameModel gameModel;

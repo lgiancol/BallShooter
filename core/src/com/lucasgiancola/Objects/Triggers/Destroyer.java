@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.BaseObject;
-import com.lucasgiancola.Objects.Levels.Level;
 
 public class Destroyer extends BaseObject {
 
@@ -60,13 +60,13 @@ public class Destroyer extends BaseObject {
         this.update();
         batch.end();
 
-        Level.renderer.begin(ShapeRenderer.ShapeType.Line);
-        Level.renderer.setProjectionMatrix(batch.getProjectionMatrix());
-        Level.renderer.setColor(Color.GREEN);
+        BallShooter.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        BallShooter.shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        BallShooter.shapeRenderer.setColor(Color.GREEN);
 
-        Level.renderer.rect(getX(), getY(), getWidth(), getHeight());
+        BallShooter.shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
 
-        Level.renderer.end();
+        BallShooter.shapeRenderer.end();
         batch.begin();
 
     }

@@ -7,6 +7,7 @@ import com.lucasgiancola.BallShooter;
 
 public class GameModel {
     private boolean gameInProgress = false;
+    public float runningTime = 0;
 
     private Vector2 pivot;
     private Vector2 touch = null;
@@ -25,6 +26,7 @@ public class GameModel {
 
     // Update anything that has to do with the model of the game
     public void update(float delta) {
+        this.runningTime += delta;
 
         if(Gdx.input.isTouched()) {
             this.updateTouchPositions();

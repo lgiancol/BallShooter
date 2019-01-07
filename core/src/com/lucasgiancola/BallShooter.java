@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.lucasgiancola.Managers.Assets;
 import com.lucasgiancola.Screens.GameScreen;
 
@@ -12,6 +13,7 @@ public class BallShooter extends Game {
 	public static float HEIGHT = 16;
 
 	public static BitmapFont font;
+	public static ShapeRenderer shapeRenderer;
 
 	private void showGameScreen() {
 		this.setScreen(new GameScreen(this));
@@ -23,6 +25,7 @@ public class BallShooter extends Game {
 		updateDimensions();
 
 		BallShooter.font = new BitmapFont(Gdx.files.internal("data/casual.fnt"));
+		BallShooter.shapeRenderer = new ShapeRenderer();
 
 		this.showGameScreen();
 	}
@@ -40,6 +43,8 @@ public class BallShooter extends Game {
 	@Override
 	public void dispose () {
 		Assets.getInstance().dispose();
+		BallShooter.font.dispose();
+		BallShooter.shapeRenderer.dispose();
 
 		this.getScreen().dispose();
 	}

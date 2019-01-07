@@ -1,14 +1,13 @@
 package com.lucasgiancola.Objects.Levels;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
-import com.lucasgiancola.Objects.AngleHelper;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.lucasgiancola.Objects.Balls.Ball;
+import com.lucasgiancola.Objects.Balls.BallFactory;
 import com.lucasgiancola.Objects.BaseObject;
 import com.lucasgiancola.Objects.Blocks.Block;
 import com.lucasgiancola.Objects.Blocks.BlockFactory;
@@ -16,75 +15,97 @@ import com.lucasgiancola.Objects.Blocks.BlockPowerUp;
 import com.lucasgiancola.Objects.PowerUps.PowerUp;
 import com.lucasgiancola.Objects.PowerUps.SpeedIncreaser;
 import com.lucasgiancola.Objects.PowerUps.SuperBall;
-import com.lucasgiancola.Objects.UI.Label;
+import com.lucasgiancola.Objects.Triggers.Destroyer;
+import com.lucasgiancola.Objects.Wall;
 
 import java.util.ArrayList;
 
 public class SpeedRun extends Level {
-    // Debug variables
-    public boolean createBalls = true;
-    public boolean createBlocks = true;
-    public AngleHelper helper = null;
+    private boolean isOver = false;
 
-    // Ball variables
-    private float newBallCounter = 0f;
-    private float baseNewBallDeltaTime = 0.15f;
-    private float newBallDeltaTime = baseNewBallDeltaTime;
-    private int baseBallPower = 1;
-    private int ballPower = baseBallPower;
+    // Power Up variables
+    private ArrayList<PowerUp> powerUps;
 
-    // Row variables
-    private int startingRows = 2;
+    // Level generation variables
+    private int maxCols = 7;
+    private int currentRow = 0;
     private Block topBlock = null;
 
-    // Power-up variables
-    private ArrayList<PowerUp> powerUps;
+    // Ball shooting variables
+    private float baseNewBallDeltaTime = 0.3f; // The default time between balls being shot
+    private float newBallDeltaTime = baseNewBallDeltaTime;
+    private float newBallCurrentTime = 0;
+
+    private ArrayList<BaseObject> objectsToDestroy;
 
     public SpeedRun(Stage stage, GameModel gameModel) {
         super(stage, gameModel);
 
+        this.objectsToDestroy = new ArrayList<BaseObject>();
         this.powerUps = new ArrayList<PowerUp>();
-
-        helper = new AngleHelper(new Vector2(BallShooter.WIDTH / 2, 0));
-        stage.addActor(helper);
     }
 
-    protected void setupGUI() {
-        Label timer = new Label("Time: " + this.runningTime);
-        timer.setPosition(50, BallShooter.HEIGHT - 200);
-        this.gui.addElement("timer", timer);
+    @Override
+    public void init() {
+        this.setObjectSizes();
+        this.setupBoundaries();
+        this.insertRow();
     }
 
-    /*
-        Makes sure all variables that control state of the level are reset
+    /**
+     * Will calculate the size of the blocks and the balls based on the width of the screen and how many columns are allowed
      */
-    protected void restartLevel() {
+    private void setObjectSizes() {
+        Block.blockWidth = ((BallShooter.WIDTH - Block.blockOffset) / this.maxCols) - Block.blockOffset;
+        Ball.setRadius((Block.blockWidth / 2) / 3);
+    }
+
+    @Override
+    void setupBoundaries() {
+        // Top
+        Wall wall = new Wall(this.world, (int) BallShooter.WIDTH * 2, 2);
+        wall.setPosition(BallShooter.WIDTH / 2, BallShooter.HEIGHT);
+        wall.setName("Top");
+        this.stage.addActor(wall);
+
+        // The "wall" at the bottom that will destroy the blocks
+        Destroyer blockBreaker = new Destroyer(this.world, (int) BallShooter.WIDTH * 2, 20);
+        blockBreaker.setPosition(BallShooter.WIDTH / 2, -((Ball.getRadius() * 2) * 3));
+        blockBreaker.setName("bottom");
+        this.stage.addActor(blockBreaker);
+
+        // Left
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT * 2);
+        wall.setPosition(0, BallShooter.HEIGHT / 2);
+        wall.setName("Left");
+        this.stage.addActor(wall);
+
+        // Right
+        wall = new Wall(this.world, 2, (int) BallShooter.HEIGHT * 2);
+        wall.setPosition(BallShooter.WIDTH, BallShooter.HEIGHT / 2);
+        wall.setName("right");
+        this.stage.addActor(wall);
+    }
+
+    @Override
+    void restart() {
         this.isOver = false;
-        this.currentRow = 0;
-        this.topBlock = null;
-        this.runningTime = 0;
-
-        this.resetPhysicsWorld();
-        this.clearDeadBodies();
-
+        this.resetWorld();
+        this.setupBoundaries();
+        this.objectsToDestroy = new ArrayList<BaseObject>();
         this.removeAllPowerUps();
 
-        for(int i = 0; i < this.startingRows; i++) {
-            insertRow();
-        }
+        this.insertRow();
     }
-    // CREATING/MANAGING PHYSICS OBJECTS IN THE WORLD
 
-    /*
-        Will insert at least 1 block in a new row
+    /**
+     * Will create a new row of blocks
      */
     private void insertRow() {
-        this.currentRow++;
-        float chance = 0.5f;
         Block toInsert = null;
 
         for(int col = 0; col < this.maxCols; col++) {
-            if(MathUtils.randomBoolean(chance)) {
+            if(MathUtils.randomBoolean(0.5f)) {
                 toInsert = this.createBlock(this.currentRow, col);
 
                 this.stage.addActor(toInsert);
@@ -92,19 +113,17 @@ public class SpeedRun extends Level {
         }
 
         if(toInsert == null) {
-            int col = MathUtils.random(0, this.maxCols);
-            toInsert = this.createBlock(this.currentRow, col);
+            toInsert = createBlock(this.currentRow, MathUtils.random(0, this.maxCols));
         }
 
         this.topBlock = toInsert;
     }
 
-    private boolean shouldCreateRow() {
-        return this.topBlock == null || this.topBlock.getY() <= BallShooter.HEIGHT + (this.startingRows * Block.blockOffset) + (this.startingRows + Block.blockWidth);
-    }
-
-    /*
-        Will create a block at the current row, col location or above the previously placed block
+    /**
+     * Will create a new block and position it properly in the game
+     * @param row Only used when it is the first row of blocks being placed
+     * @param col The column to place it in
+     * @return The new block
      */
     public Block createBlock(int row, int col) {
         Block block;
@@ -123,118 +142,180 @@ public class SpeedRun extends Level {
         return block;
     }
 
-    // Will create a new ball and place it into the world
-    private void shootBall() {
-        Ball b = new Ball(this.world);
+    public void shootBall() {
+        Ball b = BallFactory.baseBall(this.world);
         b.setPosition((BallShooter.WIDTH / 2), 0);
-        b.setHitValue(this.ballPower);
         b.setShootAngle(gameModel.getTouchAngle());
         b.launch();
 
         this.stage.addActor(b);
+        this.newBallCurrentTime = 0;
     }
 
-    // PHYSICS BODIES SECTION
-    protected void destroyBodies() {
-        if(!this.objectsToDestroy.isEmpty()) {
-            for(int i = this.objectsToDestroy.size() - 1; i >= 0; i--) {
-                BaseObject obj = this.objectsToDestroy.get(i);
-                this.destroyBody(obj.getBody(), true);
-            }
-        }
-
-        this.objectsToDestroy.removeAll(this.objectsToDestroy);
-    }
-
-    /*
-        Since this level can have power ups, we need to make sure to apply the power up if it is available
+    /**
+     * Figures out if a new block should be spawned based on the location of the block that is in the newest row
+     * @return Whether or not a new row should spawn
      */
-    @Override
-    protected void destroyBody(Body toDestroy, boolean force) {
-        this.applyPowerUp(toDestroy.getUserData());
-
-        super.destroyBody(toDestroy, force);
+    private boolean shouldCreateRow() {
+        return this.topBlock == null || this.topBlock.getY() <= BallShooter.HEIGHT + Block.blockOffset + Block.blockWidth;
     }
 
-    // POWER UP SECTION
-    /*
-        Will add a power up the level
-     */
-    private void addPowerUp(PowerUp toAdd) {
-        if(toAdd instanceof SpeedIncreaser) {
-            float newDeltaTime = this.newBallDeltaTime - ((SpeedIncreaser) toAdd).getSpeedIncrease();
-            this.newBallDeltaTime = Math.max(newDeltaTime, 0.05f);
-        } else if(toAdd instanceof SuperBall) {
-            this.ballPower *= ((SuperBall) toAdd).getMultiplier();
-        }
-
-        toAdd.activate();
-        this.powerUps.add(toAdd);
-    }
-
-    /*
-        Will remove a power up from a level
+    /**
+     * Will remove a power up from the level by setting the proper variables back to what they would be without the power up
+     * @param toRemove The power up to remove
      */
     private void removePowerUp(PowerUp toRemove) {
         if(toRemove instanceof SpeedIncreaser) {
             float newDeltaTime = this.newBallDeltaTime + ((SpeedIncreaser) toRemove).getSpeedIncrease();
             this.newBallDeltaTime = Math.min(newDeltaTime, this.baseNewBallDeltaTime);
         } else if(toRemove instanceof SuperBall) {
-            this.ballPower /= ((SuperBall) toRemove).getMultiplier();
+//            this.ballPower /= ((SuperBall) toRemove).getMultiplier();
         }
 
         this.powerUps.remove(toRemove);
     }
 
-    private void applyPowerUp(Object userData) {
-        if(userData instanceof BlockPowerUp) {
-            this.addPowerUp(((BlockPowerUp) userData).getPowerUp());
-        }
-    }
-
     private void removeAllPowerUps() {
-        for(int i = this.powerUps.size() - 1; i >= 0; i--) {
-            removePowerUp(this.powerUps.get(i));
-        }
+        this.powerUps = new ArrayList<PowerUp>(); // We don't need to worry about removing all the power ups properly since we are resetting back to base
 
         this.newBallDeltaTime = this.baseNewBallDeltaTime;
     }
 
-    /*
-        Updates a power up so it can be removed it is over
-     */
-    private void updatePowerUps(float delta) {
-        for(int i = this.powerUps.size() - 1; i >= 0; i--) {
-            PowerUp p = this.powerUps.get(i);
-            p.update(delta);
+    /* Update the level and the world */
 
-            if(!p.isActive) {
-                this.removePowerUp(p);
+    /**
+     * After each world step, some bodies may have collided with one another. This method makes sure that when this
+     *  happens, they are removed from the ArrayList.
+     */
+    private void handleDestroyedObjects() {
+        if(!this.objectsToDestroy.isEmpty()) {
+            for(BaseObject toDestroy: this.objectsToDestroy) {
+                if(toDestroy instanceof BlockPowerUp) {
+//                    this.appyPowerUp(toDestroy);
+                }
+
+                this.removeBody(toDestroy.getBody());
             }
+
+            this.objectsToDestroy = new ArrayList<BaseObject>();
         }
     }
 
-    // UPDATE AND RENDER FOR THE LEVEL
-    @Override
+    public void step(final float step, final int velIts, final int posIts) {
+        this.world.step(step, velIts, posIts);
+    }
+
     public void update(float delta) {
-        super.update(delta);
+        this.newBallCurrentTime += delta;
 
-        this.newBallCounter += delta;
+        this.handleDestroyedObjects();
 
-        this.updatePowerUps(delta);
-
-        // If the new ball counter is greater than or equal to the time it takes to create a new ball, create a new ball
-        if(this.newBallCounter >= this.newBallDeltaTime) {
-            this.shootBall();
-
-            this.newBallCounter = 0;
+        if(this.isOver) {
+            this.restart();
         }
 
         if(this.shouldCreateRow()) {
             this.insertRow();
         }
 
-        // Temp
-        this.gui.updateLabel("timer", "Time: " + this.runningTime);
+        if(this.newBallCurrentTime >= this.newBallDeltaTime) {
+            this.shootBall();
+        }
+    }
+
+    /* METHODS THAT HAVE TO DO WITH PHYSICS CONTACTS */
+    private Block getBlockFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
+        }
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Block) {
+            return (Block) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    private Ball getBallFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    private Destroyer getDestroyerFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
+            return (Destroyer) temp.getBody().getUserData();
+        }
+
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
+            return (Destroyer) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Ball ball = getBallFromContact(contact);
+        Block block = getBlockFromContact(contact);
+
+        // If it's a ball hitting a block
+        if(block != null && ball != null) {
+            block.hit(ball);
+
+            if(block.shouldDestroy()) {
+                if(!this.objectsToDestroy.contains(block)) {
+                    this.objectsToDestroy.add(block);
+                }
+            }
+
+            return;
+        }
+
+        Destroyer destroyer = getDestroyerFromContact(contact);
+
+        if(destroyer != null && ball != null) {
+            if(!this.objectsToDestroy.contains(ball)) {
+                this.objectsToDestroy.add(ball);
+            }
+
+            return;
+        }
+
+        // Block hitting wall
+        if(destroyer != null && block != null) {
+            this.isOver = true;
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 }
