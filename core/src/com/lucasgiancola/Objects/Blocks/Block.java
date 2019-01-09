@@ -97,9 +97,11 @@ public class Block extends BaseObject {
         this.row = row;
         this.col = col;
 
-        int minValue = ((this.row - 1) * 3) + 1;
+
+        int minValue = (this.row * 3) + 1;
         int maxValue = minValue + 10;
 
+        System.out.println("Row: " + this.row + " Min Value: " + minValue);
         this.setValue(MathUtils.random(minValue, maxValue));
 
 //        float x = col * Block.blockWidth + (Block.blockWidth / 2) + ((col + 1) * Block.blockOffset);

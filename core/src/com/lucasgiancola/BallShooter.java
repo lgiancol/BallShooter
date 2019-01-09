@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.lucasgiancola.Managers.Assets;
+import com.lucasgiancola.Models.PlayerModel;
 import com.lucasgiancola.Screens.GameScreen;
 
 public class BallShooter extends Game {
