@@ -6,12 +6,14 @@ import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Models.GameModel;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.lucasgiancola.Models.PlayerModel;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.Balls.BallFactory;
 import com.lucasgiancola.Objects.BaseObject;
 import com.lucasgiancola.Objects.Blocks.Block;
 import com.lucasgiancola.Objects.Blocks.BlockFactory;
 import com.lucasgiancola.Objects.Blocks.BlockPowerUp;
+import com.lucasgiancola.Objects.Blocks.BlockStar;
 import com.lucasgiancola.Objects.PowerUps.PowerUp;
 import com.lucasgiancola.Objects.PowerUps.SpeedIncreaser;
 import com.lucasgiancola.Objects.PowerUps.SuperBall;
@@ -32,7 +34,7 @@ public class SpeedRun extends Level {
     private Block topBlock = null;
 
     // Ball shooting variables
-    private float baseNewBallDeltaTime = 0.3f; // The default time between balls being shot
+    private float baseNewBallDeltaTime = PlayerModel.instance.ballDeltaTime; // The default time between balls being shot
     private float newBallDeltaTime = baseNewBallDeltaTime;
     private float newBallCurrentTime = 0;
 
@@ -192,6 +194,9 @@ public class SpeedRun extends Level {
             for(BaseObject toDestroy: this.objectsToDestroy) {
                 if(toDestroy instanceof BlockPowerUp) {
 //                    this.appyPowerUp(toDestroy);
+                } else if(toDestroy instanceof BlockStar) {
+                    PlayerModel.instance.addStar();
+                    System.out.println("Added new star: " + PlayerModel.instance.starCount);
                 }
 
                 this.removeBody(toDestroy.getBody());

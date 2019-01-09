@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.lucasgiancola.Managers.Assets;
+import com.lucasgiancola.Models.PlayerModel;
 import com.lucasgiancola.Screens.GameScreen;
 
 public class BallShooter extends Game {
@@ -22,6 +23,7 @@ public class BallShooter extends Game {
 	@Override
 	public void create () {
 		Assets.getInstance().load(); // Will load all necessary assets for the game
+		PlayerModel.instance.setStarCount(0);
 		updateDimensions();
 
 		BallShooter.font = new BitmapFont(Gdx.files.internal("data/casual.fnt"));
