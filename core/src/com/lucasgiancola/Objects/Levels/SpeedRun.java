@@ -92,6 +92,8 @@ public class SpeedRun extends Level {
     @Override
     void restart() {
         this.isOver = false;
+        this.currentRow = 0;
+        this.topBlock = null;
         this.resetWorld();
         this.setupBoundaries();
         this.objectsToDestroy = new ArrayList<BaseObject>();
@@ -117,6 +119,8 @@ public class SpeedRun extends Level {
         if(toInsert == null) {
             toInsert = createBlock(this.currentRow, MathUtils.random(0, this.maxCols));
         }
+
+        this.currentRow++;
 
         this.topBlock = toInsert;
     }

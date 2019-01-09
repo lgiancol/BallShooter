@@ -23,7 +23,6 @@ public class BallShooter extends Game {
 	@Override
 	public void create () {
 		Assets.getInstance().load(); // Will load all necessary assets for the game
-		PlayerModel.instance.setStarCount(0);
 		updateDimensions();
 
 		BallShooter.font = new BitmapFont(Gdx.files.internal("data/casual.fnt"));
