@@ -2,9 +2,9 @@ package com.lucasgiancola.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lucasgiancola.BallShooter;
@@ -33,15 +33,17 @@ public class BaseScreen implements Screen {
 
         this.uiLayer = new Stage(this.graphicsLayer.getViewport());
 
-        Gdx.input.setInputProcessor(this.graphicsLayer);
+        InputMultiplexer inputHandler = new InputMultiplexer();
+        inputHandler.addProcessor(this.graphicsLayer);
+        inputHandler.addProcessor(this.uiLayer);
+
+        Gdx.input.setInputProcessor(inputHandler);
         Gdx.input.setCatchBackKey(true);
     }
 
     private boolean backClicked() {
         return false;
     }
-
-    public Batch getBatch() { return this.graphicsLayer.getBatch(); }
 
     @Override
     public void render(float delta) {
@@ -57,12 +59,17 @@ public class BaseScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this.graphicsLayer);
+        InputMultiplexer inputHandler = new InputMultiplexer();
+        inputHandler.addProcessor(this.graphicsLayer);
+        inputHandler.addProcessor(this.uiLayer);
+
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     @Override
     public void resize(int w, int h) {
-        graphicsLayer.getViewport().update(w, h);
+        this.graphicsLayer.getViewport().update(w, h);
+        this.uiLayer.getViewport().update(w, h);
     }
 
     @Override
@@ -77,5 +84,6 @@ public class BaseScreen implements Screen {
     @Override
     public void dispose() {
         this.graphicsLayer.dispose();
+        this.uiLayer.dispose();
     }
 }
