@@ -4,7 +4,7 @@ import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Models.PlayerModel;
 import com.lucasgiancola.Models.StoreModel;
 
-public class StoreScreen extends AbstractScreen{
+public class StoreScreen extends BaseScreen {
     private StoreModel store;
     private PlayerModel player = PlayerModel.instance;
 

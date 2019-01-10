@@ -5,7 +5,7 @@ import com.lucasgiancola.Models.GameModel;
 import com.lucasgiancola.Objects.Levels.SpeedRun;
 import com.lucasgiancola.Objects.Levels.Level;
 
-public class GameScreen extends AbstractScreen {
+public class GameScreen extends BaseScreen {
     private GameModel gameModel;
     private float dtAccumulator = 0f;
 
@@ -15,8 +15,8 @@ public class GameScreen extends AbstractScreen {
         super(ballShooter);
 
         this.gameModel = new GameModel();
-        this.gameModel.setStage(this.stage);
-        this.level = new SpeedRun(this.stage, this.gameModel);
+        this.gameModel.setStage(this.mainStage);
+        this.level = new SpeedRun(this.mainStage, this.gameModel);
     }
 
     @Override

@@ -9,13 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lucasgiancola.BallShooter;
 
-public class AbstractScreen implements Screen {
-    protected final Stage stage;
+public class BaseScreen implements Screen {
+    protected final Stage mainStage;
     protected final BallShooter ballShooter;
 
-    public AbstractScreen(BallShooter ballShooter) {
+    public BaseScreen(BallShooter ballShooter) {
         this.ballShooter = ballShooter;
-        this.stage = new Stage(new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT)) {
+        this.mainStage = new Stage(new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT)) {
             @Override
             public boolean keyDown(int keyCode) {
                 if(keyCode == Input.Keys.BACK || keyCode == Input.Keys.ESCAPE) {
@@ -30,7 +30,7 @@ public class AbstractScreen implements Screen {
             }
         };
 
-        Gdx.input.setInputProcessor(this.stage);
+        Gdx.input.setInputProcessor(this.mainStage);
         Gdx.input.setCatchBackKey(true);
     }
 
@@ -38,25 +38,25 @@ public class AbstractScreen implements Screen {
         return false;
     }
 
-    public Batch getBatch() { return this.stage.getBatch(); }
+    public Batch getBatch() { return this.mainStage.getBatch(); }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act(delta);
-        stage.draw();
+        mainStage.act(delta);
+        mainStage.draw();
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this.stage);
+        Gdx.input.setInputProcessor(this.mainStage);
     }
 
     @Override
     public void resize(int w, int h) {
-        stage.getViewport().update(w, h);
+        mainStage.getViewport().update(w, h);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class AbstractScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.stage.dispose();
+        this.mainStage.dispose();
     }
 }

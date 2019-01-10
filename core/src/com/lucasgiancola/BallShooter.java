@@ -6,10 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.lucasgiancola.Managers.Assets;
-import com.lucasgiancola.Models.PlayerModel;
-import com.lucasgiancola.Screens.AbstractScreen;
+import com.lucasgiancola.Screens.BaseScreen;
 import com.lucasgiancola.Screens.GameScreen;
-import com.lucasgiancola.Screens.StoreScreen;
 
 public class BallShooter extends Game {
 	public static float WIDTH = 9;
@@ -18,7 +16,7 @@ public class BallShooter extends Game {
 	public static BitmapFont font;
 	public static ShapeRenderer shapeRenderer;
 
-	private void switchScreens(AbstractScreen changeTo) {
+	private void switchScreens(BaseScreen changeTo) {
 		this.setScreen(changeTo);
 	}
 	
