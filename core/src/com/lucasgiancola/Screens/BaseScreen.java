@@ -10,12 +10,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lucasgiancola.BallShooter;
 
 public class BaseScreen implements Screen {
-    protected final Stage mainStage;
+    protected final Stage graphicsLayer;
+    protected final Stage uiLayer;
     protected final BallShooter ballShooter;
 
     public BaseScreen(BallShooter ballShooter) {
         this.ballShooter = ballShooter;
-        this.mainStage = new Stage(new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT)) {
+        this.graphicsLayer = new Stage(new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT)) {
             @Override
             public boolean keyDown(int keyCode) {
                 if(keyCode == Input.Keys.BACK || keyCode == Input.Keys.ESCAPE) {
@@ -30,7 +31,9 @@ public class BaseScreen implements Screen {
             }
         };
 
-        Gdx.input.setInputProcessor(this.mainStage);
+        this.uiLayer = new Stage(this.graphicsLayer.getViewport());
+
+        Gdx.input.setInputProcessor(this.graphicsLayer);
         Gdx.input.setCatchBackKey(true);
     }
 
@@ -38,25 +41,28 @@ public class BaseScreen implements Screen {
         return false;
     }
 
-    public Batch getBatch() { return this.mainStage.getBatch(); }
+    public Batch getBatch() { return this.graphicsLayer.getBatch(); }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        mainStage.act(delta);
-        mainStage.draw();
+        graphicsLayer.act(delta);
+        graphicsLayer.draw();
+
+        uiLayer.act(delta);
+        uiLayer.draw();
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this.mainStage);
+        Gdx.input.setInputProcessor(this.graphicsLayer);
     }
 
     @Override
     public void resize(int w, int h) {
-        mainStage.getViewport().update(w, h);
+        graphicsLayer.getViewport().update(w, h);
     }
 
     @Override
@@ -70,6 +76,6 @@ public class BaseScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.mainStage.dispose();
+        this.graphicsLayer.dispose();
     }
 }

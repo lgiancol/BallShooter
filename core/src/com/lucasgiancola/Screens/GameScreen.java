@@ -15,8 +15,8 @@ public class GameScreen extends BaseScreen {
         super(ballShooter);
 
         this.gameModel = new GameModel();
-        this.gameModel.setStage(this.mainStage);
-        this.level = new SpeedRun(this.mainStage, this.gameModel);
+        this.gameModel.setStage(this.graphicsLayer);
+        this.level = new SpeedRun(this.graphicsLayer, this.gameModel);
     }
 
     @Override

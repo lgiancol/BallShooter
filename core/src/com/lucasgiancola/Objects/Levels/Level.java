@@ -56,14 +56,14 @@ public abstract class Level implements ContactListener {
     }
 
     /**
-     * Will remove a physics body from the world. Will first dispose of all inner variables then remove it from the mainStage and the world
+     * Will remove a physics body from the world. Will first dispose of all inner variables then remove it from the graphicsLayer and the world
      * @param toRemove The body to remove of from the game
      */
     protected void removeBody(Body toRemove) {
         Object userData = toRemove.getUserData();
 
         if(userData instanceof BaseObject) {
-            // Sets the userData to null and removes itself from the mainStage
+            // Sets the userData to null and removes itself from the graphicsLayer
             ((BaseObject) userData).dispose();
             // Removes the body from the world
             this.world.destroyBody(toRemove);

@@ -33,7 +33,7 @@ public class GameModel {
         }
     }
 
-    // Will set the touch position based on the mainStage
+    // Will set the touch position based on the graphicsLayer
     private void updateTouchPositions() {
         Vector2 temp = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         if(this.stage != null) {
