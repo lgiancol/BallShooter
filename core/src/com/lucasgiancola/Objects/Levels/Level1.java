@@ -3,6 +3,7 @@ package com.lucasgiancola.Objects.Levels;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -22,7 +23,7 @@ public class Level1 extends BaseLevel {
     private ArrayList<PhysicsObject> objectsToDestroy;
 
     // Blocks variables
-    private float numCols = 7;
+    private int numCols = 7;
     private float blockWidth = 0;
     private float blockOffset = 25;
     private GameBlock topBlock = null;
@@ -44,13 +45,28 @@ public class Level1 extends BaseLevel {
     private void insertRow() {
         GameBlock temp = null;
         for(int i = 0; i < numCols; i++) {
-            float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
+            if(MathUtils.randomBoolean(0.5f)) {
+                float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
+                float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
+
+                if (topBlock != null) {
+                    y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
+                }
+                temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
+
+                objects.add(temp);
+            }
+        }
+
+        if(temp == null) {
+            int col = MathUtils.random(0, numCols - 1);
+            float x = xOffset + (col * blockWidth + (blockWidth / 2) + ((col + 1) * blockOffset));
             float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
 
-            if(topBlock != null) {
+            if (topBlock != null) {
                 y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
             }
-                temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
+            temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
 
             objects.add(temp);
         }
