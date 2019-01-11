@@ -11,9 +11,11 @@ public class GameBlockPulse extends GameBaseObject {
     private float currentDuration = 0;
     public boolean canRemove = false;
     private float maxSize = 0, startSize = 0;
+    private float angle = 0;
 
     public GameBlockPulse(GameBlock block) {
         this.size = startSize = block.size;
+        angle = block.body.getAngle();
         color = block.color.cpy();
 
         maxSize = this.size * 1.5f; // 15% bigger than the original block

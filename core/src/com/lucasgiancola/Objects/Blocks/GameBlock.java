@@ -15,12 +15,14 @@ import java.util.ArrayList;
 public class GameBlock extends PhysicsObject {
     public int health = 10;
     private ArrayList<GameBlockPulse> pulses;
+    private Vector2 velocity;
 
-    public GameBlock(World world, Vector2 position) {
-        size = 200;
+    public GameBlock(World world, Vector2 position, float size) {
+        this.size = size;
         this.position = new Vector2(position.x - (size / 2), position.y - (size / 2));
         pulses = new ArrayList<GameBlockPulse>();
         color = new Color(0.9f, 0.7f, 0.2f, 1f);
+        velocity = new Vector2(0, -Constants.toWorldUnits(75f));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -43,7 +45,8 @@ public class GameBlock extends PhysicsObject {
         block.dispose();
 
         // Set the starting position of the block so we can update it according to physics
-        body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
+        body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0);
+        body.setLinearVelocity(velocity);
     }
 
     public void takeDamage(int amount) {
@@ -70,6 +73,8 @@ public class GameBlock extends PhysicsObject {
 
         // Set the position to be the screen position of the body in the world
         position.set(Constants.toScreenUnits(body.getPosition().x) - (size / 2), Constants.toScreenUnits(body.getPosition().y) - (size / 2));
+        body.getTransform().setRotation(body.getTransform().getRotation() + 0.5f);
+//        body.setTransform(body.getPosition(), body.getAngle());
     }
 
     @Override
@@ -84,7 +89,11 @@ public class GameBlock extends PhysicsObject {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
             renderer.setColor(color);
 
-            renderer.rect(position.x, position.y, size, size);
+            renderer.rect(position.x, position.y,
+                    size / 2, size / 2,
+                    size, size,
+                    1.0f, 1.0f,
+                    body.getAngle());
 
             renderer.end();
         }
