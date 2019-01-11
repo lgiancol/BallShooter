@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.Balls.GameBall;
-import com.lucasgiancola.Objects.Blocks.Block;
 import com.lucasgiancola.Objects.Blocks.GameBlock;
 import com.lucasgiancola.Objects.PhysicsObject;
 import com.lucasgiancola.Objects.Triggers.Destroyer;
@@ -119,8 +118,6 @@ public class Level1 extends BaseLevel {
 
     @Override
     public void render() {
-        renderer.identity();
-
         // This top section is temporary
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(Color.RED);
@@ -128,7 +125,7 @@ public class Level1 extends BaseLevel {
         renderer.end();
 
         for(PhysicsObject obj: objects) {
-            obj.render(renderer);
+            obj.render(renderer, batch);
         }
     }
 

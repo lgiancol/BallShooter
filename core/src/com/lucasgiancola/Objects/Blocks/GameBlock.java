@@ -1,21 +1,26 @@
 package com.lucasgiancola.Objects.Blocks;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.PhysicsObject;
 
 import java.util.ArrayList;
 
 public class GameBlock extends PhysicsObject {
-    public int health = 10;
+    public int health = 100;
     private ArrayList<GameBlockPulse> pulses;
     private Vector2 velocity;
+    private GlyphLayout layout;
 
     public GameBlock(World world, Vector2 position, float size) {
         this.size = size;
@@ -23,6 +28,7 @@ public class GameBlock extends PhysicsObject {
         pulses = new ArrayList<GameBlockPulse>();
         color = new Color(0.9f, 0.7f, 0.2f, 1f);
         velocity = new Vector2(0, -Constants.toWorldUnits(75f));
+        layout = new GlyphLayout(BallShooter.font, "" + health);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -52,6 +58,7 @@ public class GameBlock extends PhysicsObject {
     public void takeDamage(int amount) {
         health -= amount;
         canDestroyBody = health <= 0;
+        layout.setText(BallShooter.font, "" + health);
 
         pulses.add(new GameBlockPulse(this));
     }
@@ -78,10 +85,10 @@ public class GameBlock extends PhysicsObject {
     }
 
     @Override
-    public void render(ShapeRenderer renderer) {
+    public void render(ShapeRenderer renderer, Batch batch) {
 
         for(GameBlockPulse pulse: pulses) {
-            pulse.render(renderer);
+            pulse.render(renderer, batch);
         }
 
         // Only render the block if it has health
@@ -96,6 +103,10 @@ public class GameBlock extends PhysicsObject {
                     body.getAngle());
 
             renderer.end();
+
+            batch.begin();
+            BallShooter.font.draw(batch, layout, position.x + (size / 2) - (layout.width / 2), position.y + (size / 2) + (layout.height / 2));
+            batch.end();
         }
     }
 

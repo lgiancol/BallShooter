@@ -1,6 +1,8 @@
 package com.lucasgiancola.Objects.Balls;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -51,7 +53,7 @@ public class GameBall extends PhysicsObject {
     }
 
     @Override
-    public void render(ShapeRenderer renderer) {
+    public void render(ShapeRenderer renderer, Batch batch) {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(color);
 

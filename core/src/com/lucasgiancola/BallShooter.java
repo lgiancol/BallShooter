@@ -3,7 +3,9 @@ package com.lucasgiancola;
 import com.badlogic.gdx.Game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.lucasgiancola.Managers.Assets;
 import com.lucasgiancola.Models.PlayerModel;
