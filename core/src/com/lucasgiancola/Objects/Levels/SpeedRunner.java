@@ -135,7 +135,7 @@ public class SpeedRunner extends BaseLevel {
 
         handleObjects();
 
-        if(currentTime >= 0.05f) {
+        if(currentTime >= 0.2f) {
             Vector2 temp = new Vector2(touch.x, touch.y);
             temp.sub(pivot);
             temp.nor();

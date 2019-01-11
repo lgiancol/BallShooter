@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Constants;
+import com.lucasgiancola.Managers.SoundManager;
 import com.lucasgiancola.Objects.PhysicsObject;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class GameBlock extends PhysicsObject {
         // Reduce the health by the amount and update the text
         health -= amount;
         count++;
+        SoundManager.instance.playSound(SoundManager.BALL_HIT);
 
         BallShooter.font.setColor(Color.BLACK);
         layout.setText(BallShooter.font, "" + (int) health);
