@@ -13,11 +13,11 @@ public class Constants {
 
     public static final float PIXELS_PER_METER = 100;
 
-    public static float pixelsToBox(float pix) {
+    public static float toWorldUnits(float pix) {
         return pix / PIXELS_PER_METER;
     }
 
-    public static float boxToPixels(float box) {
+    public static float toScreenUnits(float box) {
         return PIXELS_PER_METER * box;
     }
 }

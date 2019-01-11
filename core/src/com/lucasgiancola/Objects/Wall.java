@@ -23,7 +23,7 @@ public class Wall extends BaseObject {
         this.body.setUserData(this);
 
         PolygonShape block = new PolygonShape();
-        block.setAsBox(Constants.pixelsToBox(getWidth() / 2), Constants.pixelsToBox(getHeight() / 2), new Vector2(0, 0), 0f);
+        block.setAsBox(Constants.toWorldUnits(getWidth() / 2), Constants.toWorldUnits(getHeight() / 2), new Vector2(0, 0), 0f);
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = block;
@@ -40,8 +40,8 @@ public class Wall extends BaseObject {
 
     @Override
     public void setPosition(float x, float y) {
-        float scaledX = Constants.pixelsToBox(x);
-        float scaledY = Constants.pixelsToBox(y);
+        float scaledX = Constants.toWorldUnits(x);
+        float scaledY = Constants.toWorldUnits(y);
 
         this.body.setTransform(new Vector2(scaledX, scaledY), this.body.getAngle() * MathUtils.degreesToRadians); // Position and rotation of physics body
         super.setPosition(x - getWidth() / 2, y - getHeight() / 2); // Position of Image
@@ -50,8 +50,8 @@ public class Wall extends BaseObject {
 
     public void update() {
         setPosition(
-                Constants.boxToPixels(body.getPosition().x),
-                Constants.boxToPixels(body.getPosition().y));
+                Constants.toScreenUnits(body.getPosition().x),
+                Constants.toScreenUnits(body.getPosition().y));
     }
 
     @Override

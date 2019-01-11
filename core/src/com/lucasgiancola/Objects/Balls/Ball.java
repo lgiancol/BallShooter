@@ -29,7 +29,7 @@ public class Ball extends BaseObject {
         this.body.setUserData(this);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(Constants.pixelsToBox(Ball.radius));
+        circleShape.setRadius(Constants.toWorldUnits(Ball.radius));
         circleShape.setPosition(new Vector2(0, 0));
 
         FixtureDef shapeDef = new FixtureDef();
@@ -71,8 +71,8 @@ public class Ball extends BaseObject {
 
     @Override
     public void setPosition(float x, float y) {
-        float scaledX = Constants.pixelsToBox(x);
-        float scaledY = Constants.pixelsToBox(y);
+        float scaledX = Constants.toWorldUnits(x);
+        float scaledY = Constants.toWorldUnits(y);
 
         this.body.setTransform(new Vector2(scaledX, scaledY), this.body.getAngle()); // Position and rotation of physics body
         super.setPosition(x-getWidth()/2, y-getHeight()/2); // Position of Image
@@ -87,8 +87,8 @@ public class Ball extends BaseObject {
     @Override
     public void update() {
         setPosition(
-                Constants.boxToPixels(body.getPosition().x),
-                Constants.boxToPixels(body.getPosition().y));
+                Constants.toScreenUnits(body.getPosition().x),
+                Constants.toScreenUnits(body.getPosition().y));
         setRotation( this.body.getAngle() * MathUtils.radDeg);
     }
 

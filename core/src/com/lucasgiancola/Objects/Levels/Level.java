@@ -21,7 +21,7 @@ public abstract class Level implements ContactListener {
         this.gameModel = gameModel;
         this.stage = stage;
 
-        // Initialize the physics world
+        // Initialize the physics levelWorld
         this.initWorld();
     }
 
@@ -40,7 +40,7 @@ public abstract class Level implements ContactListener {
      * Will remove all physics objects from the level, as well as remove any references that they may have inside of them
      */
     protected void resetWorld() {
-        // If for some reason the world is not created yet, create it and return
+        // If for some reason the levelWorld is not created yet, create it and return
         if(this.world == null) {
             this.initWorld();
             return;
@@ -56,7 +56,7 @@ public abstract class Level implements ContactListener {
     }
 
     /**
-     * Will remove a physics body from the world. Will first dispose of all inner variables then remove it from the stage and the world
+     * Will remove a physics body from the levelWorld. Will first dispose of all inner variables then remove it from the stage and the levelWorld
      * @param toRemove The body to remove of from the game
      */
     protected void removeBody(Body toRemove) {
@@ -65,7 +65,7 @@ public abstract class Level implements ContactListener {
         if(userData instanceof BaseObject) {
             // Sets the userData to null and removes itself from the stage
             ((BaseObject) userData).dispose();
-            // Removes the body from the world
+            // Removes the body from the levelWorld
             this.world.destroyBody(toRemove);
         }
     }

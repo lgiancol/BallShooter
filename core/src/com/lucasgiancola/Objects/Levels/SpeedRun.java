@@ -137,7 +137,7 @@ public class SpeedRun extends Level {
         float y = BallShooter.HEIGHT + (row * Block.blockWidth) + (row * Block.blockOffset);
 
         if(this.topBlock != null) {
-            y = Constants.boxToPixels(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
+            y = Constants.toScreenUnits(this.topBlock.getBody().getPosition().y) + Block.blockWidth + Block.blockOffset;
         }
 
         // Create the new Block
@@ -187,10 +187,10 @@ public class SpeedRun extends Level {
         this.newBallDeltaTime = this.baseNewBallDeltaTime;
     }
 
-    /* Update the level and the world */
+    /* Update the level and the levelWorld */
 
     /**
-     * After each world step, some bodies may have collided with one another. This method makes sure that when this
+     * After each levelWorld step, some bodies may have collided with one another. This method makes sure that when this
      *  happens, they are removed from the ArrayList.
      */
     private void handleDestroyedObjects() {
