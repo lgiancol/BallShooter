@@ -13,7 +13,8 @@ import com.lucasgiancola.Objects.Balls.GameBall;
 import com.lucasgiancola.Objects.Blocks.GameBlock;
 import com.lucasgiancola.Objects.PhysicsObject;
 import com.lucasgiancola.Objects.Triggers.BottomTrigger;
-import com.lucasgiancola.Objects.Triggers.Destroyer;
+import com.lucasgiancola.Objects.Triggers.TopTrigger;
+import com.lucasgiancola.Objects.Triggers.Wall;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class Level1 extends BaseLevel {
     private float blockWidth = 0;
     private float blockOffset = 25;
     private GameBlock topBlock = null;
+    private boolean shouldSpawn = false;
 
     private float currentTime = 0;
 
@@ -38,17 +40,49 @@ public class Level1 extends BaseLevel {
 //        objects.add(new GameBlock(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + 1000)));
         objectsToDestroy = new ArrayList<PhysicsObject>();
 
-        PhysicsObject bottom = new BottomTrigger(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset), levelWidth);
-        objects.add(bottom);
+        // Bottom
+        PhysicsObject wall = new BottomTrigger(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset), levelWidth);
+        objects.add(wall);
+
+        // Left
+        wall = new Wall(levelWorld, new Vector2(xOffset, yOffset + (levelHeight / 2)), 2, levelHeight);
+        objects.add(wall);
+
+        // Right
+        wall = new Wall(levelWorld, new Vector2(xOffset + levelWidth, yOffset + (levelHeight / 2)), 2, levelHeight);
+        objects.add(wall);
+
+        // Top
+        wall = new TopTrigger(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + levelHeight), levelWidth);
+        objects.add(wall);
+
+        wall = new Wall(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + levelHeight), levelWidth, 2);
+        objects.add(wall);
+
 
         insertRow();
     }
 
     private void insertRow() {
-        GameBlock temp = null;
-        for(int i = 0; i < numCols; i++) {
-            if(MathUtils.randomBoolean(0.5f)) {
-                float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
+            GameBlock temp = null;
+            for (int i = 0; i < numCols; i++) {
+                if (MathUtils.randomBoolean(0.5f)) {
+                    float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
+                    float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
+
+                    if (topBlock != null) {
+                        y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
+                    }
+                    temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
+
+                    objects.add(temp);
+                }
+            }
+
+            if (temp == null) {
+//            System.out.println("Didn't create it in the loop so creating one outside loop");
+                int col = MathUtils.random(0, numCols - 1);
+                float x = xOffset + (col * blockWidth + (blockWidth / 2) + ((col + 1) * blockOffset));
                 float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
 
                 if (topBlock != null) {
@@ -58,28 +92,19 @@ public class Level1 extends BaseLevel {
 
                 objects.add(temp);
             }
-        }
 
-        if(temp == null) {
-            int col = MathUtils.random(0, numCols - 1);
-            float x = xOffset + (col * blockWidth + (blockWidth / 2) + ((col + 1) * blockOffset));
-            float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
-
-            if (topBlock != null) {
-                y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
-            }
-            temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
-
-            objects.add(temp);
-        }
-
-        topBlock = temp;
+            topBlock = temp;
+            shouldSpawn = false;
     }
 
     /**
      * Will destroy physics bodies from the world and will also remove them from rendering once ready
      */
     private void handleObjects() {
+        if(shouldSpawn) {
+            insertRow();
+        }
+
         // Go through list of objects that should be destroyed and destroy them from the world
         //  then once ready, remove them from the scene
         for(int i = objectsToDestroy.size() - 1; i >= 0; i--) {
@@ -89,8 +114,6 @@ public class Level1 extends BaseLevel {
                 // Check what kind of physics object it was and add any power ups needed
                 levelWorld.destroyBody(toDestroy.body);
                 toDestroy.isBodyDestroyed = true;
-
-                System.out.println("Destroyed: " + toDestroy);
             }
 
             if(toDestroy.canRemoveGraphic) {
@@ -103,9 +126,6 @@ public class Level1 extends BaseLevel {
 
     @Override
     public void update(float delta) {
-
-        System.out.println("Bodies: " + levelWorld.getBodyCount());
-
         currentTime += delta;
 
         handleObjects();
@@ -115,9 +135,11 @@ public class Level1 extends BaseLevel {
             currentTime = 0;
         }
 
-        if(Constants.toScreenUnits(topBlock.body.getPosition().y) + (blockWidth / 2) <= (yOffset + worldHeight)) {
-            insertRow();
-        }
+
+//        System.out.println("Block Top Edge: " + Constants.toScreenUnits(topBlock.body.getPosition().y) + (blockWidth / 2) + "Trigger: " + (yOffset + worldHeight));
+//        if(Constants.toScreenUnits(topBlock.body.getPosition().y) + (blockWidth / 2) <= (yOffset + worldHeight)) {
+//            insertRow();
+//        }
 
         for(PhysicsObject obj: objects) {
             obj.update(delta);
@@ -162,6 +184,22 @@ public class Level1 extends BaseLevel {
         temp = c.getFixtureB();
         if(temp != null && temp.getBody().getUserData() instanceof GameBall) {
             return (GameBall) temp.getBody().getUserData();
+        }
+
+        return null;
+    }
+
+    private TopTrigger getTopTriggerFromContact(Contact c) {
+        Fixture temp = c.getFixtureA();
+
+        if(temp != null && temp.getBody().getUserData() instanceof TopTrigger) {
+            return (TopTrigger) temp.getBody().getUserData();
+        }
+
+
+        temp = c.getFixtureB();
+        if(temp != null && temp.getBody().getUserData() instanceof TopTrigger) {
+            return (TopTrigger) temp.getBody().getUserData();
         }
 
         return null;
@@ -217,6 +255,14 @@ public class Level1 extends BaseLevel {
             return;
         }
 
+        TopTrigger blockSpawner = getTopTriggerFromContact(contact);
+        // Block hitting bottom
+        if(blockSpawner != null && blockSpawner.active && block != null) {
+            blockSpawner.active = false;
+            shouldSpawn = true;
+        }
+
+
         // Block hitting bottom
         if(destroyer != null && block != null) {
             if(!objectsToDestroy.contains(block)) {
@@ -230,7 +276,9 @@ public class Level1 extends BaseLevel {
 
     @Override
     public void endContact(Contact contact) {
+        TopTrigger blockSpawner = getTopTriggerFromContact(contact);
 
+        if(blockSpawner != null) blockSpawner.active = true;
     }
 
     @Override

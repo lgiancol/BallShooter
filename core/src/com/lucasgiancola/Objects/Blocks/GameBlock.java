@@ -18,7 +18,7 @@ import com.lucasgiancola.Objects.PhysicsObject;
 import java.util.ArrayList;
 
 public class GameBlock extends PhysicsObject {
-    private int baseHealth = 100;
+    private int baseHealth = 1;
     public int health = baseHealth;
     private ArrayList<GameBlockPulse> pulses;
     private Vector2 velocity;
@@ -123,5 +123,10 @@ public class GameBlock extends PhysicsObject {
             BallShooter.font.draw(batch, layout, position.x + (length / 2) - (layout.width / 2), position.y + (length / 2) + (layout.height / 2));
             batch.end();
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
