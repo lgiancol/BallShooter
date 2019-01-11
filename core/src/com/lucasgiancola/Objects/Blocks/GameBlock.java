@@ -13,13 +13,14 @@ import com.lucasgiancola.Objects.PhysicsObject;
 import java.util.ArrayList;
 
 public class GameBlock extends PhysicsObject {
-    private int health = 10;
+    public int health = 10;
     private ArrayList<GameBlockPulse> pulses;
 
     public GameBlock(World world, Vector2 position) {
         size = 200;
         this.position = new Vector2(position.x - (size / 2), position.y - (size / 2));
         pulses = new ArrayList<GameBlockPulse>();
+        color = new Color(0.9f, 0.7f, 0.2f, 1f);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -48,22 +49,27 @@ public class GameBlock extends PhysicsObject {
     public void takeDamage(int amount) {
         health -= amount;
 
-        pulses.add(new GameBlockPulse(position, size));
+        pulses.add(new GameBlockPulse(this));
     }
 
     @Override
     public void update(float delta) {
         for(int i = pulses.size() - 1; i >= 0; i--) {
             GameBlockPulse pulse = pulses.get(i);
+            pulse.update(delta);
+
+            // If the pulse can be removed
             if(pulse.canRemove) {
+                // Remove it
                 pulses.remove(i);
+
+                // If the health of the block <= 0 then the block can be removed for sure
+                if(health <= 0) {
+                    canDestroy = pulses.isEmpty();
+                }
                 continue;
             }
-
-            pulse.update(delta);
         }
-
-        System.out.println("Pulses: " + pulses.size());
 
         // Set the position to be the screen position of the body in the world
         position.set(Constants.toScreenUnits(body.getPosition().x) - (size / 2), Constants.toScreenUnits(body.getPosition().y) - (size / 2));
@@ -76,12 +82,14 @@ public class GameBlock extends PhysicsObject {
             pulse.render(renderer);
         }
 
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BLUE);
+//        if(health < 0) {
+            renderer.begin(ShapeRenderer.ShapeType.Filled);
+            renderer.setColor(color);
 
-        renderer.rect(position.x, position.y, size, size);
+            renderer.rect(position.x, position.y, size, size);
 
-        renderer.end();
+            renderer.end();
+//        }
     }
 
     @Override

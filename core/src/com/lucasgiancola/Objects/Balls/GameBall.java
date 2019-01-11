@@ -15,6 +15,7 @@ public class GameBall extends PhysicsObject {
 
     public GameBall(World world, Vector2 position) {
         size = 15;
+        color = Color.WHITE;
 
         this.position = new Vector2(position.x - size, position.y - size);
 
@@ -41,7 +42,7 @@ public class GameBall extends PhysicsObject {
 
         body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
 
-        body.applyForceToCenter(Constants.toScreenUnits(0), Constants.toScreenUnits(3f), true);
+        body.applyForceToCenter(Constants.toScreenUnits(0), Constants.toScreenUnits(5f), true);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class GameBall extends PhysicsObject {
     @Override
     public void render(ShapeRenderer renderer) {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.WHITE);
+        renderer.setColor(color);
 
         renderer.circle(position.x, position.y, size);
 

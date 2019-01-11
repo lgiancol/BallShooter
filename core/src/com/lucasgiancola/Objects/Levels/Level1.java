@@ -7,41 +7,54 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.Balls.GameBall;
-import com.lucasgiancola.Objects.Blocks.Block;
 import com.lucasgiancola.Objects.Blocks.GameBlock;
+import com.lucasgiancola.Objects.PhysicsObject;
 import com.lucasgiancola.Objects.Triggers.Destroyer;
 
 import java.util.ArrayList;
 
 public class Level1 extends BaseLevel {
-    private GameBlock block;
-    private ArrayList<GameBall> balls;
+    private ArrayList<PhysicsObject> objects;
+    private ArrayList<PhysicsObject> objectsToDestroy;
 
     private float currentTime = 0;
 
     public Level1(float levelWidth, float levelHeight) {
         super(levelWidth, levelHeight);
 
-        block = new GameBlock(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + 400));
-
-        balls = new ArrayList<GameBall>();
+        objects = new ArrayList<PhysicsObject>();
+        objects.add(new GameBlock(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + 1000)));
+        objectsToDestroy = new ArrayList<PhysicsObject>();
     }
 
     @Override
     public void update(float delta) {
         currentTime += delta;
 
+        for(int i = objectsToDestroy.size() - 1; i >= 0; i--) {
+            PhysicsObject toDestroy = objectsToDestroy.get(i);
+
+            if(!toDestroy.isDestroyed) {
+                levelWorld.destroyBody(toDestroy.body);
+                toDestroy.isDestroyed = true;
+            }
+
+
+
+            if(toDestroy.isDestroyed && toDestroy.canDestroy) {
+                objectsToDestroy.remove(toDestroy);
+                objects.remove(toDestroy);
+            }
+        }
+
         if(currentTime >= 0.1f) {
-            balls.add(new GameBall(levelWorld, new Vector2(xOffset + (worldWidth / 2), yOffset)));
+            objects.add(new GameBall(levelWorld, new Vector2(xOffset + (worldWidth / 2), yOffset)));
             currentTime = 0;
         }
 
-
-        block.update(delta);
-        for(GameBall b: balls) {
-            b.update(delta);
+        for(PhysicsObject obj: objects) {
+            obj.update(delta);
         }
     }
 
@@ -53,11 +66,8 @@ public class Level1 extends BaseLevel {
         renderer.rect((-worldWidth / 2) + 1, (-worldHeight / 2) + 1, worldWidth - 1, worldHeight - 1);
         renderer.end();
 
-        // Render all the objects
-        block.render(renderer);
-
-        for(GameBall b: balls) {
-            b.render(renderer);
+        for(PhysicsObject obj: objects) {
+            obj.render(renderer);
         }
     }
 
@@ -116,11 +126,11 @@ public class Level1 extends BaseLevel {
         if(block != null && ball != null) {
             block.takeDamage(ball.damageAmount);
 
-//            if(block.shouldDestroy()) {
-//                if(!this.objectsToDestroy.contains(block)) {
-//                    this.objectsToDestroy.add(block);
-//                }
-//            }
+            if(block.health <= 0) {
+                if(!this.objectsToDestroy.contains(block)) {
+                    this.objectsToDestroy.add(block);
+                }
+            }
 //
 //            return;
         }
