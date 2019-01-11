@@ -8,14 +8,15 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lucasgiancola.Constants;
-import com.lucasgiancola.Objects.GameBaseObject;
+import com.lucasgiancola.Objects.PhysicsObject;
 
-public class GameBall extends GameBaseObject {
-    private float radius = 100;
+public class GameBall extends PhysicsObject {
+    public int damageAmount = 1;
 
     public GameBall(World world, Vector2 position) {
+        size = 15;
 
-        this.position = new Vector2(position.x - radius, position.y - radius);
+        this.position = new Vector2(position.x - size, position.y - size);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -23,7 +24,7 @@ public class GameBall extends GameBaseObject {
         this.body.setUserData(this);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(Constants.toWorldUnits(radius));
+        circleShape.setRadius(Constants.toWorldUnits(size));
         circleShape.setPosition(new Vector2(0, 0));
 
         FixtureDef shapeDef = new FixtureDef();
@@ -40,7 +41,7 @@ public class GameBall extends GameBaseObject {
 
         body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
 
-        body.applyForceToCenter(Constants.toScreenUnits(0), Constants.toScreenUnits(0.8f), true);
+        body.applyForceToCenter(Constants.toScreenUnits(0), Constants.toScreenUnits(3f), true);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class GameBall extends GameBaseObject {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.WHITE);
 
-        renderer.circle(position.x, position.y, radius);
+        renderer.circle(position.x, position.y, size);
 
         renderer.end();
     }

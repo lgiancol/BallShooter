@@ -1,6 +1,7 @@
 package com.lucasgiancola.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.Levels.BaseLevel;
 
@@ -35,9 +36,13 @@ public class GameScreenView extends BaseScreen {
         }
 
         // Clear the screen and render the level with the updated position
+        Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-        Gdx.gl.glClear(Gdx.gl20.GL_COLOR_BUFFER_BIT);;
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         level.render();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 }

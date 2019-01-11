@@ -8,14 +8,18 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lucasgiancola.Constants;
-import com.lucasgiancola.Objects.GameBaseObject;
+import com.lucasgiancola.Objects.PhysicsObject;
 
-public class GameBlock extends GameBaseObject {
+import java.util.ArrayList;
+
+public class GameBlock extends PhysicsObject {
+    private int health = 10;
+    private ArrayList<GameBlockPulse> pulses;
 
     public GameBlock(World world, Vector2 position) {
-        width = 200;
-        height = 200;
-        this.position = new Vector2(position.x - (width / 2), position.y - (height / 2));
+        size = 200;
+        this.position = new Vector2(position.x - (size / 2), position.y - (size / 2));
+        pulses = new ArrayList<GameBlockPulse>();
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -23,7 +27,7 @@ public class GameBlock extends GameBaseObject {
         body.setUserData(this);
 
         PolygonShape block = new PolygonShape();
-        block.setAsBox(Constants.toWorldUnits(width / 2), Constants.toWorldUnits(height / 2), new Vector2(0, 0), 0f);
+        block.setAsBox(Constants.toWorldUnits(size / 2), Constants.toWorldUnits(size / 2), new Vector2(0, 0), 0f);
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = block;
@@ -41,25 +45,47 @@ public class GameBlock extends GameBaseObject {
         body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
     }
 
+    public void takeDamage(int amount) {
+        health -= amount;
+
+        pulses.add(new GameBlockPulse(position, size));
+    }
+
     @Override
     public void update(float delta) {
+        for(int i = pulses.size() - 1; i >= 0; i--) {
+            GameBlockPulse pulse = pulses.get(i);
+            if(pulse.canRemove) {
+                pulses.remove(i);
+                continue;
+            }
+
+            pulse.update(delta);
+        }
+
+        System.out.println("Pulses: " + pulses.size());
+
         // Set the position to be the screen position of the body in the world
-        position.set(Constants.toScreenUnits(body.getPosition().x) - (width / 2), Constants.toScreenUnits(body.getPosition().y) - (height / 2));
+        position.set(Constants.toScreenUnits(body.getPosition().x) - (size / 2), Constants.toScreenUnits(body.getPosition().y) - (size / 2));
     }
 
     @Override
     public void render(ShapeRenderer renderer) {
+
+        for(GameBlockPulse pulse: pulses) {
+            pulse.render(renderer);
+        }
+
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.BLUE);
 
-        renderer.rect(position.x, position.y, width, height);
-//        renderer.rect(body.getPosition().x, body.getPosition().y, width, height);
+        renderer.rect(position.x, position.y, size, size);
 
         renderer.end();
     }
 
     @Override
     public String toString() {
-        return "Position: [" + position.x + ", " + position.y + "] Dimensions: [" + width + ", " + height + "]";
+        return "Position: [" + position.x + ", " + position.y + "] Dimensions: [" + size + ", " + size + "]";
     }
 }
