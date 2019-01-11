@@ -1,5 +1,6 @@
 package com.lucasgiancola.Objects.Levels;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -30,25 +31,25 @@ public class Level1 extends BaseLevel {
 
     @Override
     public void update(float delta) {
+        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
         currentTime += delta;
 
         for(int i = objectsToDestroy.size() - 1; i >= 0; i--) {
             PhysicsObject toDestroy = objectsToDestroy.get(i);
 
-            if(!toDestroy.isDestroyed) {
+            if(!toDestroy.isBodyDestroyed && toDestroy.canDestroyBody) {
                 levelWorld.destroyBody(toDestroy.body);
-                toDestroy.isDestroyed = true;
+                toDestroy.isBodyDestroyed = true;
             }
 
-
-
-            if(toDestroy.isDestroyed && toDestroy.canDestroy) {
-                objectsToDestroy.remove(toDestroy);
+                if(toDestroy.canRemoveGraphic) {
+                // Remove from proper lists
                 objects.remove(toDestroy);
+                objectsToDestroy.remove(toDestroy);
             }
         }
 
-        if(currentTime >= 0.1f) {
+        if(currentTime >= 0.2f) {
             objects.add(new GameBall(levelWorld, new Vector2(xOffset + (worldWidth / 2), yOffset)));
             currentTime = 0;
         }

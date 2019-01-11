@@ -48,6 +48,7 @@ public class GameBlock extends PhysicsObject {
 
     public void takeDamage(int amount) {
         health -= amount;
+        canDestroyBody = health <= 0;
 
         pulses.add(new GameBlockPulse(this));
     }
@@ -62,14 +63,10 @@ public class GameBlock extends PhysicsObject {
             if(pulse.canRemove) {
                 // Remove it
                 pulses.remove(i);
-
-                // If the health of the block <= 0 then the block can be removed for sure
-                if(health <= 0) {
-                    canDestroy = pulses.isEmpty();
-                }
-                continue;
             }
         }
+
+        canRemoveGraphic = pulses.isEmpty();
 
         // Set the position to be the screen position of the body in the world
         position.set(Constants.toScreenUnits(body.getPosition().x) - (size / 2), Constants.toScreenUnits(body.getPosition().y) - (size / 2));
@@ -82,14 +79,15 @@ public class GameBlock extends PhysicsObject {
             pulse.render(renderer);
         }
 
-//        if(health < 0) {
+        // Only render the block if it has health
+        if(health > 0) {
             renderer.begin(ShapeRenderer.ShapeType.Filled);
             renderer.setColor(color);
 
             renderer.rect(position.x, position.y, size, size);
 
             renderer.end();
-//        }
+        }
     }
 
     @Override
