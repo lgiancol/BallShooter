@@ -13,9 +13,9 @@ import com.lucasgiancola.Objects.GameBaseObject;
 public class GameBlock extends GameBaseObject {
 
     public GameBlock(World world, Vector2 position) {
-        width = 20;
-        height = 20;
-        this.position = position;
+        width = 200;
+        height = 200;
+        this.position = new Vector2(position.x - (width / 2), position.y - (height / 2));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -35,20 +35,16 @@ public class GameBlock extends GameBaseObject {
         shapeDef.filter.maskBits = Constants.MASK_BLOCK;
 
         body.createFixture(shapeDef);
+        block.dispose();
 
         // Set the starting position of the block so we can update it according to physics
-        body.setTransform(Constants.toWorldUnits(this.position.x), Constants.toWorldUnits(this.position.y), 0f);
-    }
-
-    // Temp
-    public void startMove() {
-        body.setLinearVelocity(0, 1);
+        body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
     }
 
     @Override
     public void update(float delta) {
         // Set the position to be the screen position of the body in the world
-        position.set(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
+        position.set(Constants.toScreenUnits(body.getPosition().x) - (width / 2), Constants.toScreenUnits(body.getPosition().y) - (height / 2));
     }
 
     @Override
@@ -57,6 +53,7 @@ public class GameBlock extends GameBaseObject {
         renderer.setColor(Color.BLUE);
 
         renderer.rect(position.x, position.y, width, height);
+//        renderer.rect(body.getPosition().x, body.getPosition().y, width, height);
 
         renderer.end();
     }

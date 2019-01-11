@@ -3,9 +3,10 @@ package com.lucasgiancola.Objects.Levels;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 
-public abstract class BaseLevel {
+public abstract class BaseLevel implements ContactListener {
     protected ShapeRenderer renderer;
     protected float worldWidth = 0, worldHeight = 0;
     protected float xOffset = 0, yOffset = 0;
@@ -21,6 +22,7 @@ public abstract class BaseLevel {
         renderer = new ShapeRenderer();
 
         levelWorld = new World(new Vector2(0f, 0f), true);
+        levelWorld.setContactListener(this);
     }
 
     public void setProjectionMatrix(Matrix4 projectionMatrix) {

@@ -1,14 +1,10 @@
 package com.lucasgiancola.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.Levels.BaseLevel;
 
-public class GameScreenView extends BaseScreen implements ContactListener {
+public class GameScreenView extends BaseScreen {
     private BaseLevel level;
     private float dtAccumulator = 0;
 
@@ -43,25 +39,5 @@ public class GameScreenView extends BaseScreen implements ContactListener {
         Gdx.gl.glClear(Gdx.gl20.GL_COLOR_BUFFER_BIT);;
 
         level.render();
-    }
-
-    @Override
-    public void beginContact(Contact contact) {
-
-    }
-
-    @Override
-    public void endContact(Contact contact) {
-
-    }
-
-    @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
-
-    }
-
-    @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-
     }
 }
