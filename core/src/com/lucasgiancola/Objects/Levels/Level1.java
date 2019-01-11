@@ -22,6 +22,9 @@ public class Level1 extends BaseLevel {
     private ArrayList<PhysicsObject> objects;
     private ArrayList<PhysicsObject> objectsToDestroy;
 
+    // Ball variables
+    private Vector2 pivot = null;
+
     // Blocks variables
     private int numCols = 7;
     private float blockWidth = 0;
@@ -33,6 +36,7 @@ public class Level1 extends BaseLevel {
 
     public Level1(float levelWidth, float levelHeight) {
         super(levelWidth, levelHeight);
+        pivot = new Vector2(xOffset + (levelWidth / 2), yOffset);
 
         blockWidth = ((levelWidth - blockOffset) / numCols) - blockOffset;
 
@@ -64,25 +68,10 @@ public class Level1 extends BaseLevel {
     }
 
     private void insertRow() {
-            GameBlock temp = null;
-            for (int i = 0; i < numCols; i++) {
-                if (MathUtils.randomBoolean(0.5f)) {
-                    float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
-                    float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
-
-                    if (topBlock != null) {
-                        y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
-                    }
-                    temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
-
-                    objects.add(temp);
-                }
-            }
-
-            if (temp == null) {
-//            System.out.println("Didn't create it in the loop so creating one outside loop");
-                int col = MathUtils.random(0, numCols - 1);
-                float x = xOffset + (col * blockWidth + (blockWidth / 2) + ((col + 1) * blockOffset));
+        GameBlock temp = null;
+        for (int i = 0; i < numCols; i++) {
+            if (MathUtils.randomBoolean(0.3f)) {
+                float x = xOffset + (i * blockWidth + (blockWidth / 2) + ((i + 1) * blockOffset));
                 float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
 
                 if (topBlock != null) {
@@ -92,9 +81,24 @@ public class Level1 extends BaseLevel {
 
                 objects.add(temp);
             }
+        }
 
-            topBlock = temp;
-            shouldSpawn = false;
+        if (temp == null) {
+//            System.out.println("Didn't create it in the loop so creating one outside loop");
+            int col = MathUtils.random(0, numCols - 1);
+            float x = xOffset + (col * blockWidth + (blockWidth / 2) + ((col + 1) * blockOffset));
+            float y = yOffset + (worldHeight + (blockWidth / 2) + blockOffset);
+
+            if (topBlock != null) {
+                y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + blockWidth + blockOffset);
+            }
+            temp = new GameBlock(levelWorld, new Vector2(x, y), blockWidth);
+
+            objects.add(temp);
+        }
+
+        topBlock = temp;
+        shouldSpawn = false;
     }
 
     /**
@@ -130,8 +134,12 @@ public class Level1 extends BaseLevel {
 
         handleObjects();
 
-        if(currentTime >= 0.1f) {
-            objects.add(new GameBall(levelWorld, new Vector2(xOffset + (worldWidth / 2), yOffset)));
+        if(currentTime >= 0.3f) {
+            Vector2 temp = new Vector2(touch.x, touch.y);
+            temp.sub(pivot);
+            temp.nor();
+
+            objects.add(new GameBall(levelWorld, new Vector2(xOffset + (worldWidth / 2), yOffset), (blockWidth / 2) / 3, temp));
             currentTime = 0;
         }
 

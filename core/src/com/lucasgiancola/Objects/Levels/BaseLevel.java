@@ -15,6 +15,7 @@ public abstract class BaseLevel implements ContactListener {
     protected float worldWidth = 0, worldHeight = 0;
     protected float xOffset = 0, yOffset = 0;
     protected World levelWorld;
+    public Vector2 touch = new Vector2(0, 1);
 
     public BaseLevel(float worldWidth, float worldHeight) {
         this.worldWidth = worldWidth;

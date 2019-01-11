@@ -15,8 +15,8 @@ public class GameBall extends PhysicsObject {
     public int damageAmount = 1;
     private float radius;
 
-    public GameBall(World world, Vector2 position) {
-        radius = 15;
+    public GameBall(World world, Vector2 position, float radius, Vector2 dir) {
+        this.radius = radius;
         color = Color.WHITE;
         name = "Ball";
 
@@ -43,13 +43,20 @@ public class GameBall extends PhysicsObject {
         this.body.createFixture(shapeDef);
         circleShape.dispose();
 
-        body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0f);
+//        System.out.println("Ball angle: " + angle);
 
-        body.applyForceToCenter(Constants.toScreenUnits(0), Constants.toScreenUnits(5f), true);
+        body.setTransform(Constants.toWorldUnits(position.x), Constants.toWorldUnits(position.y), 0);
+
+        if(dir.angle() <= 10) dir.setAngle(10);
+        else if(dir.angle() >= 170) dir.setAngle(170);
+
+        dir.scl(15f);
+        body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
     }
 
     @Override
     public void update(float delta) {
+        if(body.getLinearVelocity().len() < 15f) body.setLinearVelocity(body.getLinearVelocity().nor().scl(15f));
         position.set(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
     }
 

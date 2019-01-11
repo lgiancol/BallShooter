@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -18,22 +19,33 @@ import com.lucasgiancola.Objects.PhysicsObject;
 import java.util.ArrayList;
 
 public class GameBlock extends PhysicsObject {
-    private int baseHealth = 1;
-    public int health = baseHealth;
+    private float baseHealth = 100;
+    public float health = baseHealth;
     private ArrayList<GameBlockPulse> pulses;
     private Vector2 velocity;
     private GlyphLayout layout;
     public float length;
-//    private Color target;
+    private Color baseCol;
+
+    private int targetIndex = 0;
+    private Color[] targets = new Color[] {
+            Color.RED.cpy(),
+//            new Color(0.26f, 0.52f, 0.95f, 1),
+            Color.GREEN.cpy()
+    };
+    private float count = 0;
+    private float maxCount = baseHealth / targets.length;
 
     public GameBlock(World world, Vector2 position, float length) {
         this.length = length;
         this.position = new Vector2(position.x - (length / 2), position.y - (length / 2));
         pulses = new ArrayList<GameBlockPulse>();
-        color = new Color(0.9f, 0.7f, 0.2f, 1f);
-//        target = new Color(0.4f, 0.1f, 0.1f, 1f);
+        baseCol = Color.YELLOW.cpy();
+        color = baseCol.cpy();
         velocity = new Vector2(0, -Constants.toWorldUnits(75f));
-        layout = new GlyphLayout(BallShooter.font, "" + health);
+
+        BallShooter.font.setColor(Color.BLACK);
+        layout = new GlyphLayout(BallShooter.font, "" + (int) health);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
@@ -63,11 +75,27 @@ public class GameBlock extends PhysicsObject {
     public void takeDamage(int amount) {
         // Reduce the health by the amount and update the text
         health -= amount;
-        layout.setText(BallShooter.font, "" + health);
+        count++;
+
+        BallShooter.font.setColor(Color.BLACK);
+        layout.setText(BallShooter.font, "" + (int) health);
+
+        float progress = count / maxCount;
+
+        if(progress >= 1) {
+            baseCol = color.cpy();
+            if(targetIndex < targets.length - 1) {
+                targetIndex++;
+            }
+            count = 0;
+
+            progress = count / maxCount;
+        }
 
         // Update the color of the block
-//        color.lerp(target, (float) ((baseHealth - health) / baseHealth));
-//        color.a = 1;
+        color.r = MathUtils.lerp(baseCol.r, targets[targetIndex].r, progress);
+        color.g = MathUtils.lerp(baseCol.g, targets[targetIndex].g, progress);
+        color.b = MathUtils.lerp(baseCol.b, targets[targetIndex].b, progress);
 
         // Add a new pulse to the block
         pulses.add(new GameBlockPulse(this));
