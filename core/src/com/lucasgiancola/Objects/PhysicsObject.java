@@ -6,7 +6,6 @@ public abstract class PhysicsObject extends GameBaseObject {
     public Body body;
     public boolean canDestroyBody = false;
     public boolean isBodyDestroyed = false;
-    public boolean canRemoveGraphic = false;
     public String name = "Physics Object";
 
     public void dispose() {

@@ -18,7 +18,7 @@ import com.lucasgiancola.Objects.Triggers.Wall;
 
 import java.util.ArrayList;
 
-public class Level1 extends BaseLevel {
+public class SpeedRunner extends BaseLevel {
     private ArrayList<PhysicsObject> objects;
     private ArrayList<PhysicsObject> objectsToDestroy;
 
@@ -35,7 +35,7 @@ public class Level1 extends BaseLevel {
 
     private float currentTime = 0;
 
-    public Level1(float levelWidth, float levelHeight) {
+    public SpeedRunner(float levelWidth, float levelHeight) {
         super(levelWidth, levelHeight);
         pivot = new Vector2(xOffset + (levelWidth / 2), yOffset);
 
@@ -135,7 +135,7 @@ public class Level1 extends BaseLevel {
 
         handleObjects();
 
-        if(currentTime >= 0.3f) {
+        if(currentTime >= 0.05f) {
             Vector2 temp = new Vector2(touch.x, touch.y);
             temp.sub(pivot);
             temp.nor();

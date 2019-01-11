@@ -27,8 +27,8 @@ public class GameBlockPulse extends GameBaseObject {
     public GameBlockPulse(GameBlock block) {
         length = startSize = block.length;
         angle = block.body.getAngle();
-//        color = colors[MathUtils.random(0, colors.length - 1)];
-        color = block.color.cpy();
+        color = colors[MathUtils.random(0, colors.length - 1)];
+//        color = block.color.cpy();
 
         maxSize = length * 2f; // 15% bigger than the original block
         this.position = new Vector2(block.position.x, block.position.y);

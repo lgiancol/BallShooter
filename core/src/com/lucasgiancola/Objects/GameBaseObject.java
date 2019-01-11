@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class GameBaseObject {
     public Vector2 position;
     public Color color;
+    public boolean canRemoveGraphic = false;
 
     public abstract void update(float delta);
     public abstract void render(ShapeRenderer renderer, Batch batch);
