@@ -10,15 +10,15 @@ public class GameBlockPulse extends GameBaseObject {
     private float maxDuration = 0.25f; // Lasts for 1 second
     private float currentDuration = 0;
     public boolean canRemove = false;
-    private float maxSize = 0, startSize = 0;
+    private float maxSize = 0, startSize = 0, length = 0;
     private float angle = 0;
 
     public GameBlockPulse(GameBlock block) {
-        this.size = startSize = block.size;
+        length = startSize = block.length;
         angle = block.body.getAngle();
         color = block.color.cpy();
 
-        maxSize = this.size * 1.5f; // 15% bigger than the original block
+        maxSize = length * 1.5f; // 15% bigger than the original block
         this.position = new Vector2(block.position.x, block.position.y);
     }
 
@@ -28,7 +28,7 @@ public class GameBlockPulse extends GameBaseObject {
 
         float progress = (currentDuration / maxDuration);
 
-        size = MathUtils.lerp(startSize, maxSize, progress);
+        length = MathUtils.lerp(startSize, maxSize, progress);
         color.a = MathUtils.lerp(1, 0, progress);
 
         canRemove = currentDuration >= maxDuration;
@@ -39,7 +39,7 @@ public class GameBlockPulse extends GameBaseObject {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(color);
 
-        renderer.rect(position.x - ((size - startSize) / 2), position.y - ((size - startSize) / 2), size, size);
+        renderer.rect(position.x - ((length - startSize) / 2), position.y - ((length - startSize) / 2), length, length);
 
         renderer.end();
     }

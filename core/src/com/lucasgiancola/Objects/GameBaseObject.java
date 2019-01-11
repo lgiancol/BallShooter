@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameBaseObject {
     public Vector2 position;
-    public float size;
     public Color color;
 
     public abstract void update(float delta);

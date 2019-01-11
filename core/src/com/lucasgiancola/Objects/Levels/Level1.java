@@ -12,6 +12,7 @@ import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.Balls.GameBall;
 import com.lucasgiancola.Objects.Blocks.GameBlock;
 import com.lucasgiancola.Objects.PhysicsObject;
+import com.lucasgiancola.Objects.Triggers.BottomTrigger;
 import com.lucasgiancola.Objects.Triggers.Destroyer;
 
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class Level1 extends BaseLevel {
         objects = new ArrayList<PhysicsObject>();
 //        objects.add(new GameBlock(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset + 1000)));
         objectsToDestroy = new ArrayList<PhysicsObject>();
+
+        PhysicsObject bottom = new BottomTrigger(levelWorld, new Vector2(xOffset + (levelWidth / 2), yOffset), levelWidth);
+        objects.add(bottom);
 
         insertRow();
     }
@@ -85,6 +89,8 @@ public class Level1 extends BaseLevel {
                 // Check what kind of physics object it was and add any power ups needed
                 levelWorld.destroyBody(toDestroy.body);
                 toDestroy.isBodyDestroyed = true;
+
+                System.out.println("Destroyed: " + toDestroy);
             }
 
             if(toDestroy.canRemoveGraphic) {
@@ -97,6 +103,9 @@ public class Level1 extends BaseLevel {
 
     @Override
     public void update(float delta) {
+
+        System.out.println("Bodies: " + levelWorld.getBodyCount());
+
         currentTime += delta;
 
         handleObjects();
@@ -158,17 +167,17 @@ public class Level1 extends BaseLevel {
         return null;
     }
 
-    private Destroyer getDestroyerFromContact(Contact c) {
+    private BottomTrigger getBottomTriggerFromContact(Contact c) {
         Fixture temp = c.getFixtureA();
 
-        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
-            return (Destroyer) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof BottomTrigger) {
+            return (BottomTrigger) temp.getBody().getUserData();
         }
 
 
         temp = c.getFixtureB();
-        if(temp != null && temp.getBody().getUserData() instanceof Destroyer) {
-            return (Destroyer) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof BottomTrigger) {
+            return (BottomTrigger) temp.getBody().getUserData();
         }
 
         return null;
@@ -184,28 +193,39 @@ public class Level1 extends BaseLevel {
             block.takeDamage(ball.damageAmount);
 
             if(block.health <= 0) {
-                if(!this.objectsToDestroy.contains(block)) {
-                    this.objectsToDestroy.add(block);
+                if(!objectsToDestroy.contains(block)) {
+                    objectsToDestroy.add(block);
                 }
             }
-//
-//            return;
+
+            return;
         }
 
-//        Destroyer destroyer = getDestroyerFromContact(contact);
-//
-//        if(destroyer != null && ball != null) {
-//            if(!this.objectsToDestroy.contains(ball)) {
-//                this.objectsToDestroy.add(ball);
-//            }
-//
-//            return;
-//        }
-//
-//        // Block hitting wall
-//        if(destroyer != null && block != null) {
-//            this.isOver = true;
-//        }
+        BottomTrigger destroyer = getBottomTriggerFromContact(contact);
+
+        // Ball hit destroyer
+        if(destroyer != null && ball != null) {
+            // First time it hits the wall, it is added to the objects to destroy list, second time it actually gets removed
+            // First time it hits the wall, it is added to the objects to destroy list, second time it actually gets removed
+            if(!objectsToDestroy.contains(ball)) {
+                objectsToDestroy.add(ball);
+            } else {
+                ball.canDestroyBody = true;
+                ball.canRemoveGraphic = true;
+            }
+
+            return;
+        }
+
+        // Block hitting bottom
+        if(destroyer != null && block != null) {
+            if(!objectsToDestroy.contains(block)) {
+                block.canDestroyBody = true;
+                block.canRemoveGraphic = true;
+
+                objectsToDestroy.add(block);
+            }
+        }
     }
 
     @Override

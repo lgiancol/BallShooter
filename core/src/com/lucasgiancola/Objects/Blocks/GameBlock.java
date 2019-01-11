@@ -23,11 +23,12 @@ public class GameBlock extends PhysicsObject {
     private ArrayList<GameBlockPulse> pulses;
     private Vector2 velocity;
     private GlyphLayout layout;
+    public float length;
 //    private Color target;
 
-    public GameBlock(World world, Vector2 position, float size) {
-        this.size = size;
-        this.position = new Vector2(position.x - (size / 2), position.y - (size / 2));
+    public GameBlock(World world, Vector2 position, float length) {
+        this.length = length;
+        this.position = new Vector2(position.x - (length / 2), position.y - (length / 2));
         pulses = new ArrayList<GameBlockPulse>();
         color = new Color(0.9f, 0.7f, 0.2f, 1f);
 //        target = new Color(0.4f, 0.1f, 0.1f, 1f);
@@ -40,7 +41,7 @@ public class GameBlock extends PhysicsObject {
         body.setUserData(this);
 
         PolygonShape block = new PolygonShape();
-        block.setAsBox(Constants.toWorldUnits(size / 2), Constants.toWorldUnits(size / 2), new Vector2(0, 0), 0f);
+        block.setAsBox(Constants.toWorldUnits(length / 2), Constants.toWorldUnits(length / 2), new Vector2(0, 0), 0f);
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = block;
@@ -91,7 +92,7 @@ public class GameBlock extends PhysicsObject {
         canRemoveGraphic = pulses.isEmpty();
 
         // Set the position to be the screen position of the body in the world
-        position.set(Constants.toScreenUnits(body.getPosition().x) - (size / 2), Constants.toScreenUnits(body.getPosition().y) - (size / 2));
+        position.set(Constants.toScreenUnits(body.getPosition().x) - (length / 2), Constants.toScreenUnits(body.getPosition().y) - (length / 2));
         body.getTransform().setRotation(body.getTransform().getRotation() + 0.5f);
 //        body.setTransform(body.getPosition(), body.getAngle());
     }
@@ -111,21 +112,16 @@ public class GameBlock extends PhysicsObject {
             renderer.setColor(color);
 
             renderer.rect(position.x, position.y,
-                    size / 2, size / 2,
-                    size, size,
+                    length / 2, length / 2,
+                    length, length,
                     1.0f, 1.0f,
                     body.getAngle());
 
             renderer.end();
 
             batch.begin();
-            BallShooter.font.draw(batch, layout, position.x + (size / 2) - (layout.width / 2), position.y + (size / 2) + (layout.height / 2));
+            BallShooter.font.draw(batch, layout, position.x + (length / 2) - (layout.width / 2), position.y + (length / 2) + (layout.height / 2));
             batch.end();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Position: [" + position.x + ", " + position.y + "] Dimensions: [" + size + ", " + size + "]";
     }
 }

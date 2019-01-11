@@ -2,7 +2,6 @@ package com.lucasgiancola.Objects.Balls;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,12 +13,14 @@ import com.lucasgiancola.Objects.PhysicsObject;
 
 public class GameBall extends PhysicsObject {
     public int damageAmount = 1;
+    private float radius;
 
     public GameBall(World world, Vector2 position) {
-        size = 15;
+        radius = 15;
         color = Color.WHITE;
+        name = "Ball";
 
-        this.position = new Vector2(position.x - size, position.y - size);
+        this.position = new Vector2(position.x - radius, position.y - radius);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -27,7 +28,7 @@ public class GameBall extends PhysicsObject {
         this.body.setUserData(this);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(Constants.toWorldUnits(size));
+        circleShape.setRadius(Constants.toWorldUnits(radius));
         circleShape.setPosition(new Vector2(0, 0));
 
         FixtureDef shapeDef = new FixtureDef();
@@ -57,7 +58,7 @@ public class GameBall extends PhysicsObject {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(color);
 
-        renderer.circle(position.x, position.y, size);
+        renderer.circle(position.x, position.y, radius);
 
         renderer.end();
     }
