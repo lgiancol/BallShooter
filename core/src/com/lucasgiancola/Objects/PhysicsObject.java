@@ -10,6 +10,7 @@ public abstract class PhysicsObject extends GameBaseObject {
     public String name = "Physics Object";
 
     public void dispose() {
+        body.setUserData(null);
         body.getWorld().destroyBody(body);
     }
 

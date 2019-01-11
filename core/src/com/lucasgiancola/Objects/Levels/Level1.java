@@ -31,6 +31,7 @@ public class Level1 extends BaseLevel {
     private float blockOffset = 25;
     private GameBlock topBlock = null;
     private boolean shouldSpawn = false;
+    private int blockCount = 0;
 
     private float currentTime = 0;
 
@@ -167,6 +168,11 @@ public class Level1 extends BaseLevel {
         }
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
     private GameBlock getBlockFromContact(Contact c) {
         Fixture temp = c.getFixtureA();
 
@@ -239,6 +245,7 @@ public class Level1 extends BaseLevel {
             block.takeDamage(ball.damageAmount);
 
             if(block.health <= 0) {
+                blockCount++;
                 if(!objectsToDestroy.contains(block)) {
                     objectsToDestroy.add(block);
                 }
@@ -273,12 +280,14 @@ public class Level1 extends BaseLevel {
 
         // Block hitting bottom
         if(destroyer != null && block != null) {
-            if(!objectsToDestroy.contains(block)) {
-                block.canDestroyBody = true;
-                block.canRemoveGraphic = true;
+            isOver = true;
 
-                objectsToDestroy.add(block);
-            }
+//            if(!objectsToDestroy.contains(block)) {
+//                block.canDestroyBody = true;
+//                block.canRemoveGraphic = true;
+//
+//                objectsToDestroy.add(block);
+//            }
         }
     }
 

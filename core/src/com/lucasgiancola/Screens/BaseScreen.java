@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.lucasgiancola.BallShooter;
 
 public abstract class BaseScreen implements Screen {
-    private BallShooter app;
+    protected BallShooter app;
 
     protected Camera mainCamera;
     protected Viewport viewport;

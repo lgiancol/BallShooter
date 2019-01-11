@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
+import com.lucasgiancola.Objects.PhysicsObject;
 
 public abstract class BaseLevel implements ContactListener {
     protected ShapeRenderer renderer;
@@ -16,6 +19,7 @@ public abstract class BaseLevel implements ContactListener {
     protected float xOffset = 0, yOffset = 0;
     protected World levelWorld;
     public Vector2 touch = new Vector2(0, 1);
+    public boolean isOver = false;
 
     public BaseLevel(float worldWidth, float worldHeight) {
         this.worldWidth = worldWidth;
@@ -48,6 +52,20 @@ public abstract class BaseLevel implements ContactListener {
     public void dispose() {
         renderer.dispose();
         batch.dispose();
+
+        Array<Body> bodies = new Array<Body>();
+        levelWorld.getBodies(bodies);
+
+        for(int i = bodies.size - 1; i >= 0; i--) {
+            Body b = bodies.get(i);
+            Object obj = b.getUserData();
+
+            if(obj instanceof PhysicsObject) {
+                ((PhysicsObject) obj).dispose();
+            }
+        }
+
+        levelWorld.dispose();
     }
 
 }

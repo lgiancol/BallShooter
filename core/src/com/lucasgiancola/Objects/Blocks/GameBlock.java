@@ -42,7 +42,7 @@ public class GameBlock extends PhysicsObject {
         pulses = new ArrayList<GameBlockPulse>();
         baseCol = Color.YELLOW.cpy();
         color = baseCol.cpy();
-        velocity = new Vector2(0, -Constants.toWorldUnits(75f));
+        velocity = new Vector2(0, -Constants.toWorldUnits(150f));
 
         BallShooter.font.setColor(Color.BLACK);
         layout = new GlyphLayout(BallShooter.font, "" + (int) health);
@@ -152,6 +152,8 @@ public class GameBlock extends PhysicsObject {
             batch.end();
         }
     }
+
+
 
     @Override
     public String toString() {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.Levels.BaseLevel;
+import com.lucasgiancola.Objects.Levels.Level1;
 
 public class GameScreenView extends BaseScreen implements InputProcessor {
     private BaseLevel level;
@@ -33,9 +34,13 @@ public class GameScreenView extends BaseScreen implements InputProcessor {
         while (dtAccumulator > FIXED_TIMESTEP) {
             dtAccumulator -= FIXED_TIMESTEP;
             // Should check if the game is running/isn't paused
-            if ( true ) {
+            if ( !level.isOver ) {
                 level.step(FIXED_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
                 level.update(FIXED_TIMESTEP);
+            } else {
+                app.setScreen(new GameScreenView(app, new Level1(BallShooter.WIDTH, BallShooter.HEIGHT)));
+                this.dispose();
+                return;
             }
         }
 
@@ -46,6 +51,13 @@ public class GameScreenView extends BaseScreen implements InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         level.render();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        level.dispose();
     }
 
     /* Input processing */
