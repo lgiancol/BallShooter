@@ -1,5 +1,6 @@
 package com.lucasgiancola.Objects.Levels;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -25,6 +26,7 @@ public abstract class BaseLevel implements ContactListener {
         renderer = new ShapeRenderer();
         batch = new SpriteBatch();
         batch.enableBlending();
+        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         levelWorld = new World(new Vector2(0f, 0f), true);
         levelWorld.setContactListener(this);

@@ -1,9 +1,10 @@
 package com.lucasgiancola.Objects.Blocks;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -17,16 +18,19 @@ import com.lucasgiancola.Objects.PhysicsObject;
 import java.util.ArrayList;
 
 public class GameBlock extends PhysicsObject {
-    public int health = 100;
+    private int baseHealth = 100;
+    public int health = baseHealth;
     private ArrayList<GameBlockPulse> pulses;
     private Vector2 velocity;
     private GlyphLayout layout;
+//    private Color target;
 
     public GameBlock(World world, Vector2 position, float size) {
         this.size = size;
         this.position = new Vector2(position.x - (size / 2), position.y - (size / 2));
         pulses = new ArrayList<GameBlockPulse>();
         color = new Color(0.9f, 0.7f, 0.2f, 1f);
+//        target = new Color(0.4f, 0.1f, 0.1f, 1f);
         velocity = new Vector2(0, -Constants.toWorldUnits(75f));
         layout = new GlyphLayout(BallShooter.font, "" + health);
 
@@ -56,11 +60,19 @@ public class GameBlock extends PhysicsObject {
     }
 
     public void takeDamage(int amount) {
+        // Reduce the health by the amount and update the text
         health -= amount;
-        canDestroyBody = health <= 0;
         layout.setText(BallShooter.font, "" + health);
 
+        // Update the color of the block
+//        color.lerp(target, (float) ((baseHealth - health) / baseHealth));
+//        color.a = 1;
+
+        // Add a new pulse to the block
         pulses.add(new GameBlockPulse(this));
+
+        // Set if the block's physics body can be destroyed
+        canDestroyBody = health <= 0;
     }
 
     @Override
@@ -87,6 +99,8 @@ public class GameBlock extends PhysicsObject {
     @Override
     public void render(ShapeRenderer renderer, Batch batch) {
 
+        // Render pulses first since they need to be behind the actual block
+        Gdx.gl.glEnable(GL20.GL_BLEND); // This will make sure we can render transparency for the pulses
         for(GameBlockPulse pulse: pulses) {
             pulse.render(renderer, batch);
         }
