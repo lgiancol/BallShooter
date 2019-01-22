@@ -4,20 +4,19 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.lucasgiancola.BallShooter;
 import com.lucasgiancola.Objects.Levels.GameLevel;
-import com.lucasgiancola.Objects.Levels.LevelOne;
 
 public class Screen implements com.badlogic.gdx.Screen {
     private GameLevel level;
-    private Viewport viewport;
+    protected Viewport viewport;
 
-    public Screen() {
+    public Screen(GameLevel stage) {
         viewport = new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT);
-        level = new LevelOne(viewport);
+        level = stage;
     }
 
     @Override
     public void show() {
-        viewport.setCamera(level.cam);
+        level.setViewport(viewport);
     }
 
     @Override

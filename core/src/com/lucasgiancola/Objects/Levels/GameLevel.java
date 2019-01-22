@@ -10,19 +10,26 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public abstract class GameLevel extends Stage implements ContactListener {
 
-    public Camera cam;
+    public Camera cam = null;
     protected World world;
 
-    public GameLevel(Viewport dimensions) {
-        cam = new OrthographicCamera(dimensions.getWorldWidth(), dimensions.getWorldHeight());
-
+    public GameLevel() {
         world = new World(new Vector2(0f, 0f), true);
         world.setContactListener(this);
     }
 
-    public void update(float delta) {
-        this.act(delta);
+    public void setViewport(Viewport vp) {
+        cam = new OrthographicCamera(vp.getWorldWidth(), vp.getWorldHeight());
+        vp.setCamera(cam);
+
+        System.out.println("WW: " + vp.getWorldWidth() + " WH: " + vp.getWorldHeight());
 
         cam.update();
+    }
+
+    public void update(float delta) {
+        if(cam == null) throw new IllegalArgumentException("Camera cannot be null");
+
+        this.act(delta);
     }
 }

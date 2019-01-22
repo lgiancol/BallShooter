@@ -3,12 +3,14 @@ package com.lucasgiancola.Objects.Levels;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.lucasgiancola.Objects.Balls.Ball;
 
 public class LevelOne extends GameLevel {
 
-    public LevelOne(Viewport dimensions) {
-        super(dimensions);
+    public LevelOne() {
+        super();
+
+        addActor(new Ball());
     }
 
     @Override

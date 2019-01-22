@@ -9,6 +9,7 @@ import com.lucasgiancola.Managers.Assets;
 import com.lucasgiancola.Managers.SoundManager;
 import com.lucasgiancola.Objects.Levels.SpeedRunner;
 import com.lucasgiancola.Screens.GameScreen;
+import com.lucasgiancola.Screens.NewScreen;
 
 public class BallShooter extends Game {
 	public static float WIDTH = 9;
@@ -27,7 +28,8 @@ public class BallShooter extends Game {
 		BallShooter.shapeRenderer = new ShapeRenderer();
 
 		// The level is hard coded here, but in the real game, once the user clicks on a level/starts a new chaos mode it would start that level instead
-		setScreen(new GameScreen(this, new SpeedRunner(WIDTH, HEIGHT)));
+//		setScreen(new GameScreen(this, new SpeedRunner(WIDTH, HEIGHT)));
+		setScreen(new NewScreen());
 	}
 
 	private void updateDimensions() {
