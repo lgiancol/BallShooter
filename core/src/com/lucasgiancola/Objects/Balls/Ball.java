@@ -54,11 +54,10 @@ public class Ball extends Actor {
         body.setTransform(Constants.toWorldUnits(position.x - getWidth() / 2), Constants.toWorldUnits(position.y - getWidth() / 2), 0);
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
 
-        System.out.println("Pos: " + getX() + ", " + getY());
-
         Vector2 dir = new Vector2(0, 1);
         dir.nor();
-        dir.scl(15);
+        dir.setAngle(45);
+        dir.scl(5);
         body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
     }
 

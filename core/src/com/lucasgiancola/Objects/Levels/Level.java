@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.Blocks.Block;
+import com.lucasgiancola.Objects.Walls.Wall;
 
 public class Level {
     private Stage stage;
@@ -20,8 +21,16 @@ public class Level {
 
         instantiateBall();
 
-        stage.addActor(new Block(world, new Vector2(stage.getWidth() / 2, stage.getHeight())));
-        stage.addActor(new Block(world, new Vector2(stage.getWidth() / 2, 0)));
+        int wallThickness = 5;
+        // Top
+        stage.addActor(new Wall(world, new Vector2(stage.getWidth() / 2, stage.getHeight() - (wallThickness / 2)), stage.getWidth(), wallThickness));
+        // Bottom
+        stage.addActor(new Wall(world, new Vector2(stage.getWidth() / 2, (wallThickness / 2)), stage.getWidth(), wallThickness));
+
+        // Left
+        stage.addActor(new Wall(world, new Vector2((wallThickness / 2), stage.getHeight() / 2), wallThickness, stage.getHeight()));
+        // Right
+        stage.addActor(new Wall(world, new Vector2(stage.getWidth() - (wallThickness / 2) , stage.getHeight() / 2), wallThickness, stage.getHeight()));
     }
 
     public void instantiateBall() {
