@@ -1,6 +1,7 @@
 package com.lucasgiancola.Screens;
 
 import com.lucasgiancola.Application;
+import com.lucasgiancola.Objects.Levels.DefaultLevel;
 import com.lucasgiancola.Objects.Levels.Level;
 
 public class NewGameScreen extends Screen {
@@ -13,7 +14,7 @@ public class NewGameScreen extends Screen {
     public NewGameScreen(Application app) {
         super(app);
 
-        level = new Level(stage);
+        level = new DefaultLevel(stage);
     }
 
     @Override
@@ -30,7 +31,7 @@ public class NewGameScreen extends Screen {
             // Should check if the game is running/isn't paused
             if ( !level.isOver ) {
                 level.step(FIXED_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-//                level.update(FIXED_TIMESTEP);
+                level.update(FIXED_TIMESTEP);
             }
         }
     }
