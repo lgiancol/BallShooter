@@ -11,6 +11,8 @@ import com.lucasgiancola.Objects.GameObject;
 
 public class Ball extends GameObject {
 
+    private float speed = 15;
+
     public Ball(World world, Vector2 position) {
         setColor(Color.WHITE);
         setWidth(100); // Width will be used as the half radius
@@ -52,7 +54,7 @@ public class Ball extends GameObject {
         Vector2 dir = new Vector2(0, 1);
         dir.nor();
         dir.setAngle(45);
-        dir.scl(5);
+        dir.scl(speed);
         body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
     }
 

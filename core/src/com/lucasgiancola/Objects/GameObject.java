@@ -7,4 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class GameObject extends Actor {
     protected Texture tex;
     protected Body body;
+
+    public void dispose() {
+        tex.dispose();
+        remove();
+        body.setUserData(null);
+        body.getWorld().destroyBody(body);
+    }
 }

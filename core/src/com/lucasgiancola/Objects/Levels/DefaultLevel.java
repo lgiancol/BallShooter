@@ -9,11 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.Balls.GameBall;
 import com.lucasgiancola.Objects.Blocks.GameBlock;
+import com.lucasgiancola.Objects.GameObject;
 import com.lucasgiancola.Objects.Triggers.BottomTrigger;
 import com.lucasgiancola.Objects.Triggers.TopTrigger;
+import com.lucasgiancola.Objects.Walls.BlockSpawner;
+import com.lucasgiancola.Objects.Walls.ObjectDespawner;
 import com.lucasgiancola.Objects.Walls.Wall;
 
+import java.util.ArrayList;
+
 public class DefaultLevel extends Level {
+
+    private ArrayList<GameObject> destroyed = new ArrayList<GameObject>();
+
     public DefaultLevel(Stage stage) {
         super(stage);
 
@@ -21,9 +29,9 @@ public class DefaultLevel extends Level {
 
         int wallThickness = 5;
         // Top
-        stage.addActor(new Wall(world, new Vector2(stage.getWidth() / 2, stage.getHeight() - (wallThickness / 2)), stage.getWidth(), wallThickness));
+        stage.addActor(new BlockSpawner(world, new Vector2(stage.getWidth() / 2, stage.getHeight() - (wallThickness / 2)), stage.getWidth(), wallThickness));
         // Bottom
-        stage.addActor(new Wall(world, new Vector2(stage.getWidth() / 2, (wallThickness / 2)), stage.getWidth(), wallThickness));
+        stage.addActor(new ObjectDespawner(world, new Vector2(stage.getWidth() / 2, (wallThickness / 2)), stage.getWidth(), wallThickness));
 
         // Left
         stage.addActor(new Wall(world, new Vector2((wallThickness / 2), stage.getHeight() / 2), wallThickness, stage.getHeight()));
@@ -41,8 +49,17 @@ public class DefaultLevel extends Level {
         counter += delta;
 
         if(counter >= 0.5f) {
-            instantiateBall();
+//            instantiateBall();
             counter = 0;
+        }
+
+        if(!destroyed.isEmpty()) {
+            for(GameObject go : destroyed) {
+                // Disposes of the texture, removes it from the stage, and deletes it from the world
+                go.dispose();
+            }
+
+            destroyed = new ArrayList<GameObject>();
         }
     }
 
@@ -61,16 +78,16 @@ public class DefaultLevel extends Level {
         return null;
     }
 
-    private GameBall getBallFromContact(Contact c) {
+    private Ball getBallFromContact(Contact c) {
         Fixture temp = c.getFixtureA();
 
-        if(temp != null && temp.getBody().getUserData() instanceof GameBall) {
-            return (GameBall) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
         }
 
         temp = c.getFixtureB();
-        if(temp != null && temp.getBody().getUserData() instanceof GameBall) {
-            return (GameBall) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof Ball) {
+            return (Ball) temp.getBody().getUserData();
         }
 
         return null;
@@ -92,17 +109,17 @@ public class DefaultLevel extends Level {
         return null;
     }
 
-    private BottomTrigger getBottomTriggerFromContact(Contact c) {
+    private ObjectDespawner getDespawnerFromContact(Contact c) {
         Fixture temp = c.getFixtureA();
 
-        if(temp != null && temp.getBody().getUserData() instanceof BottomTrigger) {
-            return (BottomTrigger) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof ObjectDespawner) {
+            return (ObjectDespawner) temp.getBody().getUserData();
         }
 
 
         temp = c.getFixtureB();
-        if(temp != null && temp.getBody().getUserData() instanceof BottomTrigger) {
-            return (BottomTrigger) temp.getBody().getUserData();
+        if(temp != null && temp.getBody().getUserData() instanceof ObjectDespawner) {
+            return (ObjectDespawner) temp.getBody().getUserData();
         }
 
         return null;
@@ -110,12 +127,12 @@ public class DefaultLevel extends Level {
 
     @Override
     public void beginContact(Contact contact) {
-        GameBall ball = getBallFromContact(contact);
+        Ball ball = getBallFromContact(contact);
         GameBlock block = getBlockFromContact(contact);
 
         // If it's a ball hitting a block
         if(block != null && ball != null) {
-            block.takeDamage(ball.damageAmount);
+//            block.takeDamage(ball.damageAmount);
 
             if(block.health <= 0) {
 //                blockCount++;
@@ -127,12 +144,17 @@ public class DefaultLevel extends Level {
             return;
         }
 
-        BottomTrigger destroyer = getBottomTriggerFromContact(contact);
+        ObjectDespawner despawner = getDespawnerFromContact(contact);
+
+        System.out.println("Ball: " + ball);
+        System.out.println("Despawner: " + despawner);
 
         // Ball hit destroyer
-        if(destroyer != null && ball != null) {
+        if(despawner != null && ball != null) {
             // First time it hits the wall, it is added to the objects to destroy list, second time it actually gets removed
-            // First time it hits the wall, it is added to the objects to destroy list, second time it actually gets removed
+            if(!destroyed.contains(ball)) {
+                destroyed.add(ball);
+            }
 //            if(!objectsToDestroy.contains(ball)) {
 //                objectsToDestroy.add(ball);
 //            } else {
@@ -152,7 +174,7 @@ public class DefaultLevel extends Level {
 
 
         // Block hitting bottom
-        if(destroyer != null && block != null) {
+        if(despawner != null && block != null) {
             isOver = true;
 
 //            if(!objectsToDestroy.contains(block)) {

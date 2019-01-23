@@ -16,7 +16,7 @@ public abstract class Level implements ContactListener {
         this.stage = stage;
 
         world = new World(new Vector2(0, 0), true);
-        // Set this class to be a contact listener and set it to be the world's contact listener
+        world.setContactListener(this);
     }
 
     public abstract void update(float delta);
