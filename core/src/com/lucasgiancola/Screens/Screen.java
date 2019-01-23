@@ -1,52 +1,47 @@
 package com.lucasgiancola.Screens;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.lucasgiancola.BallShooter;
-import com.lucasgiancola.Objects.Levels.GameLevel;
+import com.lucasgiancola.Application;
+import com.lucasgiancola.Objects.Balls.Ball;
 
-public class Screen implements com.badlogic.gdx.Screen {
-    private GameLevel level;
-    protected Viewport viewport;
+public abstract class Screen implements com.badlogic.gdx.Screen {
+    protected final Application app;
+    protected Stage stage;
 
-    public Screen(GameLevel stage) {
-        viewport = new FitViewport(BallShooter.WIDTH, BallShooter.HEIGHT);
-        level = stage;
+    public Screen(Application app) {
+        this.app = app;
+
+        stage = new Stage(new FitViewport(app.viewportWidth, app.viewportHeight, app.camera));
+        Gdx.input.setInputProcessor(stage);
+
+        stage.addActor(new Ball());
     }
-
-    @Override
-    public void show() {
-        level.setViewport(viewport);
+    public void update(float delta) {
+        stage.act(delta);
     }
 
     @Override
     public void render(float delta) {
-        level.update(delta);
-        level.draw();
+        Gdx.gl.glClearColor(1f, 0f, 1f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        update(delta);
+
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
+        stage.getViewport().update(width, height, false);
+        app.batch.setProjectionMatrix(app.camera.combined);
     }
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
+
 }

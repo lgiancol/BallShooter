@@ -15,7 +15,7 @@ public class GameScreen extends BaseScreen implements InputProcessor {
     public GameScreen(BallShooter app, BaseLevel level) {
         super(app);
 
-        // Assign the level, and set up the width and height
+        // Assign the level, and set up the viewportWidth and viewportHeight
         this.level = level;
 
         Gdx.input.setInputProcessor(this);

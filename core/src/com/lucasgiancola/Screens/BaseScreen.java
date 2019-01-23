@@ -47,7 +47,7 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // Updates the viewport width and height, and then creates a new camera to use them
+        // Updates the viewport viewportWidth and viewportHeight, and then creates a new camera to use them
         viewport.update(width, height);
 
         mainCamera = new OrthographicCamera(viewport.getWorldWidth(), viewport.getWorldHeight());

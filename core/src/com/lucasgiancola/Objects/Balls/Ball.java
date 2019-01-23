@@ -12,23 +12,22 @@ public class Ball extends Actor {
 
     public Ball() {
         setColor(Color.WHITE);
-        setWidth(20);
-        setHeight(20);
-        setPosition(200, 0);
+        setWidth(100);
+        setHeight(100);
 
-        System.out.println("X: " + getX() + ", Y: " + getY() + " | W: " + getWidth() + ", " + getHeight());
-
-        Pixmap pixmap = new Pixmap( (int) getWidth(), (int) getHeight(), Pixmap.Format.RGBA8888 );
+        Pixmap pixmap = new Pixmap( (int) getWidth(), (int) getWidth(), Pixmap.Format.RGBA8888 );
         pixmap.setColor( getColor());
-        pixmap.drawRectangle(0, 0, (int) getWidth(), (int) getHeight());
+        pixmap.fillCircle((int) getWidth() / 2, (int) getWidth() / 2, (int) getWidth() / 2);
         tex = new Texture( pixmap );
         pixmap.dispose();
 
-
+        // When we actually draw the ball, it is going to be moved so that the center of it is drawn at the point
+        // so we need to make sure to push it over and down
+        setPosition(getWidth() / 2, getWidth() / 2);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(tex, getX(), getY());
+        batch.draw(tex, getX() - getWidth() / 2, getY() - getWidth() / 2);
     }
 }
