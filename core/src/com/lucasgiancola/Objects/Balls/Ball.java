@@ -4,30 +4,67 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.lucasgiancola.Constants;
 
 public class Ball extends Actor {
 
     private Texture tex;
 
-    public Ball() {
-        setColor(Color.WHITE);
-        setWidth(100);
-        setHeight(100);
+    // Temp
+    private Body body;
 
+    public Ball(World world, Vector2 position) {
+        setColor(Color.WHITE);
+        setWidth(100); // Width will be used as the half radius
+
+        // Create the texture for the ball
+        // TODO: Make this constant so we don't need to create a new one every time
         Pixmap pixmap = new Pixmap( (int) getWidth(), (int) getWidth(), Pixmap.Format.RGBA8888 );
         pixmap.setColor( getColor());
         pixmap.fillCircle((int) getWidth() / 2, (int) getWidth() / 2, (int) getWidth() / 2);
         tex = new Texture( pixmap );
         pixmap.dispose();
 
-        // When we actually draw the ball, it is going to be moved so that the center of it is drawn at the point
-        // so we need to make sure to push it over and down
-        setPosition(getWidth() / 2, getWidth() / 2);
+        // Create a body for the ball add it to the world that was provided
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        body = world.createBody(bodyDef);
+        body.setUserData(this);
+
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(getWidth() / 2);
+        circleShape.setPosition(new Vector2(0, 0));
+
+        FixtureDef shapeDef = new FixtureDef();
+        shapeDef.shape = circleShape;
+        shapeDef.friction = 0f;
+        shapeDef.density = 0f;
+        shapeDef.restitution = 1f;
+        shapeDef.isSensor = false;
+        shapeDef.filter.categoryBits = Constants.CATEGORY_BALL;
+        shapeDef.filter.maskBits = Constants.MASK_BALL;
+
+        this.body.createFixture(shapeDef);
+        circleShape.dispose();
+
+        // Set the initial position
+        body.setTransform(Constants.toWorldUnits(position.x - getWidth() / 2), Constants.toWorldUnits(position.y - getWidth() / 2), 0);
+        setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
+
+        System.out.println("Pos: " + getX() + ", " + getY());
+
+        Vector2 dir = new Vector2(0, 1);
+        dir.nor();
+        dir.scl(15);
+//        body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(tex, getX() - getWidth() / 2, getY() - getWidth() / 2);
+        setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
+        batch.draw(tex, getX(), getY());
     }
 }
