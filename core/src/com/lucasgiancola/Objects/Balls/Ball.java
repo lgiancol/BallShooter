@@ -35,8 +35,8 @@ public class Ball extends Actor {
         body.setUserData(this);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(getWidth() / 2);
-        circleShape.setPosition(new Vector2(0, 0));
+        circleShape.setRadius(Constants.toWorldUnits(getWidth() / 2));
+        circleShape.setPosition(new Vector2(Constants.toWorldUnits(getWidth() / 2), Constants.toWorldUnits(getWidth() / 2)));
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = circleShape;
@@ -59,7 +59,7 @@ public class Ball extends Actor {
         Vector2 dir = new Vector2(0, 1);
         dir.nor();
         dir.scl(15);
-//        body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
+        body.applyForceToCenter(Constants.toScreenUnits(dir.x), Constants.toScreenUnits(dir.y), true);
     }
 
     @Override

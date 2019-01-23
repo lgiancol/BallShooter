@@ -36,7 +36,7 @@ public class Block extends Actor {
         body.setUserData(this);
 
         PolygonShape block = new PolygonShape();
-        block.setAsBox(getWidth() / 2,getHeight() / 2, new Vector2(getWidth() / 2, getHeight() / 2), 0f);
+        block.setAsBox(Constants.toWorldUnits(getWidth() / 2),Constants.toWorldUnits(getHeight() / 2), new Vector2(Constants.toWorldUnits(getWidth() / 2), Constants.toWorldUnits(getHeight() / 2)), 0f);
 
         FixtureDef shapeDef = new FixtureDef();
         shapeDef.shape = block;
