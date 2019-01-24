@@ -16,7 +16,7 @@ import com.lucasgiancola.Objects.Walls.Wall;
 
 import java.util.ArrayList;
 
-public class DefaultLevel extends Level {
+public class SpeedRun extends Level {
 
     private ArrayList<GameObject> destroyed = new ArrayList<GameObject>();
     private int numCols = 7;
@@ -30,7 +30,7 @@ public class DefaultLevel extends Level {
     private Block topBlock = null;
     private boolean spawnRow = false;
 
-    public DefaultLevel(Stage stage) {
+    public SpeedRun(Stage stage) {
         super(stage);
 
 

@@ -3,7 +3,7 @@ package com.lucasgiancola.Models;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.lucasgiancola.BallShooter;
+import com.lucasgiancola.Application;
 
 public class GameModel {
     private boolean gameInProgress = false;
@@ -14,10 +14,11 @@ public class GameModel {
 
     private Stage stage = null;
 
-    public GameModel() {
+    public GameModel(Stage stage) {
+        this.stage = stage;
         this.gameInProgress = true;
 
-        this.pivot = new Vector2(BallShooter.WIDTH / 2, 0);
+        this.pivot = new Vector2(stage.getWidth() / 2, 0);
     }
 
     public void setStage(Stage stage) {

@@ -1,30 +1,25 @@
 package com.lucasgiancola.Screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.Vector2;
-import com.lucasgiancola.BallShooter;
-import com.lucasgiancola.Objects.Levels.BaseLevel;
-import com.lucasgiancola.Objects.Levels.SpeedRunner;
+import com.lucasgiancola.Application;
+import com.lucasgiancola.Objects.Levels.SpeedRun;
+import com.lucasgiancola.Objects.Levels.Level;
 
-public class GameScreen extends BaseScreen implements InputProcessor {
-    private BaseLevel level;
-    private float dtAccumulator = 0;
+public class GameScreen extends Screen {
 
-    public GameScreen(BallShooter app, BaseLevel level) {
+    private Level level;
+
+    // Temp
+    float dtAccumulator = 0;
+
+    public GameScreen(Application app) {
         super(app);
 
-        // Assign the level, and set up the viewportWidth and viewportHeight
-        this.level = level;
-
-        Gdx.input.setInputProcessor(this);
+        level = new SpeedRun(stage);
     }
 
     @Override
-    public void render(float delta) {
-        level.setProjectionMatrix(mainCamera.combined);
-
+    public void update(float delta) {
+        // Check level variables to see what we should do with the level/screen we are on
         // Call box2d with a fixed timestep
         final int VELOCITY_ITERATIONS = 15;
         final int POSITION_ITERATIONS = 3;
@@ -37,70 +32,33 @@ public class GameScreen extends BaseScreen implements InputProcessor {
             if ( !level.isOver ) {
                 level.step(FIXED_TIMESTEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
                 level.update(FIXED_TIMESTEP);
-            } else {
-                app.setScreen(new GameScreen(app, new SpeedRunner(BallShooter.WIDTH, BallShooter.HEIGHT)));
-                this.dispose();
-                return;
             }
         }
-
-        // Clear the screen and render the level with the updated position
-        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        level.render();
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
+    public void render(float delta) {
+        update(delta);
 
-        level.dispose();
-    }
-
-    /* Input processing */
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
+        super.render(delta);
     }
 
     @Override
-    public boolean keyUp(int keycode) {
-        return false;
+    public void show() {
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        return false;
+    public void pause() {
+
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        level.touch = viewport.unproject(new Vector2(screenX, screenY));
-        return false;
+    public void resume() {
+
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+    public void hide() {
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        level.touch = viewport.unproject(new Vector2(screenX, screenY));
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }

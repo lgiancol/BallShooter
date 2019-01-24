@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.lucasgiancola.Screens.NewGameScreen;
+import com.lucasgiancola.Screens.GameScreen;
 
 public class Application extends Game {
     public static final int V_WIDTH = 1920, V_HEIGHT = 780;
@@ -24,7 +24,7 @@ public class Application extends Game {
         camera.setToOrtho(false, viewportWidth, viewportHeight);
         batch = new SpriteBatch();
 
-        setScreen(new NewGameScreen(this));
+        setScreen(new GameScreen(this));
     }
 
     @Override
