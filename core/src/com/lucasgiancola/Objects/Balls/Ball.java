@@ -13,9 +13,9 @@ public class Ball extends GameObject {
 
     private float speed = 15;
 
-    public Ball(World world, Vector2 position) {
+    public Ball(World world, Vector2 position, float radius) {
         setColor(Color.WHITE);
-        setWidth(100); // Width will be used as the half radius
+        setWidth(radius); // Width will be used as the half radius
 
         // Create the texture for the ball
         // TODO: Make this constant so we don't need to create a new one every time
@@ -60,6 +60,7 @@ public class Ball extends GameObject {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if(body.getLinearVelocity().len() < 15f) body.setLinearVelocity(body.getLinearVelocity().nor().scl(speed));
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
         batch.draw(tex, getX(), getY());
     }

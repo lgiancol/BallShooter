@@ -7,12 +7,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.Blocks.Block;
-import com.lucasgiancola.Objects.Blocks.GameBlock;
 import com.lucasgiancola.Objects.GameObject;
-import com.lucasgiancola.Objects.Triggers.TopTrigger;
 import com.lucasgiancola.Objects.Walls.BlockSpawner;
 import com.lucasgiancola.Objects.Walls.ObjectDespawner;
 import com.lucasgiancola.Objects.Walls.Wall;
@@ -40,6 +37,7 @@ public class DefaultLevel extends Level {
         int wallThickness = 5;
         // Top
         stage.addActor(new BlockSpawner(world, new Vector2(stage.getWidth() / 2, stage.getHeight() - (wallThickness / 2)), stage.getWidth(), wallThickness));
+        stage.addActor(new Wall(world, new Vector2(stage.getWidth() / 2, stage.getHeight() - (wallThickness / 2)), stage.getWidth(), wallThickness));
         // Bottom
         stage.addActor(new ObjectDespawner(world, new Vector2(stage.getWidth() / 2, (wallThickness / 2)), stage.getWidth(), wallThickness));
 
@@ -50,7 +48,7 @@ public class DefaultLevel extends Level {
 
         // Set the block and ball dimensions
         blockLength = ((stage.getWidth() - blockOffset) / numCols) - blockOffset;
-        ballRadius = blockLength * 0.15f; // 15% the width of the block
+        ballRadius = blockLength * 0.3f; // 15% the width of the block
 
         // Add the first row of blocks
         instantiateRow();
@@ -60,28 +58,25 @@ public class DefaultLevel extends Level {
     }
 
     public void instantiateBall() {
-        Ball newBall = new Ball(world, new Vector2(stage.getWidth() / 2, 100));
+        Ball newBall = new Ball(world, new Vector2(stage.getWidth() / 2, 100), ballRadius);
 
         stage.addActor(newBall);
     }
 
     private void instantiateRow() {
-        System.out.println("New Row");
         Block temp = null;
 
         for (int i = 0; i < numCols; i++) {
-            if (MathUtils.randomBoolean(0.3f)) {
+            if (MathUtils.randomBoolean(0.0f)) {
                 float x = (i * blockLength + (blockLength / 2) + ((i + 1) * blockOffset));
                 float y = stage.getHeight() + (blockLength / 2) + blockOffset;
 
                 if (topBlock != null) {
                     // Top block's y + half the length of the block (since it is moved half) then a full blockLength then the blockOffset
-                    y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + (blockLength / 2) + blockLength + blockOffset);
+                    y = y + blockLength - (blockOffset / 2);
                 }
                 temp = new Block(world, new Vector2(x, y), blockLength, blockLength);
                 stage.addActor(temp);
-
-//                objects.add(temp);
             }
         }
 
@@ -91,13 +86,11 @@ public class DefaultLevel extends Level {
             float y = (stage.getHeight()+ (blockLength / 2) + blockOffset);
 
             if (topBlock != null) {
-                y = (Constants.toScreenUnits(topBlock.body.getPosition().y) + (blockLength / 2) + blockLength + blockOffset);
+                y = y + blockLength - (blockOffset / 2);
             }
 
             temp = new Block(world, new Vector2(x, y), blockLength, blockLength);
             stage.addActor(temp);
-
-//            objects.add(temp);
         }
 
         topBlock = temp;
@@ -108,7 +101,7 @@ public class DefaultLevel extends Level {
         counter += delta;
 
         if(counter >= 0.5f) {
-//            instantiateBall();
+            instantiateBall();
             counter = 0;
         }
 
@@ -236,7 +229,11 @@ public class DefaultLevel extends Level {
 
         // Block hitting bottom
         if(despawner != null && block != null) {
-            isOver = true;
+//            isOver = true;
+
+            if(!destroyed.contains(block)) {
+                destroyed.add(block);
+            }
 
 //            if(!objectsToDestroy.contains(block)) {
 //                block.canDestroyBody = true;

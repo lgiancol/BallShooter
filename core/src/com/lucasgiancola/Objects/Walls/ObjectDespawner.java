@@ -29,7 +29,7 @@ public class ObjectDespawner extends GameObject {
 
         // Create a body for the ball add it to the world that was provided
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
         body.setUserData(this);
 
@@ -41,7 +41,7 @@ public class ObjectDespawner extends GameObject {
         shapeDef.friction = 1f;
         shapeDef.density = 0f;
         shapeDef.restitution = 0f;
-        shapeDef.isSensor = false;
+        shapeDef.isSensor = true;
         shapeDef.filter.categoryBits = Constants.CATEGORY_DESTROYER;
         shapeDef.filter.maskBits = Constants.MASK_DESTROYER;
 
