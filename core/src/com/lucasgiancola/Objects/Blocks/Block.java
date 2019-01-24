@@ -10,11 +10,14 @@ import com.lucasgiancola.Constants;
 import com.lucasgiancola.Objects.GameObject;
 
 public class Block extends GameObject {
+    private Vector2 velocity;
 
-    public Block(World world, Vector2 position) {
+    public Block(World world, Vector2 position, float width, float height) {
         setColor(Color.GREEN);
-        setWidth(200);
-        setHeight(100);
+        setWidth(width);
+        setHeight(height);
+
+        velocity = new Vector2(0, -Constants.toScreenUnits(0.007f));
 
         // Create the texture for the ball
         // TODO: Make this constant so we don't need to create a new one every time
@@ -48,10 +51,13 @@ public class Block extends GameObject {
         // Set the initial position
         body.setTransform(Constants.toWorldUnits(position.x - getWidth() / 2), Constants.toWorldUnits(position.y - getHeight() / 2), 0);
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
+
+        body.setLinearVelocity(velocity);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
         batch.draw(tex, getX(), getY());
     }
 }
