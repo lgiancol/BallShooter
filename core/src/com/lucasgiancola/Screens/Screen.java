@@ -32,7 +32,6 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, false);
-        app.batch.setProjectionMatrix(app.camera.combined);
     }
 
     @Override

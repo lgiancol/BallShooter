@@ -12,6 +12,7 @@ import com.lucasgiancola.Objects.GameObject;
 public class Ball extends GameObject {
 
     private float speed = 15;
+    public int damage = 1;
 
     public Ball(World world, Vector2 position, float radius) {
         setColor(Color.WHITE);
@@ -60,7 +61,6 @@ public class Ball extends GameObject {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if(body.getLinearVelocity().len() < 15f) body.setLinearVelocity(body.getLinearVelocity().nor().scl(speed));
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
         batch.draw(tex, getX(), getY());
     }

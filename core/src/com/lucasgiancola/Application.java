@@ -3,7 +3,7 @@ package com.lucasgiancola;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.lucasgiancola.Screens.GameScreen;
 
 public class Application extends Game {
@@ -11,18 +11,19 @@ public class Application extends Game {
     public float viewportWidth;
     public float viewportHeight;
 
-    // These are the main variables that are going to be used throughout the app... There will be 1 camera, 1 batch, etc...
+    // These are the main variables that are going to be used throughout the app
+    public static BitmapFont font;
     public OrthographicCamera camera;
-    public SpriteBatch batch;
 
     @Override
     public void create() {
+        Application.font = new BitmapFont();
+
         viewportWidth = Gdx.graphics.getWidth();
         viewportHeight = viewportWidth * 16 / 9;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, viewportWidth, viewportHeight);
-        batch = new SpriteBatch();
 
         setScreen(new GameScreen(this));
     }
@@ -36,7 +37,7 @@ public class Application extends Game {
     public void dispose() {
         super.dispose();
 
-        batch.dispose();
+        Application.font.dispose();
         getScreen().dispose();
     }
 }

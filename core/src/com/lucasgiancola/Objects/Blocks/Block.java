@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.lucasgiancola.Application;
 import com.lucasgiancola.Constants;
+import com.lucasgiancola.Objects.Balls.Ball;
 import com.lucasgiancola.Objects.GameObject;
 
 public class Block extends GameObject {
     private Vector2 velocity = new Vector2(0, -Constants.toScreenUnits(0.07f));
+    public int health = 1;
 
     public Block(World world, Vector2 position, float width, float height) {
         setColor(Color.GREEN);
@@ -53,9 +56,18 @@ public class Block extends GameObject {
         body.setLinearVelocity(velocity);
     }
 
+    public boolean takeDamage(Ball ball) {
+        health -= ball.damage;
+
+        return health <= 0;
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
         batch.draw(tex, getX(), getY());
+
+        Application.font.setColor(Color.BLACK);
+        Application.font.draw(batch, "" + health, getX(), getY());
     }
 }

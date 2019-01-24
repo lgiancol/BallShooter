@@ -100,7 +100,7 @@ public class SpeedRun extends Level {
     public void update(float delta) {
         counter += delta;
 
-        if(counter >= 0.5f) {
+        if(counter >= 0.25f) {
             instantiateBall();
             counter = 0;
         }
@@ -188,14 +188,11 @@ public class SpeedRun extends Level {
 
         // If it's a ball hitting a block
         if(block != null && ball != null) {
-//            block.takeDamage(ball.damageAmount);
-
-//            if(block.health <= 0) {
-//                blockCount++;
-//                if(!objectsToDestroy.contains(block)) {
-//                    objectsToDestroy.add(block);
-//                }
-//            }
+            if(block.takeDamage(ball)) {
+                if(!destroyed.contains(block)) {
+                    destroyed.add(block);
+                }
+            }
 
             return;
         }
@@ -208,12 +205,6 @@ public class SpeedRun extends Level {
             if(!destroyed.contains(ball)) {
                 destroyed.add(ball);
             }
-//            if(!objectsToDestroy.contains(ball)) {
-//                objectsToDestroy.add(ball);
-//            } else {
-//                ball.canDestroyBody = true;
-//                ball.canRemoveGraphic = true;
-//            }
 
             return;
         }
@@ -234,13 +225,6 @@ public class SpeedRun extends Level {
             if(!destroyed.contains(block)) {
                 destroyed.add(block);
             }
-
-//            if(!objectsToDestroy.contains(block)) {
-//                block.canDestroyBody = true;
-//                block.canRemoveGraphic = true;
-//
-//                objectsToDestroy.add(block);
-//            }
         }
     }
 
