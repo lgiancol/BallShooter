@@ -2,6 +2,7 @@ package com.lucasgiancola;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.lucasgiancola.Screens.GameScreen;
@@ -17,7 +18,9 @@ public class Application extends Game {
 
     @Override
     public void create() {
-        Application.font = new BitmapFont();
+        Application.font = new BitmapFont(Gdx.files.internal("data/font.fnt"));
+        Application.font.setColor(Color.BLACK);
+//        Application.font.getData().scale(1.5f);
 
         viewportWidth = Gdx.graphics.getWidth();
         viewportHeight = viewportWidth * 16 / 9;

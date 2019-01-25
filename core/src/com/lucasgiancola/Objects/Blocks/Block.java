@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.lucasgiancola.Application;
@@ -13,7 +14,8 @@ import com.lucasgiancola.Objects.GameObject;
 
 public class Block extends GameObject {
     private Vector2 velocity = new Vector2(0, -Constants.toScreenUnits(0.07f));
-    public int health = 1;
+    public int health = 5;
+    private GlyphLayout text;
 
     public Block(World world, Vector2 position, float width, float height) {
         setColor(Color.GREEN);
@@ -54,10 +56,13 @@ public class Block extends GameObject {
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
 
         body.setLinearVelocity(velocity);
+        text = new GlyphLayout(Application.font, "" + health);
     }
 
     public boolean takeDamage(Ball ball) {
         health -= ball.damage;
+
+        text.setText(Application.font, "" + health);
 
         return health <= 0;
     }
@@ -67,7 +72,11 @@ public class Block extends GameObject {
         setPosition(Constants.toScreenUnits(body.getPosition().x), Constants.toScreenUnits(body.getPosition().y));
         batch.draw(tex, getX(), getY());
 
-        Application.font.setColor(Color.BLACK);
-        Application.font.draw(batch, "" + health, getX(), getY());
+        Application.font.draw(batch, text, getX() + getWidth() / 2 - (text.width / 2), getY() + getHeight() / 2 + text.height / 2);
+
+        Application.font.getData().setScale(3);
+        Application.font.draw(batch, "This is the font", 50, 700);
+
+        Application.font.getData().setScale(1);
     }
 }
